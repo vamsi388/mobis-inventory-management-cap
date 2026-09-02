@@ -1,7 +1,14 @@
 sap.ui.define([], () => {
     "use strict";
-
     return {
+        severityState(sSeverity) {
+            switch ((sSeverity || "").toUpperCase()) {
+                case "HIGH": return "Error";
+                case "MEDIUM": return "Warning";
+                case "LOW": return "Success";
+                default: return "None";
+            }
+        },
         prStatusState(sStatus) {
             switch (sStatus) {
                 case "DRAFT": return "None";
@@ -11,25 +18,14 @@ sap.ui.define([], () => {
                 default: return "None";
             }
         },
-
         poStatusState(sStatus) {
             switch (sStatus) {
                 case "CREATED": return "None";
-                case "SENT": return "Information";
-                case "PARTIALLY_RECEIVED": return "Warning";
+                case "SENT": return "Warning";
+                case "PARTIAL": return "Warning";
                 case "RECEIVED": return "Success";
                 case "CLOSED": return "Success";
                 case "CANCELLED": return "Error";
-                default: return "None";
-            }
-        },
-
-        severityState(sSeverity) {
-            switch ((sSeverity || "").toUpperCase()) {
-                case "LOW": return "None";
-                case "MEDIUM": return "Warning";
-                case "HIGH": return "Error";
-                case "CRITICAL": return "Error";
                 default: return "None";
             }
         }

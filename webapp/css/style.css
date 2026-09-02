@@ -1,1 +1,524 @@
-/* Enter your custom styles here */
+/* =========================================================
+   PROCUREHUB — PREMIUM THEME
+   ========================================================= */
+
+:root {
+    --ph-primary: #2b5fd9;
+    --ph-primary-dark: #1e46ad;
+    --ph-accent: #6f42f5;
+    --ph-success: #1f9254;
+    --ph-warning: #d98c14;
+    --ph-error: #d9363e;
+    --ph-bg: #f5f7fb;
+    --ph-surface: #ffffff;
+    --ph-border: #e7eaf0;
+    --ph-text: #1c2333;
+    --ph-text-muted: #6b7280;
+    --ph-radius: 14px;
+    --ph-radius-sm: 10px;
+    --ph-shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.06);
+    --ph-shadow-md: 0 4px 10px rgba(16, 24, 40, 0.06), 0 2px 4px rgba(16, 24, 40, 0.04);
+    --ph-shadow-lg: 0 12px 24px rgba(16, 24, 40, 0.08), 0 4px 8px rgba(16, 24, 40, 0.04);
+    --ph-transition: all 0.18s ease-in-out;
+}
+
+/* ===================== GLOBAL BASE ===================== */
+
+.sapUiBody,
+html {
+    background-color: var(--ph-bg) !important;
+}
+
+* {
+    letter-spacing: 0.1px;
+}
+
+.sapMText,
+.sapMTitle,
+.sapMLabel {
+    color: var(--ph-text);
+}
+
+/* ===================== TOOL HEADER (TOP BAR) ===================== */
+
+.sapTntToolHeader {
+    background: var(--ph-surface) !important;
+    border-bottom: 1px solid var(--ph-border) !important;
+    box-shadow: var(--ph-shadow-sm);
+    padding: 0 1.25rem !important;
+    height: 64px !important;
+}
+
+.sapTntToolHeader .sapMTitle {
+    font-weight: 700;
+    color: var(--ph-text);
+    letter-spacing: -0.2px;
+}
+
+.sapTntToolHeader .sapMAvatar {
+    box-shadow: 0 0 0 2px var(--ph-surface), 0 0 0 3px var(--ph-border);
+}
+
+/* Search field in header */
+.sapTntToolHeader .sapMSF {
+    border-radius: 999px !important;
+    background: var(--ph-bg) !important;
+    border: 1px solid var(--ph-border) !important;
+}
+
+.sapTntToolHeader .sapMSF:hover {
+    border-color: var(--ph-primary) !important;
+}
+
+/* ===================== SIDE NAVIGATION ===================== */
+
+.sapTntSideNavigation {
+    background: var(--ph-surface) !important;
+    border-right: 1px solid var(--ph-border) !important;
+    box-shadow: var(--ph-shadow-sm);
+}
+
+.sapTntNavLI {
+    margin: 2px 10px !important;
+    border-radius: var(--ph-radius-sm) !important;
+    transition: var(--ph-transition);
+}
+
+.sapTntNavLI:hover {
+    background: var(--ph-bg) !important;
+}
+
+.sapTntNavLI.sapTntNLISelected,
+.sapTntNavLI.sapTntNLISelected:hover {
+    background: linear-gradient(135deg, var(--ph-primary), var(--ph-primary-dark)) !important;
+    box-shadow: var(--ph-shadow-md);
+}
+
+.sapTntNavLI.sapTntNLISelected .sapTntNLIText,
+.sapTntNavLI.sapTntNLISelected .sapTntNLIIcon {
+    color: #ffffff !important;
+}
+
+.sapTntNavLIText {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* ===================== PAGE / CONTENT PADDING ===================== */
+
+.sapUiContentPadding {
+    padding: 1.75rem 2rem !important;
+}
+
+/* Page & section titles */
+.sapUiContentPadding > .sapMVBox > .sapMTitle,
+.sapMTitle[class*="Dash"],
+.sapMTitle {
+    font-weight: 700 !important;
+    letter-spacing: -0.3px;
+}
+
+/* ===================== GENERIC TILES (KPI CARDS) ===================== */
+
+.sapMGT {
+    border-radius: var(--ph-radius) !important;
+    background: var(--ph-surface) !important;
+    border: 1px solid var(--ph-border) !important;
+    box-shadow: var(--ph-shadow-sm) !important;
+    transition: var(--ph-transition);
+    overflow: hidden;
+}
+
+.sapMGT:hover {
+    box-shadow: var(--ph-shadow-lg) !important;
+    transform: translateY(-2px);
+    border-color: rgba(43, 95, 217, 0.25) !important;
+    cursor: pointer;
+}
+
+.sapMGT .sapMGTHdrTxt {
+    font-weight: 600 !important;
+    color: var(--ph-text) !important;
+    font-size: 0.95rem;
+}
+
+.sapMGT .sapMGTSubHdrTxt {
+    color: var(--ph-text-muted) !important;
+    font-size: 0.78rem;
+}
+
+.sapMNC .sapMNCValue {
+    font-weight: 800 !important;
+    font-size: 2rem !important;
+}
+
+/* Colored top accent bar per tile type (optional flair) */
+.sapMGT::before {
+    content: "";
+    display: block;
+    height: 4px;
+    width: 100%;
+    background: linear-gradient(90deg, var(--ph-primary), var(--ph-accent));
+}
+
+/* ===================== PANELS (CARDS) ===================== */
+
+.sapMPanel {
+    border-radius: var(--ph-radius) !important;
+    border: 1px solid var(--ph-border) !important;
+    box-shadow: var(--ph-shadow-sm) !important;
+    background: var(--ph-surface) !important;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+}
+
+.sapMPanel .sapMPanelHdr,
+.sapMPanel-CTX .sapMPanelHdr {
+    background: var(--ph-surface) !important;
+    border-bottom: 1px solid var(--ph-border) !important;
+    padding: 0.9rem 1.25rem !important;
+}
+
+.sapMPanel .sapMPanelHdr .sapMTitle {
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+}
+
+/* Toolbar inside panels */
+.sapMPanel .sapMTB,
+.sapMTB.sapMTB-Info-CTX {
+    background: transparent !important;
+    padding: 0.6rem 1.25rem !important;
+}
+
+/* ===================== TABLES ===================== */
+
+.sapMList,
+.sapMListTbl {
+    background: transparent !important;
+}
+
+.sapMListTblHeader,
+.sapMLIB-CTX.sapMListTblHeaderRow {
+    background: #fafbfd !important;
+    border-bottom: 1px solid var(--ph-border) !important;
+}
+
+.sapMListTblHeaderCell .sapMText {
+    font-weight: 700 !important;
+    font-size: 0.72rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--ph-text-muted) !important;
+}
+
+.sapMListTblRow,
+.sapMLIB {
+    transition: var(--ph-transition);
+    border-bottom: 1px solid #f0f2f6 !important;
+}
+
+.sapMListTblRow:hover,
+.sapMLIB:hover {
+    background: #f7f9fd !important;
+}
+
+.sapMListTblCell {
+    padding-top: 0.7rem !important;
+    padding-bottom: 0.7rem !important;
+}
+
+/* ===================== OBJECT STATUS (SEVERITY / STATE PILLS) ===================== */
+
+.sapMObjStatus {
+    padding: 2px 10px !important;
+    border-radius: 999px !important;
+    font-weight: 600 !important;
+    font-size: 0.72rem !important;
+    display: inline-flex !important;
+    align-items: center;
+}
+
+.sapMObjStatusError {
+    background: rgba(217, 54, 62, 0.1) !important;
+    color: var(--ph-error) !important;
+}
+
+.sapMObjStatusWarning {
+    background: rgba(217, 140, 20, 0.12) !important;
+    color: var(--ph-warning) !important;
+}
+
+.sapMObjStatusSuccess {
+    background: rgba(31, 146, 84, 0.12) !important;
+    color: var(--ph-success) !important;
+}
+
+.sapMObjStatusNone {
+    background: rgba(107, 114, 128, 0.1) !important;
+    color: var(--ph-text-muted) !important;
+}
+
+/* ===================== BUTTONS ===================== */
+
+.sapMBtn {
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    transition: var(--ph-transition);
+}
+
+.sapMBtnEmphasized {
+    background: linear-gradient(135deg, var(--ph-primary), var(--ph-primary-dark)) !important;
+    border: none !important;
+    box-shadow: 0 2px 6px rgba(43, 95, 217, 0.35);
+}
+
+.sapMBtnEmphasized:hover {
+    box-shadow: 0 4px 12px rgba(43, 95, 217, 0.45);
+    transform: translateY(-1px);
+}
+
+.sapMBtnTransparent:hover {
+    background: rgba(43, 95, 217, 0.08) !important;
+    border-radius: 6px !important;
+}
+
+/* ===================== PROGRESS INDICATORS ===================== */
+
+.sapMPI {
+    border-radius: 999px !important;
+    height: 8px !important;
+    overflow: hidden;
+    background: #eef0f4 !important;
+}
+
+.sapMPIBarSuccess {
+    background: linear-gradient(90deg, #22b573, var(--ph-success)) !important;
+}
+
+.sapMPIBarError {
+    background: linear-gradient(90deg, #ef4f56, var(--ph-error)) !important;
+}
+
+/* ===================== ICON TAB BAR (if used) ===================== */
+
+.sapMITBHead {
+    background: transparent !important;
+    border-bottom: 1px solid var(--ph-border) !important;
+}
+
+.sapMITBFilter {
+    font-weight: 600 !important;
+    color: var(--ph-text-muted) !important;
+}
+
+.sapMITBSelected {
+    color: var(--ph-primary) !important;
+}
+
+.sapMITBContentArrow,
+.sapMITBSelectionIndicator {
+    background: var(--ph-primary) !important;
+}
+
+/* ===================== DIALOGS ===================== */
+
+.sapMDialog {
+    border-radius: var(--ph-radius) !important;
+    box-shadow: var(--ph-shadow-lg) !important;
+    overflow: hidden;
+}
+
+.sapMDialogTitle {
+    font-weight: 700 !important;
+}
+
+/* ===================== INPUTS / SELECTS ===================== */
+
+.sapMInputBaseContentWrapper,
+.sapMSelect {
+    border-radius: 8px !important;
+    border-color: var(--ph-border) !important;
+}
+
+.sapMInputBaseContentWrapper:hover,
+.sapMInputFocused .sapMInputBaseContentWrapper {
+    border-color: var(--ph-primary) !important;
+}
+
+/* ===================== SCROLLBAR (WEBKIT) ===================== */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c8cdd8;
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a6adbd;
+}
+
+/* ===================== VIZ FRAME (DONUT CHART) ===================== */
+
+.sapUiVizFrame {
+    border-radius: var(--ph-radius-sm);
+    overflow: hidden;
+}
+
+/* ===================== MISC / TEXT ===================== */
+
+.sapUiTinyText {
+    color: var(--ph-text-muted) !important;
+    font-size: 0.82rem !important;
+}
+
+/* Section header spacing */
+.sapMVBox > .sapMTitle {
+    margin-bottom: 2px;
+}
+
+/* =========================================================
+   PREMIUM TILE LAYOUT (Image 2 style)
+   ========================================================= */
+
+.phTileRow {
+    gap: 1rem;
+    margin-bottom: 1.5rem !important;
+}
+
+.phTile {
+    background: var(--ph-surface);
+    border: 1px solid var(--ph-border);
+    border-radius: var(--ph-radius);
+    box-shadow: var(--ph-shadow-sm);
+    padding: 1.1rem 1.25rem 1rem 1.25rem;
+    min-width: 230px;
+    flex: 1 1 230px;
+    position: relative;
+    transition: var(--ph-transition);
+    cursor: pointer;
+}
+
+.phTile:hover {
+    box-shadow: var(--ph-shadow-lg);
+    transform: translateY(-2px);
+}
+
+/* Top accent bar per tile color */
+.phTile::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    border-radius: var(--ph-radius) var(--ph-radius) 0 0;
+}
+
+.phTileBlue::before   { background: linear-gradient(90deg, #2b5fd9, #6f42f5); }
+.phTileOrange::before { background: linear-gradient(90deg, #f0a63a, #e0742a); }
+.phTileGreen::before  { background: linear-gradient(90deg, #22b573, #1f9254); }
+.phTileRed::before    { background: linear-gradient(90deg, #ef4f56, #d9363e); }
+
+.phTileTitle {
+    font-weight: 700 !important;
+    font-size: 0.92rem !important;
+    color: var(--ph-text) !important;
+}
+
+.phTileSub {
+    font-size: 0.78rem !important;
+    color: var(--ph-text-muted) !important;
+}
+
+/* Icon badge (top-right colored square) */
+.phTileIconBadge {
+    font-size: 1.3rem !important;
+    padding: 0.55rem;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.phIconBlue   { background: rgba(43, 95, 217, 0.12);  color: #2b5fd9 !important; }
+.phIconOrange { background: rgba(224, 116, 42, 0.12); color: #e0742a !important; }
+.phIconGreen  { background: rgba(31, 146, 84, 0.12);  color: #1f9254 !important; }
+.phIconRed    { background: rgba(217, 54, 62, 0.12);  color: #d9363e !important; }
+
+/* Big value + sparkline row */
+.phTileBottom {
+    margin-top: 0.75rem;
+}
+
+.phTileValue {
+    font-size: 2.1rem !important;
+    font-weight: 800 !important;
+    color: var(--ph-text) !important;
+    line-height: 1;
+}
+
+.phSparkIcon {
+    font-size: 2.2rem !important;
+    opacity: 0.85;
+}
+
+.phSparkBlue  { color: #2b5fd9 !important; }
+.phSparkGreen { color: #1f9254 !important; }
+.phSparkRed   { color: #d9363e !important; }
+
+/* Trend row (12% vs last 7 days) */
+.phTrendBox {
+    margin-top: 0.5rem;
+    gap: 4px;
+}
+
+.phTrendIcon {
+    font-size: 0.75rem !important;
+}
+
+.phTrendText {
+    font-size: 0.76rem !important;
+    font-weight: 600 !important;
+}
+
+.phTrendUp {
+    color: var(--ph-success) !important;
+}
+
+.phTrendDown {
+    color: var(--ph-error) !important;
+}
+
+.phTrendNeutral {
+    color: var(--ph-text-muted) !important;
+}
+
+
+/* =========================================================
+   SIDEBAR GROUP LABELS (REPORTS / CONFIGURATION)
+   ========================================================= */
+
+.phNavGroupLabel {
+    display: block;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--ph-text-muted) !important;
+    padding: 1rem 1.25rem 0.4rem 1.25rem !important;
+}
+
+
+/* =========================================================
+   LOGO BADGE IN HEADER (hexagon-style icon like ProcureHub logo)
+   ========================================================= */
+
+.sapTntToolHeader .sapMAvatar {
+    border-radius: 10px !important;
+    background: linear-gradient(135deg, var(--ph-primary), var(--ph-accent)) !important;
+}
