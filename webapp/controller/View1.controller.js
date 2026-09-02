@@ -80,7 +80,7 @@ sap.ui.define([
             if (!this._pCreatePRDialog) {
                 this._pCreatePRDialog = Fragment.load({
                     id: this.getView().getId(),
-                    name: "procurement.view.CreatePR",
+                    name: "procurement.fragments.CreatePR",
                     controller: this
                 }).then((oDialog) => {
                     this.getView().addDependent(oDialog);
@@ -208,7 +208,7 @@ sap.ui.define([
             if (!this._pPostGRDialog) {
                 this._pPostGRDialog = Fragment.load({
                     id: this.getView().getId(),
-                    name: "procurement.view.PostGR",
+                    name: "procurement.fragments.PostGR",
                     controller: this
                 }).then((oDialog) => {
                     this.getView().addDependent(oDialog);

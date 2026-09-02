@@ -1,0 +1,48 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout">
+    <Dialog id="postGRDialog" title="{i18n>postGRDialogTitle}" contentWidth="40rem" resizable="true">
+        <content>
+            <l:VerticalLayout id="_IDGenVerticalLayout" class="sapUiContentPadding" width="100%">
+                <l:content>
+                    <Label id="_IDGenLabel" text="{i18n>grPoLabel}" labelFor="grPoSelect"/>
+                    <Select id="grPoSelect" width="100%" change=".onGRPoChange"
+                        items="{path: '/PurchaseOrders', filters: [{path: 'status', operator: 'NE', value1: 'CLOSED'}]}">
+                        <core:Item id="_IDGenItem" key="{ID}" text="{poNumber}"/>
+                    </Select>
+
+                    <Label id="_IDGenLabel1" text="{i18n>grLocationLabel}" labelFor="grLocationInput" class="sapUiTinyMarginTop"/>
+                    <Input id="grLocationInput" placeholder="{i18n>grLocationPlaceholder}" width="100%"/>
+
+                    <Label id="_IDGenLabel2" text="{i18n>grReceivedByLabel}" labelFor="grReceivedByInput" class="sapUiTinyMarginTop"/>
+                    <Input id="grReceivedByInput" placeholder="{i18n>grReceivedByPlaceholder}" width="100%"/>
+
+                    <Title id="_IDGenTitle6" text="{i18n>grItemsTitle}" level="H5" class="sapUiTinyMarginTop"/>
+                    <Table id="_IDGenTable2" items="{grItems>/items}" noDataText=" ">
+                        <columns>
+                            <Column id="_IDGenColumn32"><Text id="_IDGenText54" text="{i18n>colItemOrderedQty}"/></Column>
+                            <Column id="_IDGenColumn33"><Text id="_IDGenText55" text="{i18n>colItemReceivedQty}"/></Column>
+                            <Column id="_IDGenColumn34"><Text id="_IDGenText56" text="{i18n>colItemReceiveNow}"/></Column>
+                        </columns>
+                        <items>
+                            <ColumnListItem id="_IDGenColumnListItem6">
+                                <cells>
+                                    <Text id="_IDGenText57" text="{grItems>orderedQty}"/>
+                                    <Text id="_IDGenText58" text="{grItems>receivedQty}"/>
+                                    <Input id="_IDGenInput" value="{grItems>receiveNow}" type="Number"/>
+                                </cells>
+                            </ColumnListItem>
+                        </items>
+                    </Table>
+                </l:content>
+            </l:VerticalLayout>
+        </content>
+        <beginButton>
+            <Button id="_IDGenButton14" text="{i18n>btnPost}" type="Emphasized" press=".onSubmitGR"/>
+        </beginButton>
+        <endButton>
+            <Button id="_IDGenButton15" text="{i18n>btnCancel}" press=".onCancelGRDialog"/>
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>

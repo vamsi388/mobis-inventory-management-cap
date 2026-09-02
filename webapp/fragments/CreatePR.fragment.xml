@@ -1,0 +1,51 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout">
+    <Dialog id="createPRDialog" title="{i18n>createPRDialogTitle}" contentWidth="40rem" resizable="true">
+        <content>
+            <l:VerticalLayout id="_IDGenVerticalLayout1" class="sapUiContentPadding" width="100%">
+                <l:content>
+                    <Label id="_IDGenLabel4" text="{i18n>prLocationLabel}" labelFor="prLocationInput"/>
+                    <Input id="prLocationInput" placeholder="{i18n>prLocationPlaceholder}" width="100%"/>
+
+                    <Label id="_IDGenLabel5" text="{i18n>prRequestedByLabel}" labelFor="prRequestedByInput" class="sapUiTinyMarginTop"/>
+                    <Input id="prRequestedByInput" placeholder="{i18n>prRequestedByPlaceholder}" width="100%"/>
+
+                    <Toolbar id="_IDGenToolbar5" class="sapUiTinyMarginTop">
+                        <Title id="_IDGenTitle7" text="{i18n>prItemsTitle}" level="H5"/>
+                        <ToolbarSpacer id="_IDGenToolbarSpacer5"/>
+                        <Button id="_IDGenButton13" text="{i18n>btnAddItem}" icon="sap-icon://add" press=".onAddPRItemRow"/>
+                    </Toolbar>
+
+                    <Table id="_IDGenTable3" items="{prItems>/items}" noDataText=" ">
+                        <columns>
+                            <Column id="_IDGenColumn35"><Text id="_IDGenText59" text="{i18n>colItemPart}"/></Column>
+                            <Column id="_IDGenColumn36"><Text id="_IDGenText60" text="{i18n>colItemQty}"/></Column>
+                            <Column id="_IDGenColumn37"><Text id="_IDGenText61" text="{i18n>colItemSupplier}"/></Column>
+                            <Column id="_IDGenColumn38"><Text id="_IDGenText62" text="{i18n>colItemEstPrice}"/></Column>
+                            <Column id="_IDGenColumn39" hAlign="End"><Text id="_IDGenText63" text=""/></Column>
+                        </columns>
+                        <items>
+                            <ColumnListItem id="_IDGenColumnListItem7">
+                                <cells>
+                                    <Input id="_IDGenInput1" value="{prItems>partId}"/>
+                                    <Input id="_IDGenInput2" value="{prItems>requiredQty}" type="Number"/>
+                                    <Input id="_IDGenInput3" value="{prItems>supplierId}"/>
+                                    <Input id="_IDGenInput4" value="{prItems>estimatedPrice}" type="Number"/>
+                                    <Button id="_IDGenButton16" icon="sap-icon://delete" type="Transparent" press=".onRemovePRItemRow"/>
+                                </cells>
+                            </ColumnListItem>
+                        </items>
+                    </Table>
+                </l:content>
+            </l:VerticalLayout>
+        </content>
+        <beginButton>
+            <Button id="_IDGenButton17" text="{i18n>btnSave}" type="Emphasized" press=".onSavePR"/>
+        </beginButton>
+        <endButton>
+            <Button id="_IDGenButton18" text="{i18n>btnCancel}" press=".onCancelPRDialog"/>
+        </endButton>
+    </Dialog>
+</core:FragmentDefinition>
