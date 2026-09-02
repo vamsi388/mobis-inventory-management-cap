@@ -236,7 +236,10 @@
                         </VBox>
                     </IconTabFilter>
                 </items>
+          
             </IconTabBar>
-        </content>
+                    
+                    
+                    </content>
     </Page>
 </mvc:View>
