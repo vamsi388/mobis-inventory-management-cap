@@ -1,0 +1,46 @@
+{
+  "name": "mobis-spare-parts-portal",
+  "version": "1.0.0",
+  "description": "Mobis Spare Parts Inventory & Procurement Management Portal - CAP Node.js backend",
+  "engines": {
+    "node": "^22"
+  },
+  "dependencies": {
+    "@cap-js/hana": "^2",
+    "@sap/cds": "^9",
+    "@sap/xssec": "^4",
+    "express": "^4"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^2",
+    "@sap/cds-dk": "^9"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch": "cds watch"
+  },
+  "cds": {
+    "server": {
+      "index": true
+    },
+    "requires": {
+      "[development]": {
+        "db": {
+          "kind": "sqlite",
+          "credentials": {
+            "url": "db.sqlite"
+          }
+        },
+        "[development]": {
+          "auth": "dummy"
+        }
+      },
+      "[production]": {
+        "db": {
+          "kind": "hana"
+        },
+        "auth": "xsuaa"
+      }
+    }
+  }
+}

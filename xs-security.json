@@ -1,0 +1,83 @@
+{
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.MasterDataSteward",
+      "description": "MasterDataSteward"
+    },
+    {
+      "name": "$XSAPPNAME.Auditor",
+      "description": "Auditor"
+    },
+    {
+      "name": "$XSAPPNAME.WarehouseExecutive",
+      "description": "WarehouseExecutive"
+    },
+    {
+      "name": "$XSAPPNAME.ProcurementOfficer",
+      "description": "ProcurementOfficer"
+    },
+    {
+      "name": "$XSAPPNAME.ProcurementApprover",
+      "description": "ProcurementApprover"
+    }
+  ],
+  "attributes": [
+    {
+      "name": "region",
+      "description": "region",
+      "valueType": "s",
+      "valueRequired": false
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "MasterDataSteward",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.MasterDataSteward"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "Auditor",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.Auditor"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "WarehouseExecutive",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.WarehouseExecutive"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "ProcurementOfficer",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.ProcurementOfficer"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "ProcurementApprover",
+      "description": "generated",
+      "scope-references": [
+        "$XSAPPNAME.ProcurementApprover"
+      ],
+      "attribute-references": []
+    },
+    {
+      "name": "userattributes",
+      "description": "generated",
+      "default-role-name": "Attributes of a User",
+      "scope-references": [],
+      "attribute-references": [
+        "region"
+      ]
+    }
+  ]
+}
