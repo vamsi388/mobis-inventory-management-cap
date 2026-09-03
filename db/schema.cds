@@ -140,3 +140,17 @@ entity ApplicationLogs : cuid {
   @mandatory
   severity  : String(10) enum { INFO; WARNING; ERROR };
 }
+
+
+entity StockTransferRequests:cuid,managed{
+  part:Association to one SpareParts;
+  fromLocation:Association to one Locations;
+  toLocation:Association to one Locations;
+  quantity:Integer;
+  status:String(20) default 'PENDING';
+  requestedBy:String(255);
+  approvedBy:String(255);
+  approvedAt:Timestamp;
+  rejectionReason:String(500);
+  completedAt:Timestamp;
+}
