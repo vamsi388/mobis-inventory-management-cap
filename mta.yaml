@@ -1,0 +1,105 @@
+_schema-version: 3.3.0
+ID: mobis-spare-parts-portal
+version: 1.0.0
+description: "Mobis Spare Parts Inventory &amp; Procurement Management Portal - CAP Node.js backend"
+parameters:
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
+modules:
+  - name: mobis-spare-parts-portal-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      instances: 1
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm-ci
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+    requires:
+      - name: mobis-spare-parts-portal-auth
+      - name: mobis-spare-parts-portal-db
+
+  - name: mobis-spare-parts-portal-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: mobis-spare-parts-portal-db
+  - name: mobis-spare-parts-portal-app
+    type: approuter.nodejs
+    path: app/router
+    parameters:
+      keep-existing-routes: true
+      disk-quota: 256M
+      memory: 256M
+    requires:
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api # must be used in xs-app.json as well
+          url: ~{srv-url}
+          forwardAuthToken: true
+      - name: mobis-spare-parts-portal-auth
+    provides:
+      - name: app-api
+        properties:
+          app-protocol: ${protocol}
+          app-uri: ${default-uri}
+
+resources:
+  - name: mobis-spare-parts-portal-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: mobis-spare-parts-portal-${org}-${space}
+        tenant-mode: dedicated
+        oauth2-configuration:
+          credential-types:
+            - "binding-secret"
+            - "x509"
+          redirect-uris:
+            - https://*~{app-api/app-uri}/**
+        role-collections:
+          - name: 'MasterDataSteward (mobis-spare-parts-portal ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.MasterDataSteward'
+          - name: 'Auditor (mobis-spare-parts-portal ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.Auditor'
+          - name: 'WarehouseExecutive (mobis-spare-parts-portal ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.WarehouseExecutive'
+          - name: 'ProcurementOfficer (mobis-spare-parts-portal ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.ProcurementOfficer'
+          - name: 'ProcurementApprover (mobis-spare-parts-portal ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.ProcurementApprover'
+          - name: 'userattributes (mobis-spare-parts-portal ${org}-${space})'
+            description: 'generated'
+            role-template-references:
+              - '$XSAPPNAME.userattributes'
+    requires:
+      - name: app-api
+  - name: mobis-spare-parts-portal-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
