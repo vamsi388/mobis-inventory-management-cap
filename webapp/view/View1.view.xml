@@ -630,6 +630,7 @@
                                 <Column
                                     id="_IDGenPRColAct"
                                     hAlign="End"
+                                    width="80px"
                                 >
                                     <Text
                                         id="_IDGenPRColActTxt"
@@ -661,36 +662,47 @@
                                             id="_IDGenPRApp"
                                             text="{approvedBy}"
                                         />
-                                        <HBox id="_IDGenPRActBox">
-                                            <Button
-                                                id="_IDGenSubmitPRBtn"
-                                                text="Submit"
-                                                type="Transparent"
-                                                visible="{= ${status} === 'DRAFT' }"
-                                                press=".onSubmitPR"
-                                            />
-                                            <Button
-                                                id="_IDGenApprovePRBtn"
-                                                text="Approve"
-                                                type="Transparent"
-                                                visible="{= ${status} === 'SUBMITTED' }"
-                                                press=".onApprovePR"
-                                            />
-                                            <Button
-                                                id="_IDGenRejectPRBtn"
-                                                text="Reject"
-                                                type="Transparent"
-                                                visible="{= ${status} === 'SUBMITTED' }"
-                                                press=".onRejectPR"
-                                            />
-                                            <Button
-                                                id="_IDGenCreatePOBtn"
-                                                text="Create PO"
-                                                type="Transparent"
-                                                visible="{= ${status} === 'APPROVED' }"
-                                                press=".onCreatePOFromPR"
-                                            />
-                                        </HBox>
+                                        <MenuButton
+                                            id="_IDGenPRActionsBtn"
+                                            icon="sap-icon://overflow"
+                                            type="Transparent"
+                                            buttonMode="Regular"
+                                            tooltip="Actions"
+                                            class="phRowActionsBtn"
+                                        >
+                                            <menu>
+                                                <Menu id="_IDGenPRActionsMenu">
+                                                    <MenuItem
+                                                        id="_IDGenSubmitPRMenuItem"
+                                                        text="Submit"
+                                                        icon="sap-icon://paper-plane"
+                                                        visible="{= ${status} === 'DRAFT' }"
+                                                        press=".onSubmitPR"
+                                                    />
+                                                    <MenuItem
+                                                        id="_IDGenApprovePRMenuItem"
+                                                        text="Approve"
+                                                        icon="sap-icon://accept"
+                                                        visible="{= ${status} === 'SUBMITTED' }"
+                                                        press=".onApprovePR"
+                                                    />
+                                                    <MenuItem
+                                                        id="_IDGenRejectPRMenuItem"
+                                                        text="Reject"
+                                                        icon="sap-icon://decline"
+                                                        visible="{= ${status} === 'SUBMITTED' }"
+                                                        press=".onRejectPR"
+                                                    />
+                                                    <MenuItem
+                                                        id="_IDGenCreatePOMenuItem"
+                                                        text="Create PO"
+                                                        icon="sap-icon://cart"
+                                                        visible="{= ${status} === 'APPROVED' }"
+                                                        press=".onCreatePOFromPR"
+                                                    />
+                                                </Menu>
+                                            </menu>
+                                        </MenuButton>
                                     </cells>
                                 </ColumnListItem>
                             </items>

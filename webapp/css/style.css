@@ -539,3 +539,11 @@ html {
 .phAlertsColStatus {
     margin-left: 1.5rem;
 }
+
+.phRowActionsBtn {
+    border-radius: 8px !important;
+}
+
+.phRowActionsBtn:hover {
+    background: rgba(43, 95, 217, 0.08) !important;
+}
