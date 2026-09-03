@@ -522,3 +522,20 @@ html {
     border-radius: 10px !important;
     background: linear-gradient(135deg, var(--ph-primary), var(--ph-accent)) !important;
 }
+
+.phAlertsRow {
+    gap: 1.5rem;
+}
+.phAlertsCol {
+    flex: 0 0 auto;
+}
+.phAlertsColLbl {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ph-text-muted);
+    margin-bottom: 0.6rem;
+    display: block;
+}
+.phAlertsColStatus {
+    margin-left: 1.5rem;
+}

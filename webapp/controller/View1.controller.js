@@ -86,10 +86,6 @@ sap.ui.define([
                     this._showSection("suppliers");
                     break;
 
-                case "alerts":
-                    this._showSection("alerts");
-                    break;
-
                 case "analytics":
                     this._showSection("analytics");
                     break;
@@ -189,6 +185,16 @@ sap.ui.define([
                     this._loadCounts();
                     break;
             }
+        },
+
+
+        // =========================================================
+        // BACK TO DASHBOARD (from Alerts section)
+        // =========================================================
+
+        onBackToDashboard() {
+
+            this._showSection("dashboard");
         },
 
 
@@ -1146,10 +1152,9 @@ sap.ui.define([
 
 
                 MessageToast.show(
-                    `Created ${
-                        Array.isArray(aPOs)
-                            ? aPOs.length
-                            : 1
+                    `Created ${Array.isArray(aPOs)
+                        ? aPOs.length
+                        : 1
                     } Purchase Order(s).`
                 );
 
@@ -1516,10 +1521,6 @@ sap.ui.define([
 
                 this._refreshTable(
                     "alertsTable"
-                );
-
-                this._refreshTable(
-                    "dashboardAlertsTable"
                 );
 
                 this._loadCounts();

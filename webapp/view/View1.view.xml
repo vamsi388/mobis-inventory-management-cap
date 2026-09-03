@@ -6,211 +6,690 @@
     xmlns:viz="sap.viz.ui5.controls"
     xmlns:viz.data="sap.viz.ui5.data"
     xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
-    xmlns="sap.m">
-
+    xmlns="sap.m"
+>
     <tnt:ToolPage id="toolPage">
-
-        <!-- ===================== HEADER ===================== -->
-        <!-- <tnt:header>
-            <tnt:ToolHeader id="_IDGenToolHeader">
-                <Avatar id="_IDGenLogoAvatar" displaySize="S" initials="PH" backgroundColor="Accent6" class="sapUiTinyMarginBegin sapUiTinyMarginEnd"/>
-                <Title id="_IDGenBrandTitle" text="Procurement Dashboard" level="H4"/>
-                <ToolbarSpacer id="_IDGenHeaderSpacer1"/>
-                <SearchField id="globalSearch" width="18rem" placeholder="Search anything..." search=".onGlobalSearch" class="sapUiTinyMarginEnd"/>
-                <core:Icon id="_IDGenBellIcon" src="sap-icon://bell" class="sapUiSmallMarginEnd"/>
-                <Avatar id="_IDGenAvatar1" displaySize="S" initials="AM" backgroundColor="Accent2"/>
-            </tnt:ToolHeader>
-        </tnt:header> -->
-
         <!-- ===================== SIDE NAV ===================== -->
         <tnt:sideContent>
-<tnt:SideNavigation id="sideNavigation" itemSelect=".onSideNavigationSelect">
-    <tnt:item>
-        <tnt:NavigationList id="_IDGenNavList">
-            <tnt:NavigationListItem id="_IDGenNavDashboard" key="dashboard" text="Dashboard" icon="sap-icon://home" selected="true"/>
-            <tnt:NavigationListItem id="_IDGenNavPR" key="requisitions" text="Purchase Requisitions" icon="sap-icon://request"/>
-            <tnt:NavigationListItem id="_IDGenNavPO" key="orders" text="Purchase Orders" icon="sap-icon://cart"/>
-            <tnt:NavigationListItem id="_IDGenNavGR" key="gr" text="Goods Receipt" icon="sap-icon://shipping-status"/>
-            <tnt:NavigationListItem id="_IDGenNavSuppliers" key="suppliers" text="Suppliers" icon="sap-icon://supplier"/>
-            <tnt:NavigationListItem id="_IDGenNavAlerts" key="alerts" text="Alerts" icon="sap-icon://alert"/>
+            <tnt:SideNavigation
+                id="sideNavigation"
+                itemSelect=".onSideNavigationSelect"
+            >
+                <tnt:item>
+                    <tnt:NavigationList id="_IDGenNavList">
+                        <tnt:NavigationListItem
+                            id="_IDGenNavDashboard"
+                            key="dashboard"
+                            text="Dashboard"
+                            icon="sap-icon://home"
+                            selected="true"
+                        />
+                        <tnt:NavigationListItem
+                            id="_IDGenNavPR"
+                            key="requisitions"
+                            text="Purchase Requisitions"
+                            icon="sap-icon://request"
+                        />
+                        <tnt:NavigationListItem
+                            id="_IDGenNavPO"
+                            key="orders"
+                            text="Purchase Orders"
+                            icon="sap-icon://cart"
+                        />
+                        <tnt:NavigationListItem
+                            id="_IDGenNavGR"
+                            key="gr"
+                            text="Goods Receipt"
+                            icon="sap-icon://shipping-status"
+                        />
+                        <tnt:NavigationListItem
+                            id="_IDGenNavSuppliers"
+                            key="suppliers"
+                            text="Suppliers"
+                            icon="sap-icon://supplier"
+                        />
 
-            <!-- ===== REPORTS GROUP (parent item with children = group header) ===== -->
-            <tnt:NavigationListItem id="_IDGenNavReportsGroup" text="REPORTS" icon="" expanded="true" enabled="true">
-                <tnt:items>
-                    <tnt:NavigationListItem id="_IDGenNavAnalytics" key="analytics" text="Analytics" icon="sap-icon://line-chart"/>
-                    <tnt:NavigationListItem id="_IDGenNavSpend" key="spend" text="Spend Analysis" icon="sap-icon://money-bills"/>
-                    <tnt:NavigationListItem id="_IDGenNavSupPerf" key="supplierPerf" text="Supplier Performance" icon="sap-icon://performance"/>
-                </tnt:items>
-            </tnt:NavigationListItem>
+                        <!-- ===== REPORTS GROUP (parent item with children = group header) ===== -->
+                        <tnt:NavigationListItem
+                            id="_IDGenNavReportsGroup"
+                            text="REPORTS"
+                            icon=""
+                            expanded="true"
+                            enabled="true"
+                        >
+                            <tnt:items>
+                                <tnt:NavigationListItem
+                                    id="_IDGenNavAnalytics"
+                                    key="analytics"
+                                    text="Analytics"
+                                    icon="sap-icon://line-chart"
+                                />
+                                <tnt:NavigationListItem
+                                    id="_IDGenNavSpend"
+                                    key="spend"
+                                    text="Spend Analysis"
+                                    icon="sap-icon://money-bills"
+                                />
+                                <tnt:NavigationListItem
+                                    id="_IDGenNavSupPerf"
+                                    key="supplierPerf"
+                                    text="Supplier Performance"
+                                    icon="sap-icon://performance"
+                                />
+                            </tnt:items>
+                        </tnt:NavigationListItem>
 
-            <!-- ===== CONFIGURATION GROUP ===== -->
-            <tnt:NavigationListItem id="_IDGenNavConfigGroup" text="CONFIGURATION" icon="" expanded="true" enabled="true">
-                <tnt:items>
-                    <tnt:NavigationListItem id="_IDGenNavSettings" key="settings" text="Settings" icon="sap-icon://action-settings"/>
-                    <tnt:NavigationListItem id="_IDGenNavUsers" key="users" text="User Management" icon="sap-icon://group"/>
-                    <tnt:NavigationListItem id="_IDGenNavRoles" key="roles" text="Roles &amp; Permissions" icon="sap-icon://key-user-settings"/>
-                </tnt:items>
-            </tnt:NavigationListItem>
-
-        </tnt:NavigationList>
-    </tnt:item>
-</tnt:SideNavigation>
+                        <!-- ===== CONFIGURATION GROUP ===== -->
+                        <tnt:NavigationListItem
+                            id="_IDGenNavConfigGroup"
+                            text="CONFIGURATION"
+                            icon=""
+                            expanded="true"
+                            enabled="true"
+                        >
+                            <tnt:items>
+                                <tnt:NavigationListItem
+                                    id="_IDGenNavSettings"
+                                    key="settings"
+                                    text="Settings"
+                                    icon="sap-icon://action-settings"
+                                />
+                                <tnt:NavigationListItem
+                                    id="_IDGenNavUsers"
+                                    key="users"
+                                    text="User Management"
+                                    icon="sap-icon://group"
+                                />
+                                <tnt:NavigationListItem
+                                    id="_IDGenNavRoles"
+                                    key="roles"
+                                    text="Roles &amp; Permissions"
+                                    icon="sap-icon://key-user-settings"
+                                />
+                            </tnt:items>
+                        </tnt:NavigationListItem>
+                    </tnt:NavigationList>
+                </tnt:item>
+            </tnt:SideNavigation>
         </tnt:sideContent>
 
         <!-- ===================== MAIN CONTENT ===================== -->
         <tnt:mainContents>
-            <Page id="mainPage" showHeader="false" busy="{view>/busy}" class="sapUiContentPadding">
+            <Page
+                id="mainPage"
+                showHeader="false"
+                busy="{view>/busy}"
+                class="sapUiContentPadding"
+            >
                 <content>
-
                     <!-- ================= DASHBOARD SECTION ================= -->
-                    <VBox id="dashboardSection" visible="true">
-
-                        <VBox id="_IDGenDashHeaderBox" class="sapUiSmallMarginBottom">
-                            <Title id="_IDGenDashTitle" text="Dashboard" level="H2"/>
-                            <Text id="_IDGenDashSubtitle" text="Overview of procurement activity" class="sapUiTinyText"/>
+                    <VBox
+                        id="dashboardSection"
+                        visible="true"
+                    >
+                        <VBox
+                            id="_IDGenDashHeaderBox"
+                            class="sapUiSmallMarginBottom"
+                        >
+                            <Title
+                                id="_IDGenDashTitle"
+                                text="Dashboard"
+                                level="H2"
+                            />
+                            <Text
+                                id="_IDGenDashSubtitle"
+                                text="Overview of procurement activity"
+                                class="sapUiTinyText"
+                            />
                         </VBox>
 
-                        <HBox id="_IDGenTileRow" wrap="Wrap" class="phTileRow">
+                        <HBox
+                            id="_IDGenTileRow"
+                            wrap="Wrap"
+                            class="phTileRow"
+                        >
+                            <!-- ===== TILE: Purchase Requisitions ===== -->
+                            <VBox
+                                id="_IDGenTilePRTotal"
+                                class="phTile phTileBlue"
+                                press=".onPRTilePress"
+                            >
+                                <HBox
+                                    id="_IDGenTilePRTop"
+                                    justifyContent="SpaceBetween"
+                                    alignItems="Start"
+                                >
+                                    <VBox id="_IDGenTilePRTextBox">
+                                        <Text
+                                            id="_IDGenTilePRTitle"
+                                            text="Purchase Requisitions"
+                                            class="phTileTitle"
+                                        />
+                                        <Text
+                                            id="_IDGenTilePRSub"
+                                            text="Total"
+                                            class="phTileSub"
+                                        />
+                                    </VBox>
+                                    <core:Icon
+                                        id="_IDGenTilePRIcon"
+                                        src="sap-icon://request"
+                                        class="phTileIconBadge phIconBlue"
+                                    />
+                                </HBox>
+                                <HBox
+                                    id="_IDGenTilePRBottom"
+                                    alignItems="Center"
+                                    justifyContent="SpaceBetween"
+                                    class="phTileBottom"
+                                >
+                                    <Text
+                                        id="_IDGenTilePRValue"
+                                        text="{view>/counts/prTotal}"
+                                        class="phTileValue"
+                                    />
+                                    <core:Icon
+                                        id="_IDGenTilePRSpark"
+                                        src="sap-icon://line-chart"
+                                        class="phSparkIcon phSparkBlue"
+                                    />
+                                </HBox>
+                                <HBox
+                                    id="_IDGenTilePRTrendBox"
+                                    alignItems="Center"
+                                    class="phTrendBox"
+                                >
+                                    <core:Icon
+                                        id="_IDGenTilePRTrendIcon"
+                                        src="sap-icon://trend-up"
+                                        class="phTrendIcon phTrendUp"
+                                    />
+                                    <Text
+                                        id="_IDGenTilePRTrendTxt"
+                                        text="12% vs last 7 days"
+                                        class="phTrendText phTrendUp"
+                                    />
+                                </HBox>
+                            </VBox>
 
-    <!-- ===== TILE: Purchase Requisitions ===== -->
-    <VBox id="_IDGenTilePRTotal" class="phTile phTileBlue" press=".onPRTilePress">
-        <HBox id="_IDGenTilePRTop" justifyContent="SpaceBetween" alignItems="Start">
-            <VBox id="_IDGenTilePRTextBox">
-                <Text id="_IDGenTilePRTitle" text="Purchase Requisitions" class="phTileTitle"/>
-                <Text id="_IDGenTilePRSub" text="Total" class="phTileSub"/>
-            </VBox>
-            <core:Icon id="_IDGenTilePRIcon" src="sap-icon://request" class="phTileIconBadge phIconBlue"/>
-        </HBox>
-        <HBox id="_IDGenTilePRBottom" alignItems="Center" justifyContent="SpaceBetween" class="phTileBottom">
-            <Text id="_IDGenTilePRValue" text="{view>/counts/prTotal}" class="phTileValue"/>
-            <core:Icon id="_IDGenTilePRSpark" src="sap-icon://line-chart" class="phSparkIcon phSparkBlue"/>
-        </HBox>
-        <HBox id="_IDGenTilePRTrendBox" alignItems="Center" class="phTrendBox">
-            <core:Icon id="_IDGenTilePRTrendIcon" src="sap-icon://trend-up" class="phTrendIcon phTrendUp"/>
-            <Text id="_IDGenTilePRTrendTxt" text="12% vs last 7 days" class="phTrendText phTrendUp"/>
-        </HBox>
-    </VBox>
+                            <!-- ===== TILE: Pending Approval ===== -->
+                            <VBox
+                                id="_IDGenTilePending"
+                                class="phTile phTileOrange"
+                                press=".onPendingTilePress"
+                            >
+                                <HBox
+                                    id="_IDGenTilePendingTop"
+                                    justifyContent="SpaceBetween"
+                                    alignItems="Start"
+                                >
+                                    <VBox id="_IDGenTilePendingTextBox">
+                                        <Text
+                                            id="_IDGenTilePendingTitle"
+                                            text="Pending Approval"
+                                            class="phTileTitle"
+                                        />
+                                        <Text
+                                            id="_IDGenTilePendingSub"
+                                            text="Submitted PRs"
+                                            class="phTileSub"
+                                        />
+                                    </VBox>
+                                    <core:Icon
+                                        id="_IDGenTilePendingIcon"
+                                        src="sap-icon://alarm-clock"
+                                        class="phTileIconBadge phIconOrange"
+                                    />
+                                </HBox>
+                                <HBox
+                                    id="_IDGenTilePendingBottom"
+                                    alignItems="Center"
+                                    justifyContent="SpaceBetween"
+                                    class="phTileBottom"
+                                >
+                                    <Text
+                                        id="_IDGenTilePendingValue"
+                                        text="{view>/counts/prPending}"
+                                        class="phTileValue"
+                                    />
+                                </HBox>
+                                <HBox
+                                    id="_IDGenTilePendingTrendBox"
+                                    alignItems="Center"
+                                    class="phTrendBox"
+                                >
+                                    <Text
+                                        id="_IDGenTilePendingTrendTxt"
+                                        text="No change"
+                                        class="phTrendText phTrendNeutral"
+                                    />
+                                </HBox>
+                            </VBox>
 
-    <!-- ===== TILE: Pending Approval ===== -->
-    <VBox id="_IDGenTilePending" class="phTile phTileOrange" press=".onPendingTilePress">
-        <HBox id="_IDGenTilePendingTop" justifyContent="SpaceBetween" alignItems="Start">
-            <VBox id="_IDGenTilePendingTextBox">
-                <Text id="_IDGenTilePendingTitle" text="Pending Approval" class="phTileTitle"/>
-                <Text id="_IDGenTilePendingSub" text="Submitted PRs" class="phTileSub"/>
-            </VBox>
-            <core:Icon id="_IDGenTilePendingIcon" src="sap-icon://alarm-clock" class="phTileIconBadge phIconOrange"/>
-        </HBox>
-        <HBox id="_IDGenTilePendingBottom" alignItems="Center" justifyContent="SpaceBetween" class="phTileBottom">
-            <Text id="_IDGenTilePendingValue" text="{view>/counts/prPending}" class="phTileValue"/>
-        </HBox>
-        <HBox id="_IDGenTilePendingTrendBox" alignItems="Center" class="phTrendBox">
-            <Text id="_IDGenTilePendingTrendTxt" text="No change" class="phTrendText phTrendNeutral"/>
-        </HBox>
-    </VBox>
+                            <!-- ===== TILE: Open Purchase Orders ===== -->
+                            <VBox
+                                id="_IDGenTilePO"
+                                class="phTile phTileGreen"
+                                press=".onPOTilePress"
+                            >
+                                <HBox
+                                    id="_IDGenTilePOTop"
+                                    justifyContent="SpaceBetween"
+                                    alignItems="Start"
+                                >
+                                    <VBox id="_IDGenTilePOTextBox">
+                                        <Text
+                                            id="_IDGenTilePOTitle"
+                                            text="Open Purchase Orders"
+                                            class="phTileTitle"
+                                        />
+                                        <Text
+                                            id="_IDGenTilePOSub"
+                                            text="Created / Sent / Partial"
+                                            class="phTileSub"
+                                        />
+                                    </VBox>
+                                    <core:Icon
+                                        id="_IDGenTilePOIcon"
+                                        src="sap-icon://cart"
+                                        class="phTileIconBadge phIconGreen"
+                                    />
+                                </HBox>
+                                <HBox
+                                    id="_IDGenTilePOBottom"
+                                    alignItems="Center"
+                                    justifyContent="SpaceBetween"
+                                    class="phTileBottom"
+                                >
+                                    <Text
+                                        id="_IDGenTilePOValue"
+                                        text="{view>/counts/poOpen}"
+                                        class="phTileValue"
+                                    />
+                                    <core:Icon
+                                        id="_IDGenTilePOSpark"
+                                        src="sap-icon://line-chart"
+                                        class="phSparkIcon phSparkGreen"
+                                    />
+                                </HBox>
+                                <HBox
+                                    id="_IDGenTilePOTrendBox"
+                                    alignItems="Center"
+                                    class="phTrendBox"
+                                >
+                                    <core:Icon
+                                        id="_IDGenTilePOTrendIcon"
+                                        src="sap-icon://trend-up"
+                                        class="phTrendIcon phTrendUp"
+                                    />
+                                    <Text
+                                        id="_IDGenTilePOTrendTxt"
+                                        text="8% vs last 7 days"
+                                        class="phTrendText phTrendUp"
+                                    />
+                                </HBox>
+                            </VBox>
 
-    <!-- ===== TILE: Open Purchase Orders ===== -->
-    <VBox id="_IDGenTilePO" class="phTile phTileGreen" press=".onPOTilePress">
-        <HBox id="_IDGenTilePOTop" justifyContent="SpaceBetween" alignItems="Start">
-            <VBox id="_IDGenTilePOTextBox">
-                <Text id="_IDGenTilePOTitle" text="Open Purchase Orders" class="phTileTitle"/>
-                <Text id="_IDGenTilePOSub" text="Created / Sent / Partial" class="phTileSub"/>
-            </VBox>
-            <core:Icon id="_IDGenTilePOIcon" src="sap-icon://cart" class="phTileIconBadge phIconGreen"/>
-        </HBox>
-        <HBox id="_IDGenTilePOBottom" alignItems="Center" justifyContent="SpaceBetween" class="phTileBottom">
-            <Text id="_IDGenTilePOValue" text="{view>/counts/poOpen}" class="phTileValue"/>
-            <core:Icon id="_IDGenTilePOSpark" src="sap-icon://line-chart" class="phSparkIcon phSparkGreen"/>
-        </HBox>
-        <HBox id="_IDGenTilePOTrendBox" alignItems="Center" class="phTrendBox">
-            <core:Icon id="_IDGenTilePOTrendIcon" src="sap-icon://trend-up" class="phTrendIcon phTrendUp"/>
-            <Text id="_IDGenTilePOTrendTxt" text="8% vs last 7 days" class="phTrendText phTrendUp"/>
-        </HBox>
-    </VBox>
+                            <!-- ===== TILE: Unresolved Alerts ===== -->
+                            <VBox
+                                id="_IDGenTileAlerts"
+                                class="phTile phTileRed"
+                                press=".onAlertsTilePress"
+                            >
+                                <HBox
+                                    id="_IDGenTileAlertsTop"
+                                    justifyContent="SpaceBetween"
+                                    alignItems="Start"
+                                >
+                                    <VBox id="_IDGenTileAlertsTextBox">
+                                        <Text
+                                            id="_IDGenTileAlertsTitle"
+                                            text="Unresolved Alerts"
+                                            class="phTileTitle"
+                                        />
+                                        <Text
+                                            id="_IDGenTileAlertsSub"
+                                            text="Needs attention"
+                                            class="phTileSub"
+                                        />
+                                    </VBox>
+                                    <core:Icon
+                                        id="_IDGenTileAlertsIcon"
+                                        src="sap-icon://alert"
+                                        class="phTileIconBadge phIconRed"
+                                    />
+                                </HBox>
+                                <HBox
+                                    id="_IDGenTileAlertsBottom"
+                                    alignItems="Center"
+                                    justifyContent="SpaceBetween"
+                                    class="phTileBottom"
+                                >
+                                    <Text
+                                        id="_IDGenTileAlertsValue"
+                                        text="{view>/counts/alertsOpen}"
+                                        class="phTileValue"
+                                    />
+                                    <core:Icon
+                                        id="_IDGenTileAlertsSpark"
+                                        src="sap-icon://line-chart"
+                                        class="phSparkIcon phSparkRed"
+                                    />
+                                </HBox>
+                                <HBox
+                                    id="_IDGenTileAlertsTrendBox"
+                                    alignItems="Center"
+                                    class="phTrendBox"
+                                >
+                                    <core:Icon
+                                        id="_IDGenTileAlertsTrendIcon"
+                                        src="sap-icon://trend-up"
+                                        class="phTrendIcon phTrendDown"
+                                    />
+                                    <Text
+                                        id="_IDGenTileAlertsTrendTxt"
+                                        text="15% vs last 7 days"
+                                        class="phTrendText phTrendDown"
+                                    />
+                                </HBox>
+                            </VBox>
+                        </HBox>
 
-    <!-- ===== TILE: Unresolved Alerts ===== -->
-    <VBox id="_IDGenTileAlerts" class="phTile phTileRed" press=".onAlertsTilePress">
-        <HBox id="_IDGenTileAlertsTop" justifyContent="SpaceBetween" alignItems="Start">
-            <VBox id="_IDGenTileAlertsTextBox">
-                <Text id="_IDGenTileAlertsTitle" text="Unresolved Alerts" class="phTileTitle"/>
-                <Text id="_IDGenTileAlertsSub" text="Needs attention" class="phTileSub"/>
-            </VBox>
-            <core:Icon id="_IDGenTileAlertsIcon" src="sap-icon://alert" class="phTileIconBadge phIconRed"/>
-        </HBox>
-        <HBox id="_IDGenTileAlertsBottom" alignItems="Center" justifyContent="SpaceBetween" class="phTileBottom">
-            <Text id="_IDGenTileAlertsValue" text="{view>/counts/alertsOpen}" class="phTileValue"/>
-            <core:Icon id="_IDGenTileAlertsSpark" src="sap-icon://line-chart" class="phSparkIcon phSparkRed"/>
-        </HBox>
-        <HBox id="_IDGenTileAlertsTrendBox" alignItems="Center" class="phTrendBox">
-            <core:Icon id="_IDGenTileAlertsTrendIcon" src="sap-icon://trend-up" class="phTrendIcon phTrendDown"/>
-            <Text id="_IDGenTileAlertsTrendTxt" text="15% vs last 7 days" class="phTrendText phTrendDown"/>
-        </HBox>
-    </VBox>
-
-</HBox>
-
-                        <Panel id="_IDGenRecentAlertsPanel" headerText="Recent Alerts">
+                        <Panel
+                            id="_IDGenRecentAlertsPanel"
+                            headerText="Alerts Overview"
+                        >
                             <headerToolbar>
                                 <Toolbar id="_IDGenRecentToolbar">
-                                    <Title id="_IDGenRecentTitle" text="Recent Alerts"/>
-                                    <ToolbarSpacer id="_IDGenRecentSpacer"/>
-                                    <Button id="_IDGenViewAllBtn" text="View all alerts" type="Transparent" press=".onViewAllAlerts"/>
+                                    <Title
+                                        id="_IDGenRecentTitle"
+                                        text="Alerts Overview"
+                                    />
+                                    <ToolbarSpacer id="_IDGenRecentSpacer" />
+                                    <Button
+                                        id="_IDGenViewAllBtn"
+                                        text="View all alerts"
+                                        type="Transparent"
+                                        press=".onViewAllAlerts"
+                                    />
                                 </Toolbar>
                             </headerToolbar>
-                            <Table id="dashboardAlertsTable" items="{ path: '/AlertNotifications', sorter: { path: 'createdAt', descending: true } }" growing="true" growingThreshold="8">
-                                <columns>
-                                    <Column id="_IDGenDColType"><Text id="_IDGenDColTypeTxt" text="Type"/></Column>
-                                    <Column id="_IDGenDColMsg"><Text id="_IDGenDColMsgTxt" text="Message"/></Column>
-                                    <Column id="_IDGenDColSev"><Text id="_IDGenDColSevTxt" text="Severity"/></Column>
-                                    <Column id="_IDGenDColStatus"><Text id="_IDGenDColStatusTxt" text="Status"/></Column>
-                                    <Column id="_IDGenDColAction" hAlign="End"><Text id="_IDGenDColActionTxt" text="Action"/></Column>
-                                </columns>
-                                <items>
-                                    <ColumnListItem id="_IDGenDAlertRow">
-                                        <cells>
-                                            <Text id="_IDGenDAlertType" text="{alertType}"/>
-                                            <Text id="_IDGenDAlertMsg" text="{message}"/>
-                                            <ObjectStatus id="_IDGenDAlertSev" text="{severity}" state="{path:'severity', formatter:'.formatter.severityState'}"/>
-                                            <ObjectStatus id="_IDGenDAlertStatus"
-                                                text="{= ${isResolved} ? 'Resolved' : 'Open' }"
-                                                state="{= ${isResolved} ? 'Success' : 'Warning' }"/>
-                                            <Button id="_IDGenDResolveBtn" text="Resolve" type="Transparent" enabled="{= !${isResolved} }" press=".onResolveAlert"/>
-                                        </cells>
-                                    </ColumnListItem>
-                                </items>
-                            </Table>
+
+                            <!-- ===== FIXED ALIGNMENT: bigger donut, By Status shifted right ===== -->
+                            <HBox
+                                id="_IDGenDashAlertsAnalyticsRow"
+                                wrap="Wrap"
+                                alignItems="Stretch"
+                                justifyContent="SpaceBetween"
+                                class="sapUiSmallMargin phAlertsRow"
+                            >
+                                <!-- Severity mini donut -->
+                                <VBox
+                                    id="_IDGenDashSeverityBox"
+                                    class="phAlertsCol"
+                                    width="34%"
+                                >
+                                    <Text
+                                        id="_IDGenDashSeverityLbl"
+                                        text="By Severity"
+                                        class="phAlertsColLbl"
+                                    />
+                                    <viz:VizFrame
+                                        id="dashSeverityChart"
+                                        vizType="donut"
+                                        height="260px"
+                                        width="100%"
+                                        uiConfig="{applicationSet:'fiori'}"
+                                    >
+                                        <viz:dataset>
+                                            <viz.data:FlattenedDataset
+                                                data="{view>/severityChartData}"
+                                            >
+                                                <viz.data:dimensions>
+                                                    <viz.data:DimensionDefinition
+                                                        name="Severity"
+                                                        value="{severity}"
+                                                    />
+                                                </viz.data:dimensions>
+                                                <viz.data:measures>
+                                                    <viz.data:MeasureDefinition
+                                                        name="Count"
+                                                        value="{count}"
+                                                    />
+                                                </viz.data:measures>
+                                            </viz.data:FlattenedDataset>
+                                        </viz:dataset>
+                                        <viz:feeds>
+                                            <viz.feeds:FeedItem
+                                                id="_IDGenDashSevFeed1"
+                                                uid="color"
+                                                type="Dimension"
+                                                values="Severity"
+                                            />
+                                            <viz.feeds:FeedItem
+                                                id="_IDGenDashSevFeed2"
+                                                uid="size"
+                                                type="Measure"
+                                                values="Count"
+                                            />
+                                        </viz:feeds>
+                                    </viz:VizFrame>
+                                </VBox>
+
+                                <!-- Status breakdown -->
+                                <VBox
+                                    id="_IDGenDashStatusBox"
+                                    class="phAlertsCol phAlertsColStatus"
+                                    width="28%"
+                                >
+                                    <Text
+                                        id="_IDGenDashStatusLbl"
+                                        text="By Status"
+                                        class="phAlertsColLbl"
+                                    />
+                                    <VBox
+                                        id="_IDGenDashStatusInner"
+                                        class="sapUiSmallMarginTop"
+                                    >
+                                        <Text
+                                            id="_IDGenDashResolvedLbl"
+                                            text="Resolved"
+                                            class="sapUiTinyMarginBottom"
+                                        />
+                                        <ProgressIndicator
+                                            id="_IDGenDashResolvedBar"
+                                            percentValue="{view>/statusPct/resolvedPct}"
+                                            displayValue="{view>/counts/alertsResolved} ({view>/statusPct/resolvedPct}%)"
+                                            state="Success"
+                                            class="sapUiSmallMarginBottom"
+                                        />
+                                        <Text
+                                            id="_IDGenDashUnresolvedLbl"
+                                            text="Unresolved"
+                                            class="sapUiTinyMarginBottom"
+                                        />
+                                        <ProgressIndicator
+                                            id="_IDGenDashUnresolvedBar"
+                                            percentValue="{view>/statusPct/unresolvedPct}"
+                                            displayValue="{view>/counts/alertsOpen} ({view>/statusPct/unresolvedPct}%)"
+                                            state="Error"
+                                        />
+                                    </VBox>
+                                </VBox>
+
+                                <!-- Quick counts -->
+                                <VBox
+                                    id="_IDGenDashQuickCounts"
+                                    class="phAlertsCol"
+                                    width="22%"
+                                    justifyContent="Center"
+                                >
+                                    <Text
+                                        id="_IDGenDashQuickLbl"
+                                        text=" "
+                                        class="phAlertsColLbl"
+                                    />
+                                    <HBox
+                                        id="_IDGenDashTotalRow"
+                                        alignItems="Center"
+                                        class="sapUiTinyMarginBottom"
+                                    >
+                                        <Text
+                                            id="_IDGenDashTotalLbl"
+                                            text="Total Alerts: "
+                                            class="sapUiTinyMarginEnd"
+                                        />
+                                        <Text
+                                            id="_IDGenDashTotalVal"
+                                            text="{= ${view>/counts/alertsOpen} + ${view>/counts/alertsResolved} }"
+                                            class="phTileValue"
+                                        />
+                                    </HBox>
+                                    <HBox
+                                        id="_IDGenDashOpenRow"
+                                        alignItems="Center"
+                                    >
+                                        <Text
+                                            id="_IDGenDashOpenLbl"
+                                            text="Needs Attention: "
+                                            class="sapUiTinyMarginEnd"
+                                        />
+                                        <Text
+                                            id="_IDGenDashOpenVal"
+                                            text="{view>/counts/alertsOpen}"
+                                            class="phTileValue wdRedText"
+                                        />
+                                    </HBox>
+                                </VBox>
+                            </HBox>
                         </Panel>
                     </VBox>
 
                     <!-- ================= REQUISITIONS SECTION ================= -->
-                    <VBox id="requisitionsSection" visible="false">
+                    <VBox
+                        id="requisitionsSection"
+                        visible="false"
+                    >
                         <Toolbar id="_IDGenPRToolbar">
-                            <Title id="_IDGenPRTitle" text="Purchase Requisitions"/>
-                            <ToolbarSpacer id="_IDGenPRSpacer"/>
-                            <Button id="_IDGenCreatePRBtn" text="Create PR" type="Emphasized" icon="sap-icon://add" press=".onCreatePR"/>
-                            <Button id="_IDGenRefreshPRBtn" icon="sap-icon://refresh" tooltip="Refresh" press=".onRefreshPRs"/>
+                            <Title
+                                id="_IDGenPRTitle"
+                                text="Purchase Requisitions"
+                            />
+                            <ToolbarSpacer id="_IDGenPRSpacer" />
+                            <Button
+                                id="_IDGenCreatePRBtn"
+                                text="Create PR"
+                                type="Emphasized"
+                                icon="sap-icon://add"
+                                press=".onCreatePR"
+                            />
+                            <Button
+                                id="_IDGenRefreshPRBtn"
+                                icon="sap-icon://refresh"
+                                tooltip="Refresh"
+                                press=".onRefreshPRs"
+                            />
                         </Toolbar>
-                        <Table id="prTable" items="{ path: '/PurchaseRequisitions', sorter: { path: 'createdAt', descending: true } }" growing="true" growingThreshold="15">
+                        <Table
+                            id="prTable"
+                            items="{ path: '/PurchaseRequisitions', sorter: { path: 'createdAt', descending: true } }"
+                            growing="true"
+                            growingThreshold="15"
+                        >
                             <columns>
-                                <Column id="_IDGenPRColNum"><Text id="_IDGenPRColNumTxt" text="PR Number"/></Column>
-                                <Column id="_IDGenPRColLoc"><Text id="_IDGenPRColLocTxt" text="Location"/></Column>
-                                <Column id="_IDGenPRColStatus"><Text id="_IDGenPRColStatusTxt" text="Status"/></Column>
-                                <Column id="_IDGenPRColReq"><Text id="_IDGenPRColReqTxt" text="Requested By"/></Column>
-                                <Column id="_IDGenPRColApp"><Text id="_IDGenPRColAppTxt" text="Approved By"/></Column>
-                                <Column id="_IDGenPRColAct" hAlign="End"><Text id="_IDGenPRColActTxt" text="Actions"/></Column>
+                                <Column id="_IDGenPRColNum">
+                                    <Text
+                                        id="_IDGenPRColNumTxt"
+                                        text="PR Number"
+                                    />
+                                </Column>
+                                <Column id="_IDGenPRColLoc">
+                                    <Text
+                                        id="_IDGenPRColLocTxt"
+                                        text="Location"
+                                    />
+                                </Column>
+                                <Column id="_IDGenPRColStatus">
+                                    <Text
+                                        id="_IDGenPRColStatusTxt"
+                                        text="Status"
+                                    />
+                                </Column>
+                                <Column id="_IDGenPRColReq">
+                                    <Text
+                                        id="_IDGenPRColReqTxt"
+                                        text="Requested By"
+                                    />
+                                </Column>
+                                <Column id="_IDGenPRColApp">
+                                    <Text
+                                        id="_IDGenPRColAppTxt"
+                                        text="Approved By"
+                                    />
+                                </Column>
+                                <Column
+                                    id="_IDGenPRColAct"
+                                    hAlign="End"
+                                >
+                                    <Text
+                                        id="_IDGenPRColActTxt"
+                                        text="Actions"
+                                    />
+                                </Column>
                             </columns>
                             <items>
                                 <ColumnListItem id="_IDGenPRRow">
                                     <cells>
-                                        <Text id="_IDGenPRNum" text="{prNumber}"/>
-                                        <Text id="_IDGenPRLoc" text="{location_ID}"/>
-                                        <ObjectStatus id="_IDGenPRStatus" text="{status}" state="{path:'status', formatter:'.formatter.prStatusState'}"/>
-                                        <Text id="_IDGenPRReq" text="{requestedBy}"/>
-                                        <Text id="_IDGenPRApp" text="{approvedBy}"/>
+                                        <Text
+                                            id="_IDGenPRNum"
+                                            text="{prNumber}"
+                                        />
+                                        <Text
+                                            id="_IDGenPRLoc"
+                                            text="{location_ID}"
+                                        />
+                                        <ObjectStatus
+                                            id="_IDGenPRStatus"
+                                            text="{status}"
+                                            state="{path:'status', formatter:'.formatter.prStatusState'}"
+                                        />
+                                        <Text
+                                            id="_IDGenPRReq"
+                                            text="{requestedBy}"
+                                        />
+                                        <Text
+                                            id="_IDGenPRApp"
+                                            text="{approvedBy}"
+                                        />
                                         <HBox id="_IDGenPRActBox">
-                                            <Button id="_IDGenSubmitPRBtn" text="Submit" type="Transparent" visible="{= ${status} === 'DRAFT' }" press=".onSubmitPR"/>
-                                            <Button id="_IDGenApprovePRBtn" text="Approve" type="Transparent" visible="{= ${status} === 'SUBMITTED' }" press=".onApprovePR"/>
-                                            <Button id="_IDGenRejectPRBtn" text="Reject" type="Transparent" visible="{= ${status} === 'SUBMITTED' }" press=".onRejectPR"/>
-                                            <Button id="_IDGenCreatePOBtn" text="Create PO" type="Transparent" visible="{= ${status} === 'APPROVED' }" press=".onCreatePOFromPR"/>
+                                            <Button
+                                                id="_IDGenSubmitPRBtn"
+                                                text="Submit"
+                                                type="Transparent"
+                                                visible="{= ${status} === 'DRAFT' }"
+                                                press=".onSubmitPR"
+                                            />
+                                            <Button
+                                                id="_IDGenApprovePRBtn"
+                                                text="Approve"
+                                                type="Transparent"
+                                                visible="{= ${status} === 'SUBMITTED' }"
+                                                press=".onApprovePR"
+                                            />
+                                            <Button
+                                                id="_IDGenRejectPRBtn"
+                                                text="Reject"
+                                                type="Transparent"
+                                                visible="{= ${status} === 'SUBMITTED' }"
+                                                press=".onRejectPR"
+                                            />
+                                            <Button
+                                                id="_IDGenCreatePOBtn"
+                                                text="Create PO"
+                                                type="Transparent"
+                                                visible="{= ${status} === 'APPROVED' }"
+                                                press=".onCreatePOFromPR"
+                                            />
                                         </HBox>
                                     </cells>
                                 </ColumnListItem>
@@ -219,28 +698,85 @@
                     </VBox>
 
                     <!-- ================= ORDERS SECTION ================= -->
-                    <VBox id="ordersSection" visible="false">
+                    <VBox
+                        id="ordersSection"
+                        visible="false"
+                    >
                         <Toolbar id="_IDGenPOToolbar">
-                            <Title id="_IDGenPOTitle" text="Purchase Orders"/>
-                            <ToolbarSpacer id="_IDGenPOSpacer"/>
-                            <Button id="_IDGenRefreshPOBtn" icon="sap-icon://refresh" tooltip="Refresh" press=".onRefreshPOs"/>
+                            <Title
+                                id="_IDGenPOTitle"
+                                text="Purchase Orders"
+                            />
+                            <ToolbarSpacer id="_IDGenPOSpacer" />
+                            <Button
+                                id="_IDGenRefreshPOBtn"
+                                icon="sap-icon://refresh"
+                                tooltip="Refresh"
+                                press=".onRefreshPOs"
+                            />
                         </Toolbar>
-                        <Table id="poTable" items="{ path: '/PurchaseOrders', sorter: { path: 'createdAt', descending: true } }" growing="true" growingThreshold="15">
+                        <Table
+                            id="poTable"
+                            items="{ path: '/PurchaseOrders', sorter: { path: 'createdAt', descending: true } }"
+                            growing="true"
+                            growingThreshold="15"
+                        >
                             <columns>
-                                <Column id="_IDGenPOColNum"><Text id="_IDGenPOColNumTxt" text="PO Number"/></Column>
-                                <Column id="_IDGenPOColSup"><Text id="_IDGenPOColSupTxt" text="Supplier"/></Column>
-                                <Column id="_IDGenPOColSrc"><Text id="_IDGenPOColSrcTxt" text="Source PR"/></Column>
-                                <Column id="_IDGenPOColStatus"><Text id="_IDGenPOColStatusTxt" text="Status"/></Column>
-                                <Column id="_IDGenPOColS4"><Text id="_IDGenPOColS4Txt" text="S/4 PO ID"/></Column>
+                                <Column id="_IDGenPOColNum">
+                                    <Text
+                                        id="_IDGenPOColNumTxt"
+                                        text="PO Number"
+                                    />
+                                </Column>
+                                <Column id="_IDGenPOColSup">
+                                    <Text
+                                        id="_IDGenPOColSupTxt"
+                                        text="Supplier"
+                                    />
+                                </Column>
+                                <Column id="_IDGenPOColSrc">
+                                    <Text
+                                        id="_IDGenPOColSrcTxt"
+                                        text="Source PR"
+                                    />
+                                </Column>
+                                <Column id="_IDGenPOColStatus">
+                                    <Text
+                                        id="_IDGenPOColStatusTxt"
+                                        text="Status"
+                                    />
+                                </Column>
+                                <Column id="_IDGenPOColS4">
+                                    <Text
+                                        id="_IDGenPOColS4Txt"
+                                        text="S/4 PO ID"
+                                    />
+                                </Column>
                             </columns>
                             <items>
                                 <ColumnListItem id="_IDGenPORow">
                                     <cells>
-                                        <Text id="_IDGenPONum" text="{poNumber}"/>
-                                        <Text id="_IDGenPOSup" text="{supplier_ID}"/>
-                                        <Text id="_IDGenPOSrc" text="{pr_ID}"/>
-                                        <ObjectStatus id="_IDGenPOStatus" text="{status}" state="{path:'status', formatter:'.formatter.poStatusState'}"/>
-                                        <Text id="_IDGenPOS4" text="{s4POId}"/>
+                                        <Text
+                                            id="_IDGenPONum"
+                                            text="{poNumber}"
+                                        />
+                                        <Text
+                                            id="_IDGenPOSup"
+                                            text="{supplier_ID}"
+                                        />
+                                        <Text
+                                            id="_IDGenPOSrc"
+                                            text="{pr_ID}"
+                                        />
+                                        <ObjectStatus
+                                            id="_IDGenPOStatus"
+                                            text="{status}"
+                                            state="{path:'status', formatter:'.formatter.poStatusState'}"
+                                        />
+                                        <Text
+                                            id="_IDGenPOS4"
+                                            text="{s4POId}"
+                                        />
                                     </cells>
                                 </ColumnListItem>
                             </items>
@@ -248,27 +784,81 @@
                     </VBox>
 
                     <!-- ================= GOODS RECEIPT SECTION ================= -->
-                    <VBox id="grSection" visible="false">
+                    <VBox
+                        id="grSection"
+                        visible="false"
+                    >
                         <Toolbar id="_IDGenGRToolbar">
-                            <Title id="_IDGenGRTitle" text="Goods Receipt"/>
-                            <ToolbarSpacer id="_IDGenGRSpacer"/>
-                            <Button id="_IDGenPostGRBtn" text="Post GR" type="Emphasized" icon="sap-icon://add" press=".onPostGR"/>
-                            <Button id="_IDGenRefreshGRBtn" icon="sap-icon://refresh" tooltip="Refresh" press=".onRefreshGRs"/>
+                            <Title
+                                id="_IDGenGRTitle"
+                                text="Goods Receipt"
+                            />
+                            <ToolbarSpacer id="_IDGenGRSpacer" />
+                            <Button
+                                id="_IDGenPostGRBtn"
+                                text="Post GR"
+                                type="Emphasized"
+                                icon="sap-icon://add"
+                                press=".onPostGR"
+                            />
+                            <Button
+                                id="_IDGenRefreshGRBtn"
+                                icon="sap-icon://refresh"
+                                tooltip="Refresh"
+                                press=".onRefreshGRs"
+                            />
                         </Toolbar>
-                        <Table id="grTable" items="{ path: '/GoodsReceipts', sorter: { path: 'createdAt', descending: true } }" growing="true" growingThreshold="15">
+                        <Table
+                            id="grTable"
+                            items="{ path: '/GoodsReceipts', sorter: { path: 'createdAt', descending: true } }"
+                            growing="true"
+                            growingThreshold="15"
+                        >
                             <columns>
-                                <Column id="_IDGenGRColNum"><Text id="_IDGenGRColNumTxt" text="GR Number"/></Column>
-                                <Column id="_IDGenGRColPO"><Text id="_IDGenGRColPOTxt" text="PO"/></Column>
-                                <Column id="_IDGenGRColLoc"><Text id="_IDGenGRColLocTxt" text="Location"/></Column>
-                                <Column id="_IDGenGRColRec"><Text id="_IDGenGRColRecTxt" text="Received By"/></Column>
+                                <Column id="_IDGenGRColNum">
+                                    <Text
+                                        id="_IDGenGRColNumTxt"
+                                        text="GR Number"
+                                    />
+                                </Column>
+                                <Column id="_IDGenGRColPO">
+                                    <Text
+                                        id="_IDGenGRColPOTxt"
+                                        text="PO"
+                                    />
+                                </Column>
+                                <Column id="_IDGenGRColLoc">
+                                    <Text
+                                        id="_IDGenGRColLocTxt"
+                                        text="Location"
+                                    />
+                                </Column>
+                                <Column id="_IDGenGRColRec">
+                                    <Text
+                                        id="_IDGenGRColRecTxt"
+                                        text="Received By"
+                                    />
+                                </Column>
                             </columns>
                             <items>
                                 <ColumnListItem id="_IDGenGRRow">
                                     <cells>
-                                        <Text id="_IDGenGRNum" text="{grNumber}"/>
-                                        <Text id="_IDGenGRPO" text="{po_ID}"/>
-                                        <Text id="_IDGenGRLoc" text="{location_ID}"/>
-                                        <Text id="_IDGenGRRec" text="{receivedBy}"/>
+                                        <Text
+                                            id="_IDGenGRNum"
+                                            text="{grNumber}"
+                                        />
+                                        <Text
+                                            id="_IDGenGRPO"
+                                            text="{po_ID}"
+                                        />
+                                        <Text
+                                            id="_IDGenGRLoc"
+                                            text="{location_ID}"
+                                        />
+                                        <Text
+                                            id="_IDGenGRRec"
+                                            text="{receivedBy}"
+                                        />
                                     </cells>
                                 </ColumnListItem>
                             </items>
@@ -276,32 +866,105 @@
                     </VBox>
 
                     <!-- ================= SUPPLIERS SECTION ================= -->
-                    <VBox id="suppliersSection" visible="false">
+                    <VBox
+                        id="suppliersSection"
+                        visible="false"
+                    >
                         <Toolbar id="_IDGenSupToolbar">
-                            <Title id="_IDGenSupTitle" text="Suppliers"/>
-                            <ToolbarSpacer id="_IDGenSupSpacer"/>
-                            <Button id="_IDGenRefreshSupBtn" icon="sap-icon://refresh" tooltip="Refresh" press=".onRefreshSuppliers"/>
+                            <Title
+                                id="_IDGenSupTitle"
+                                text="Suppliers"
+                            />
+                            <ToolbarSpacer id="_IDGenSupSpacer" />
+                            <Button
+                                id="_IDGenRefreshSupBtn"
+                                icon="sap-icon://refresh"
+                                tooltip="Refresh"
+                                press=".onRefreshSuppliers"
+                            />
                         </Toolbar>
-                        <Table id="supplierTable" items="{/Suppliers}" growing="true" growingThreshold="20">
+                        <Table
+                            id="supplierTable"
+                            items="{/Suppliers}"
+                            growing="true"
+                            growingThreshold="20"
+                        >
                             <columns>
-                                <Column id="_IDGenSupColCode"><Text id="_IDGenSupColCodeTxt" text="Code"/></Column>
-                                <Column id="_IDGenSupColName"><Text id="_IDGenSupColNameTxt" text="Name"/></Column>
-                                <Column id="_IDGenSupColEmail"><Text id="_IDGenSupColEmailTxt" text="Email"/></Column>
-                                <Column id="_IDGenSupColPhone"><Text id="_IDGenSupColPhoneTxt" text="Phone"/></Column>
-                                <Column id="_IDGenSupColRating"><Text id="_IDGenSupColRatingTxt" text="Rating"/></Column>
-                                <Column id="_IDGenSupColLead"><Text id="_IDGenSupColLeadTxt" text="Lead Time"/></Column>
-                                <Column id="_IDGenSupColEligible"><Text id="_IDGenSupColEligibleTxt" text="Eligible"/></Column>
+                                <Column id="_IDGenSupColCode">
+                                    <Text
+                                        id="_IDGenSupColCodeTxt"
+                                        text="Code"
+                                    />
+                                </Column>
+                                <Column id="_IDGenSupColName">
+                                    <Text
+                                        id="_IDGenSupColNameTxt"
+                                        text="Name"
+                                    />
+                                </Column>
+                                <Column id="_IDGenSupColEmail">
+                                    <Text
+                                        id="_IDGenSupColEmailTxt"
+                                        text="Email"
+                                    />
+                                </Column>
+                                <Column id="_IDGenSupColPhone">
+                                    <Text
+                                        id="_IDGenSupColPhoneTxt"
+                                        text="Phone"
+                                    />
+                                </Column>
+                                <Column id="_IDGenSupColRating">
+                                    <Text
+                                        id="_IDGenSupColRatingTxt"
+                                        text="Rating"
+                                    />
+                                </Column>
+                                <Column id="_IDGenSupColLead">
+                                    <Text
+                                        id="_IDGenSupColLeadTxt"
+                                        text="Lead Time"
+                                    />
+                                </Column>
+                                <Column id="_IDGenSupColEligible">
+                                    <Text
+                                        id="_IDGenSupColEligibleTxt"
+                                        text="Eligible"
+                                    />
+                                </Column>
                             </columns>
                             <items>
                                 <ColumnListItem id="_IDGenSupRow">
                                     <cells>
-                                        <Text id="_IDGenSupCode" text="{supplierCode}"/>
-                                        <Text id="_IDGenSupName" text="{name}"/>
-                                        <Text id="_IDGenSupEmail" text="{email}"/>
-                                        <Text id="_IDGenSupPhone" text="{phone}"/>
-                                        <ObjectNumber id="_IDGenSupRating" number="{rating}"/>
-                                        <Text id="_IDGenSupLead" text="{leadTimeDays}"/>
-                                        <core:Icon id="_IDGenSupEligible" src="{= ${isEligible} ? 'sap-icon://accept' : 'sap-icon://decline' }" color="{= ${isEligible} ? '#2b7d2b' : '#b00' }"/>
+                                        <Text
+                                            id="_IDGenSupCode"
+                                            text="{supplierCode}"
+                                        />
+                                        <Text
+                                            id="_IDGenSupName"
+                                            text="{name}"
+                                        />
+                                        <Text
+                                            id="_IDGenSupEmail"
+                                            text="{email}"
+                                        />
+                                        <Text
+                                            id="_IDGenSupPhone"
+                                            text="{phone}"
+                                        />
+                                        <ObjectNumber
+                                            id="_IDGenSupRating"
+                                            number="{rating}"
+                                        />
+                                        <Text
+                                            id="_IDGenSupLead"
+                                            text="{leadTimeDays}"
+                                        />
+                                        <core:Icon
+                                            id="_IDGenSupEligible"
+                                            src="{= ${isEligible} ? 'sap-icon://accept' : 'sap-icon://decline' }"
+                                            color="{= ${isEligible} ? '#2b7d2b' : '#b00' }"
+                                        />
                                     </cells>
                                 </ColumnListItem>
                             </items>
@@ -309,71 +972,235 @@
                     </VBox>
 
                     <!-- ================= ALERTS SECTION ================= -->
-                    <VBox id="alertsSection" visible="false">
-                        <VBox id="_IDGenAlertsHeaderBox" class="sapUiSmallMarginBottom">
-                            <Title id="_IDGenAlertsTitle" text="Alerts Dashboard" level="H2"/>
-                            <Text id="_IDGenAlertsSubtitle" text="Monitor and resolve critical procurement alerts" class="sapUiTinyText"/>
+                    <VBox
+                        id="alertsSection"
+                        visible="false"
+                    >
+                        <HBox
+                            id="_IDGenAlertsBackRow"
+                            alignItems="Center"
+                            class="sapUiTinyMarginBottom"
+                        >
+                            <Button
+                                id="_IDGenBackToDashboardBtn"
+                                icon="sap-icon://nav-back"
+                                text="Back to Dashboard"
+                                type="Transparent"
+                                press=".onBackToDashboard"
+                            />
+                        </HBox>
+
+                        <VBox
+                            id="_IDGenAlertsHeaderBox"
+                            class="sapUiSmallMarginBottom"
+                        >
+                            <Title
+                                id="_IDGenAlertsTitle"
+                                text="Alerts Dashboard"
+                                level="H2"
+                            />
+                            <Text
+                                id="_IDGenAlertsSubtitle"
+                                text="Monitor and resolve critical procurement alerts"
+                                class="sapUiTinyText"
+                            />
                         </VBox>
 
-                        <HBox id="_IDGenAlertsChartRow" wrap="Wrap">
-                            <VBox id="_IDGenAlertsLeftCol" width="32%" class="sapUiSmallMarginEnd">
-                                <Panel id="_IDGenSeverityPanel" headerText="Alerts by Severity" class="sapUiSmallMarginBottom">
-                                    <viz:VizFrame id="severityChart" vizType="donut" height="240px" width="100%" uiConfig="{applicationSet:'fiori'}">
+                        <HBox
+                            id="_IDGenAlertsChartRow"
+                            wrap="Wrap"
+                        >
+                            <VBox
+                                id="_IDGenAlertsLeftCol"
+                                width="32%"
+                                class="sapUiSmallMarginEnd"
+                            >
+                                <Panel
+                                    id="_IDGenSeverityPanel"
+                                    headerText="Alerts by Severity"
+                                    class="sapUiSmallMarginBottom"
+                                >
+                                    <viz:VizFrame
+                                        id="severityChart"
+                                        vizType="donut"
+                                        height="240px"
+                                        width="100%"
+                                        uiConfig="{applicationSet:'fiori'}"
+                                    >
                                         <viz:dataset>
-                                            <viz.data:FlattenedDataset data="{view>/severityChartData}">
+                                            <viz.data:FlattenedDataset
+                                                data="{view>/severityChartData}"
+                                            >
                                                 <viz.data:dimensions>
-                                                    <viz.data:DimensionDefinition name="Severity" value="{severity}"/>
+                                                    <viz.data:DimensionDefinition
+                                                        name="Severity"
+                                                        value="{severity}"
+                                                    />
                                                 </viz.data:dimensions>
                                                 <viz.data:measures>
-                                                    <viz.data:MeasureDefinition name="Count" value="{count}"/>
+                                                    <viz.data:MeasureDefinition
+                                                        name="Count"
+                                                        value="{count}"
+                                                    />
                                                 </viz.data:measures>
                                             </viz.data:FlattenedDataset>
                                         </viz:dataset>
                                         <viz:feeds>
-                                            <viz.feeds:FeedItem id="_IDGenFeed1" uid="color" type="Dimension" values="Severity"/>
-                                            <viz.feeds:FeedItem id="_IDGenFeed2" uid="size" type="Measure" values="Count"/>
+                                            <viz.feeds:FeedItem
+                                                id="_IDGenFeed1"
+                                                uid="color"
+                                                type="Dimension"
+                                                values="Severity"
+                                            />
+                                            <viz.feeds:FeedItem
+                                                id="_IDGenFeed2"
+                                                uid="size"
+                                                type="Measure"
+                                                values="Count"
+                                            />
                                         </viz:feeds>
                                     </viz:VizFrame>
                                 </Panel>
-                                <Panel id="_IDGenStatusPanel" headerText="Alerts by Status">
-                                    <VBox id="_IDGenStatusBox" class="sapUiTinyMargin">
-                                        <Text id="_IDGenResolvedLbl" text="Resolved" class="sapUiTinyMarginBottom"/>
-                                        <ProgressIndicator id="_IDGenResolvedBar" percentValue="{view>/statusPct/resolvedPct}" displayValue="{view>/counts/alertsResolved} ({view>/statusPct/resolvedPct}%)" state="Success" class="sapUiTinyMarginBottom"/>
-                                        <Text id="_IDGenUnresolvedLbl" text="Unresolved" class="sapUiTinyMarginBottom"/>
-                                        <ProgressIndicator id="_IDGenUnresolvedBar" percentValue="{view>/statusPct/unresolvedPct}" displayValue="{view>/counts/alertsOpen} ({view>/statusPct/unresolvedPct}%)" state="Error"/>
+                                <Panel
+                                    id="_IDGenStatusPanel"
+                                    headerText="Alerts by Status"
+                                >
+                                    <VBox
+                                        id="_IDGenStatusBox"
+                                        class="sapUiTinyMargin"
+                                    >
+                                        <Text
+                                            id="_IDGenResolvedLbl"
+                                            text="Resolved"
+                                            class="sapUiTinyMarginBottom"
+                                        />
+                                        <ProgressIndicator
+                                            id="_IDGenResolvedBar"
+                                            percentValue="{view>/statusPct/resolvedPct}"
+                                            displayValue="{view>/counts/alertsResolved} ({view>/statusPct/resolvedPct}%)"
+                                            state="Success"
+                                            class="sapUiTinyMarginBottom"
+                                        />
+                                        <Text
+                                            id="_IDGenUnresolvedLbl"
+                                            text="Unresolved"
+                                            class="sapUiTinyMarginBottom"
+                                        />
+                                        <ProgressIndicator
+                                            id="_IDGenUnresolvedBar"
+                                            percentValue="{view>/statusPct/unresolvedPct}"
+                                            displayValue="{view>/counts/alertsOpen} ({view>/statusPct/unresolvedPct}%)"
+                                            state="Error"
+                                        />
                                     </VBox>
                                 </Panel>
                             </VBox>
 
-                            <VBox id="_IDGenAlertsRightCol" width="66%">
-                                <Panel id="_IDGenAllAlertsPanel" headerText="All Alerts">
+                            <VBox
+                                id="_IDGenAlertsRightCol"
+                                width="66%"
+                            >
+                                <Panel
+                                    id="_IDGenAllAlertsPanel"
+                                    headerText="All Alerts"
+                                >
                                     <headerToolbar>
                                         <Toolbar id="_IDGenAllAlertsToolbar">
-                                            <Title id="_IDGenAllAlertsTitle" text="All Alerts"/>
-                                            <ToolbarSpacer id="_IDGenAllAlertsSpacer"/>
-                                            <Button id="_IDGenRefreshAlertsBtn" icon="sap-icon://refresh" tooltip="Refresh" press=".onRefreshAlerts"/>
+                                            <Title
+                                                id="_IDGenAllAlertsTitle"
+                                                text="All Alerts"
+                                            />
+                                            <ToolbarSpacer
+                                                id="_IDGenAllAlertsSpacer"
+                                            />
+                                            <Button
+                                                id="_IDGenRefreshAlertsBtn"
+                                                icon="sap-icon://refresh"
+                                                tooltip="Refresh"
+                                                press=".onRefreshAlerts"
+                                            />
                                         </Toolbar>
                                     </headerToolbar>
-                                    <Table id="alertsTable" items="{ path: '/AlertNotifications', sorter: { path: 'createdAt', descending: true } }" growing="true" growingThreshold="20">
+                                    <Table
+                                        id="alertsTable"
+                                        items="{ path: '/AlertNotifications', sorter: { path: 'createdAt', descending: true } }"
+                                        growing="true"
+                                        growingThreshold="20"
+                                    >
                                         <columns>
-                                            <Column id="_IDGenColType"><Text id="_IDGenColTypeTxt" text="Type"/></Column>
-                                            <Column id="_IDGenColMsg"><Text id="_IDGenColMsgTxt" text="Message"/></Column>
-                                            <Column id="_IDGenColSev"><Text id="_IDGenColSevTxt" text="Severity"/></Column>
-                                            <Column id="_IDGenColStatus"><Text id="_IDGenColStatusTxt" text="Status"/></Column>
-                                            <Column id="_IDGenColRaised"><Text id="_IDGenColRaisedTxt" text="Raised On"/></Column>
-                                            <Column id="_IDGenColAction" hAlign="End"><Text id="_IDGenColActionTxt" text="Action"/></Column>
+                                            <Column id="_IDGenColType">
+                                                <Text
+                                                    id="_IDGenColTypeTxt"
+                                                    text="Type"
+                                                />
+                                            </Column>
+                                            <Column id="_IDGenColMsg">
+                                                <Text
+                                                    id="_IDGenColMsgTxt"
+                                                    text="Message"
+                                                />
+                                            </Column>
+                                            <Column id="_IDGenColSev">
+                                                <Text
+                                                    id="_IDGenColSevTxt"
+                                                    text="Severity"
+                                                />
+                                            </Column>
+                                            <Column id="_IDGenColStatus">
+                                                <Text
+                                                    id="_IDGenColStatusTxt"
+                                                    text="Status"
+                                                />
+                                            </Column>
+                                            <Column id="_IDGenColRaised">
+                                                <Text
+                                                    id="_IDGenColRaisedTxt"
+                                                    text="Raised On"
+                                                />
+                                            </Column>
+                                            <Column
+                                                id="_IDGenColAction"
+                                                hAlign="End"
+                                            >
+                                                <Text
+                                                    id="_IDGenColActionTxt"
+                                                    text="Action"
+                                                />
+                                            </Column>
                                         </columns>
                                         <items>
                                             <ColumnListItem id="_IDGenAlertRow">
                                                 <cells>
-                                                    <Text id="_IDGenAlertType" text="{alertType}"/>
-                                                    <Text id="_IDGenAlertMsg" text="{message}" maxLines="2"/>
-                                                    <ObjectStatus id="_IDGenAlertSev" text="{severity}" state="{path:'severity', formatter:'.formatter.severityState'}"/>
-                                                    <ObjectStatus id="_IDGenAlertStatus"
+                                                    <Text
+                                                        id="_IDGenAlertType"
+                                                        text="{alertType}"
+                                                    />
+                                                    <Text
+                                                        id="_IDGenAlertMsg"
+                                                        text="{message}"
+                                                        maxLines="2"
+                                                    />
+                                                    <ObjectStatus
+                                                        id="_IDGenAlertSev"
+                                                        text="{severity}"
+                                                        state="{path:'severity', formatter:'.formatter.severityState'}"
+                                                    />
+                                                    <ObjectStatus
+                                                        id="_IDGenAlertStatus"
                                                         text="{= ${isResolved} ? 'Resolved' : 'Open' }"
-                                                        state="{= ${isResolved} ? 'Success' : 'Warning' }"/>
-                                                    <Text id="_IDGenAlertRaised" text="{ path: 'createdAt', type: 'sap.ui.model.type.DateTime', formatOptions: { style: 'medium' } }"/>
-                                                    <Button id="_IDGenResolveBtn" text="Resolve" type="Emphasized" enabled="{= !${isResolved} }" press=".onResolveAlert"/>
+                                                        state="{= ${isResolved} ? 'Success' : 'Warning' }"
+                                                    />
+                                                    <Text
+                                                        id="_IDGenAlertRaised"
+                                                        text="{ path: 'createdAt', type: 'sap.ui.model.type.DateTime', formatOptions: { style: 'medium' } }"
+                                                    />
+                                                    <Button
+                                                        id="_IDGenResolveBtn"
+                                                        text="Resolve"
+                                                        type="Emphasized"
+                                                        enabled="{= !${isResolved} }"
+                                                        press=".onResolveAlert"
+                                                    />
                                                 </cells>
                                             </ColumnListItem>
                                         </items>
@@ -384,21 +1211,50 @@
                     </VBox>
 
                     <!-- ================= ANALYTICS SECTION ================= -->
-                    <VBox id="analyticsSection" visible="false">
-                        <Title id="_IDGenAnalyticsTitle" text="Analytics" level="H2" class="sapUiSmallMarginBottom"/>
-                        <Panel id="_IDGenAnalyticsPanel" headerText="Coming soon">
-                            <Text id="_IDGenAnalyticsText" text="Spend analysis and supplier performance reports will appear here." class="sapUiSmallMargin"/>
+                    <VBox
+                        id="analyticsSection"
+                        visible="false"
+                    >
+                        <Title
+                            id="_IDGenAnalyticsTitle"
+                            text="Analytics"
+                            level="H2"
+                            class="sapUiSmallMarginBottom"
+                        />
+                        <Panel
+                            id="_IDGenAnalyticsPanel"
+                            headerText="Coming soon"
+                        >
+                            <Text
+                                id="_IDGenAnalyticsText"
+                                text="Spend analysis and supplier performance reports will appear here."
+                                class="sapUiSmallMargin"
+                            />
                         </Panel>
                     </VBox>
 
                     <!-- ================= SETTINGS SECTION ================= -->
-                    <VBox id="settingsSection" visible="false">
-                        <Title id="_IDGenSettingsTitle" text="Settings" level="H2" class="sapUiSmallMarginBottom"/>
-                        <Panel id="_IDGenSettingsPanel" headerText="Application Settings">
-                            <Text id="_IDGenSettingsText" text="Settings screen placeholder." class="sapUiSmallMargin"/>
+                    <VBox
+                        id="settingsSection"
+                        visible="false"
+                    >
+                        <Title
+                            id="_IDGenSettingsTitle"
+                            text="Settings"
+                            level="H2"
+                            class="sapUiSmallMarginBottom"
+                        />
+                        <Panel
+                            id="_IDGenSettingsPanel"
+                            headerText="Application Settings"
+                        >
+                            <Text
+                                id="_IDGenSettingsText"
+                                text="Settings screen placeholder."
+                                class="sapUiSmallMargin"
+                            />
                         </Panel>
                     </VBox>
-
                 </content>
             </Page>
         </tnt:mainContents>
