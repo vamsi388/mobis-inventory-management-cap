@@ -28,6 +28,7 @@ sap.ui.define([], () => {
                 case "CANCELLED": return "Error";
                 default: return "None";
             }
-        }
+        },
+        
     };
 });

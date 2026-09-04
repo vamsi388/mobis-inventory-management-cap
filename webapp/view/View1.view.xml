@@ -6,6 +6,7 @@
     xmlns:viz="sap.viz.ui5.controls"
     xmlns:viz.data="sap.viz.ui5.data"
     xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+    xmlns:suite="sap.suite.ui.commons"
     xmlns="sap.m"
 >
     <tnt:ToolPage id="toolPage">
@@ -390,6 +391,70 @@
                                         id="_IDGenTileAlertsTrendTxt"
                                         text="15% vs last 7 days"
                                         class="phTrendText phTrendDown"
+                                    />
+                                </HBox>
+                            </VBox>
+
+                            <!-- ===== TILE: Process Flow ===== -->
+                            <VBox
+                                id="_IDGenTileProcessFlow"
+                                class="phTile phTilePurple"
+                                press=".onProcessFlowTilePress"
+                            >
+                                <HBox
+                                    id="_IDGenTilePFTop"
+                                    justifyContent="SpaceBetween"
+                                    alignItems="Start"
+                                >
+                                    <VBox id="_IDGenTilePFTextBox">
+                                        <Text
+                                            id="_IDGenTilePFTitle"
+                                            text="Process Flow"
+                                            class="phTileTitle"
+                                        />
+                                        <Text
+                                            id="_IDGenTilePFSub"
+                                            text="PR to GR tracking"
+                                            class="phTileSub"
+                                        />
+                                    </VBox>
+                                    <core:Icon
+                                        id="_IDGenTilePFIcon"
+                                        src="sap-icon://process"
+                                        class="phTileIconBadge phIconPurple"
+                                    />
+                                </HBox>
+                                <HBox
+                                    id="_IDGenTilePFBottom"
+                                    alignItems="Center"
+                                    justifyContent="SpaceBetween"
+                                    class="phTileBottom"
+                                >
+                                    <Text
+                                        id="_IDGenTilePFValue"
+                                        text="{view>/counts/prTotal}"
+                                        class="phTileValue"
+                                    />
+                                    <core:Icon
+                                        id="_IDGenTilePFSpark"
+                                        src="sap-icon://workflow-tasks"
+                                        class="phSparkIcon phSparkPurple"
+                                    />
+                                </HBox>
+                                <HBox
+                                    id="_IDGenTilePFTrendBox"
+                                    alignItems="Center"
+                                    class="phTrendBox"
+                                >
+                                    <core:Icon
+                                        id="_IDGenTilePFTrendIcon"
+                                        src="sap-icon://arrow-right"
+                                        class="phTrendIcon phTrendNeutral"
+                                    />
+                                    <Text
+                                        id="_IDGenTilePFTrendTxt"
+                                        text="View end-to-end flow"
+                                        class="phTrendText phTrendNeutral"
                                     />
                                 </HBox>
                             </VBox>
@@ -1221,6 +1286,99 @@
                             </VBox>
                         </HBox>
                     </VBox>
+
+                    <!-- ================= PROCESS FLOW SECTION ================= -->
+                    <VBox
+                        id="processflowSection"
+                        visible="false"
+
+                        
+                    >
+                    
+                    
+                        <HBox
+                            id="_IDGenPFBackRow"
+                            alignItems="Center"
+                            class="sapUiTinyMarginBottom"
+                        >
+                            <Button
+                                id="_IDGenBackToDashboardFromPFBtn"
+                                icon="sap-icon://nav-back"
+                                text="Back to Dashboard"
+                                type="Transparent"
+                                press=".onBackToDashboard"
+                            />
+                        </HBox>
+
+                        <Title
+                            id="_IDGenPFTitle2"
+                            text="Procurement Process Flow"
+                            level="H2"
+                            class="sapUiSmallMarginBottom"
+                        />
+                        <Text
+                            id="_IDGenPFSubtitle2"
+                            text="Requisition to goods receipt, per PR"
+                            class="sapUiTinyText sapUiSmallMarginBottom"
+                        />
+
+                        <Toolbar id="_IDGenPFToolbar">
+                            <Label
+                                id="_IDGenPFPrLabel"
+                                text="Select PR:"
+                                class="sapUiTinyMarginEnd"
+                            />
+                            <Select
+                                id="pfPrSelect"
+                                width="16rem"
+                                items="{/PurchaseRequisitions}"
+                                change=".onProcessFlowPrChange"
+                            >
+                                <core:Item
+                                    key="{ID}"
+                                    text="{prNumber}"
+                                />
+                            </Select>
+                            <ToolbarSpacer id="_IDGenPFSpacer" />
+                            <Button
+                                id="_IDGenPFRefresh"
+                                icon="sap-icon://refresh"
+                                tooltip="Refresh"
+                                press=".onRefreshProcessFlow"
+                            />
+                        </Toolbar>
+
+                        <suite:ProcessFlow
+                            id="procurementProcessFlow"
+                            nodes="{path: 'pf>/nodes'}"
+                            lanes="{path: 'pf>/lanes'}"
+                            nodePress=".onProcessFlowNodePress"
+                            zoomLevel="Three"
+                        >
+                            <suite:nodes>
+                                <suite:ProcessFlowNode
+                                    laneId="{pf>lane}"
+                                    nodeId="{pf>nodeId}"
+                                    title="{pf>title}"
+                                    texts="{pf>texts}"
+                                    state="{pf>state}"
+                                    stateText="{pf>stateText}"
+                                    children="{pf>children}"
+                                    focused="{pf>focused}"
+                                    highlighted="{pf>highlighted}"
+                                />
+                            </suite:nodes>
+                            <suite:lanes>
+                                <suite:ProcessFlowLaneHeader
+                                    laneId="{pf>laneId}"
+                                    iconSrc="{pf>icon}"
+                                    text="{pf>text}"
+                                    position="{pf>position}"
+                                />
+                            </suite:lanes>
+                        </suite:ProcessFlow>
+                    </VBox>
+                    
 
                     <!-- ================= ANALYTICS SECTION ================= -->
                     <VBox
