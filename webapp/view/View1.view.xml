@@ -1291,11 +1291,7 @@
                     <VBox
                         id="processflowSection"
                         visible="false"
-
-                        
                     >
-                    
-                    
                         <HBox
                             id="_IDGenPFBackRow"
                             alignItems="Center"
@@ -1378,29 +1374,318 @@
                             </suite:lanes>
                         </suite:ProcessFlow>
                     </VBox>
-                    
 
                     <!-- ================= ANALYTICS SECTION ================= -->
                     <VBox
                         id="analyticsSection"
                         visible="false"
                     >
-                        <Title
-                            id="_IDGenAnalyticsTitle"
-                            text="Analytics"
-                            level="H2"
-                            class="sapUiSmallMarginBottom"
-                        />
-                        <Panel
-                            id="_IDGenAnalyticsPanel"
-                            headerText="Coming soon"
-                        >
-                            <Text
-                                id="_IDGenAnalyticsText"
-                                text="Spend analysis and supplier performance reports will appear here."
-                                class="sapUiSmallMargin"
+                        <Toolbar id="_IDGenAnalyticsToolbar">
+                            <Title
+                                id="_IDGenAnalyticsTitle"
+                                text="Analytics"
+                                level="H2"
                             />
-                        </Panel>
+                            <ToolbarSpacer id="_IDGenAnalyticsSpacer" />
+                            <Button
+                                id="_IDGenRefreshAnalyticsBtn"
+                                icon="sap-icon://refresh"
+                                tooltip="Refresh"
+                                press=".onRefreshAnalytics"
+                            />
+                        </Toolbar>
+                        <Text
+                            id="_IDGenAnalyticsSubtitle"
+                            text="Procurement KPIs across requisitions, orders, suppliers, and alerts"
+                            class="sapUiTinyText sapUiSmallMarginBottom"
+                        />
+
+                        <!-- KPI summary row -->
+                        <HBox
+                            id="_IDGenAnalyticsKpiRow"
+                            wrap="Wrap"
+                            class="sapUiSmallMarginBottom"
+                        >
+                            <VBox class="phTile phTileBlue sapUiTinyMarginEnd">
+                                <Text
+                                    text="Total Spend (INR)"
+                                    class="phTileTitle"
+                                />
+                                <Text
+                                    text="{analytics>/kpi/totalSpend}"
+                                    class="phTileValue"
+                                />
+                            </VBox>
+                            <VBox class="phTile phTileGreen sapUiTinyMarginEnd">
+                                <Text
+                                    text="Avg Supplier Rating"
+                                    class="phTileTitle"
+                                />
+                                <Text
+                                    text="{analytics>/kpi/avgRating}"
+                                    class="phTileValue"
+                                />
+                            </VBox>
+                            <VBox
+                                class="phTile phTileOrange sapUiTinyMarginEnd"
+                            >
+                                <Text
+                                    text="Avg Lead Time (days)"
+                                    class="phTileTitle"
+                                />
+                                <Text
+                                    text="{analytics>/kpi/avgLeadTime}"
+                                    class="phTileValue"
+                                />
+                            </VBox>
+                            <VBox class="phTile phTilePurple">
+                                <Text
+                                    text="PR to PO Conversion"
+                                    class="phTileTitle"
+                                />
+                                <Text
+                                    text="{analytics>/kpi/conversionPct}"
+                                    class="phTileValue"
+                                />
+                            </VBox>
+                        </HBox>
+
+                        <!-- Chart grid -->
+                        <HBox
+                            id="_IDGenAnalyticsChartRow1"
+                            wrap="Wrap"
+                            class="sapUiSmallMarginBottom"
+                        >
+                            <Panel
+                                headerText="Requisitions by Status"
+                                width="32%"
+                                class="phChartPanel sapUiTinyMarginEnd sapUiSmallMarginBottom"
+                            >
+                                <viz:VizFrame
+                                    id="prStatusChart"
+                                    vizType="pie"
+                                    height="260px"
+                                    width="100%"
+                                    uiConfig="{applicationSet:'fiori'}"
+                                >
+                                    <viz:dataset>
+                                        <viz.data:FlattenedDataset
+                                            data="{analytics>/prStatusData}"
+                                        >
+                                            <viz.data:dimensions>
+                                                <viz.data:DimensionDefinition
+                                                    name="Status"
+                                                    value="{status}"
+                                                />
+                                            </viz.data:dimensions>
+                                            <viz.data:measures>
+                                                <viz.data:MeasureDefinition
+                                                    name="Count"
+                                                    value="{count}"
+                                                />
+                                            </viz.data:measures>
+                                        </viz.data:FlattenedDataset>
+                                    </viz:dataset>
+                                    <viz:feeds>
+                                        <viz.feeds:FeedItem
+                                            uid="color"
+                                            type="Dimension"
+                                            values="Status"
+                                        />
+                                        <viz.feeds:FeedItem
+                                            uid="size"
+                                            type="Measure"
+                                            values="Count"
+                                        />
+                                    </viz:feeds>
+                                </viz:VizFrame>
+                            </Panel>
+
+                            <Panel
+                                headerText="Purchase Orders by Status"
+                                width="32%"
+                                class="phChartPanel sapUiTinyMarginEnd sapUiSmallMarginBottom"
+                            >
+                                <viz:VizFrame
+                                    id="poStatusChart"
+                                    vizType="column"
+                                    height="260px"
+                                    width="100%"
+                                    uiConfig="{applicationSet:'fiori'}"
+                                >
+                                    <viz:dataset>
+                                        <viz.data:FlattenedDataset
+                                            data="{analytics>/poStatusData}"
+                                        >
+                                            <viz.data:dimensions>
+                                                <viz.data:DimensionDefinition
+                                                    name="Status"
+                                                    value="{status}"
+                                                />
+                                            </viz.data:dimensions>
+                                            <viz.data:measures>
+                                                <viz.data:MeasureDefinition
+                                                    name="Count"
+                                                    value="{count}"
+                                                />
+                                            </viz.data:measures>
+                                        </viz.data:FlattenedDataset>
+                                    </viz:dataset>
+                                    <viz:feeds>
+                                        <viz.feeds:FeedItem
+                                            uid="categoryAxis"
+                                            type="Dimension"
+                                            values="Status"
+                                        />
+                                        <viz.feeds:FeedItem
+                                            uid="valueAxis"
+                                            type="Measure"
+                                            values="Count"
+                                        />
+                                    </viz:feeds>
+                                </viz:VizFrame>
+                            </Panel>
+
+                            <Panel
+                                headerText="Alerts by Severity"
+                                width="32%"
+                                class="phChartPanel sapUiSmallMarginBottom"
+                            >
+                                <viz:VizFrame
+                                    id="analyticsAlertSeverityChart"
+                                    vizType="donut"
+                                    height="260px"
+                                    width="100%"
+                                    uiConfig="{applicationSet:'fiori'}"
+                                >
+                                    <viz:dataset>
+                                        <viz.data:FlattenedDataset
+                                            data="{analytics>/severityData}"
+                                        >
+                                            <viz.data:dimensions>
+                                                <viz.data:DimensionDefinition
+                                                    name="Severity"
+                                                    value="{severity}"
+                                                />
+                                            </viz.data:dimensions>
+                                            <viz.data:measures>
+                                                <viz.data:MeasureDefinition
+                                                    name="Count"
+                                                    value="{count}"
+                                                />
+                                            </viz.data:measures>
+                                        </viz.data:FlattenedDataset>
+                                    </viz:dataset>
+                                    <viz:feeds>
+                                        <viz.feeds:FeedItem
+                                            uid="color"
+                                            type="Dimension"
+                                            values="Severity"
+                                        />
+                                        <viz.feeds:FeedItem
+                                            uid="size"
+                                            type="Measure"
+                                            values="Count"
+                                        />
+                                    </viz:feeds>
+                                </viz:VizFrame>
+                            </Panel>
+                        </HBox>
+
+                        <HBox
+                            id="_IDGenAnalyticsChartRow2"
+                            wrap="Wrap"
+                        >
+                            <Panel
+                                headerText="Spend by Supplier (Top 10)"
+                                width="49%"
+                                class="phChartPanelWide sapUiTinyMarginEnd sapUiSmallMarginBottom"
+                            >
+                                <viz:VizFrame
+                                    id="spendBySupplierChart"
+                                    vizType="bar"
+                                    height="300px"
+                                    width="100%"
+                                    uiConfig="{applicationSet:'fiori'}"
+                                >
+                                    <viz:dataset>
+                                        <viz.data:FlattenedDataset
+                                            data="{analytics>/spendData}"
+                                        >
+                                            <viz.data:dimensions>
+                                                <viz.data:DimensionDefinition
+                                                    name="Supplier"
+                                                    value="{supplierName}"
+                                                />
+                                            </viz.data:dimensions>
+                                            <viz.data:measures>
+                                                <viz.data:MeasureDefinition
+                                                    name="Spend"
+                                                    value="{totalSpend}"
+                                                />
+                                            </viz.data:measures>
+                                        </viz.data:FlattenedDataset>
+                                    </viz:dataset>
+                                    <viz:feeds>
+                                        <viz.feeds:FeedItem
+                                            uid="categoryAxis"
+                                            type="Dimension"
+                                            values="Supplier"
+                                        />
+                                        <viz.feeds:FeedItem
+                                            uid="valueAxis"
+                                            type="Measure"
+                                            values="Spend"
+                                        />
+                                    </viz:feeds>
+                                </viz:VizFrame>
+                            </Panel>
+
+                            <Panel
+                                headerText="Supplier Ratings"
+                                width="49%"
+                                class="phChartPanelWide sapUiSmallMarginBottom"
+                            >
+                                <viz:VizFrame
+                                    id="supplierRatingChart"
+                                    vizType="bar"
+                                    height="300px"
+                                    width="100%"
+                                    uiConfig="{applicationSet:'fiori'}"
+                                >
+                                    <viz:dataset>
+                                        <viz.data:FlattenedDataset
+                                            data="{analytics>/ratingData}"
+                                        >
+                                            <viz.data:dimensions>
+                                                <viz.data:DimensionDefinition
+                                                    name="Supplier"
+                                                    value="{supplierName}"
+                                                />
+                                            </viz.data:dimensions>
+                                            <viz.data:measures>
+                                                <viz.data:MeasureDefinition
+                                                    name="Rating"
+                                                    value="{rating}"
+                                                />
+                                            </viz.data:measures>
+                                        </viz.data:FlattenedDataset>
+                                    </viz:dataset>
+                                    <viz:feeds>
+                                        <viz.feeds:FeedItem
+                                            uid="categoryAxis"
+                                            type="Dimension"
+                                            values="Supplier"
+                                        />
+                                        <viz.feeds:FeedItem
+                                            uid="valueAxis"
+                                            type="Measure"
+                                            values="Rating"
+                                        />
+                                    </viz:feeds>
+                                </viz:VizFrame>
+                            </Panel>
+                        </HBox>
                     </VBox>
 
                     <!-- ================= SETTINGS SECTION ================= -->
@@ -1414,16 +1699,444 @@
                             level="H2"
                             class="sapUiSmallMarginBottom"
                         />
+                        <Text
+                            id="_IDGenSettingsSubtitle"
+                            text="Application-level configuration for Mobis ProcureFlow"
+                            class="sapUiTinyText sapUiSmallMarginBottom"
+                        />
+
                         <Panel
-                            id="_IDGenSettingsPanel"
-                            headerText="Application Settings"
+                            id="_IDGenGeneralSettingsPanel"
+                            headerText="General"
+                            class="sapUiSmallMarginBottom"
                         >
-                            <Text
-                                id="_IDGenSettingsText"
-                                text="Settings screen placeholder."
-                                class="sapUiSmallMargin"
-                            />
+                            <VBox class="sapUiSmallMargin">
+                                <Label
+                                    text="Default Currency"
+                                    labelFor="settingsCurrencySelect"
+                                    class="sapUiTinyMarginBottom"
+                                />
+                                <Select
+                                    id="settingsCurrencySelect"
+                                    width="16rem"
+                                    selectedKey="{settings>/currency}"
+                                    class="sapUiSmallMarginBottom"
+                                >
+                                    <core:Item
+                                        key="INR"
+                                        text="INR - Indian Rupee"
+                                    />
+                                    <core:Item
+                                        key="USD"
+                                        text="USD - US Dollar"
+                                    />
+                                    <core:Item
+                                        key="EUR"
+                                        text="EUR - Euro"
+                                    />
+                                </Select>
+
+                                <Label
+                                    text="Content Density"
+                                    labelFor="settingsDensitySelect"
+                                    class="sapUiTinyMarginBottom"
+                                />
+                                <Select
+                                    id="settingsDensitySelect"
+                                    width="16rem"
+                                    selectedKey="{settings>/density}"
+                                >
+                                    <core:Item
+                                        key="compact"
+                                        text="Compact"
+                                    />
+                                    <core:Item
+                                        key="cozy"
+                                        text="Cozy"
+                                    />
+                                </Select>
+                            </VBox>
                         </Panel>
+
+                        <Panel
+                            id="_IDGenAlertSettingsPanel"
+                            headerText="Alert Thresholds"
+                            class="sapUiSmallMarginBottom"
+                        >
+                            <VBox class="sapUiSmallMargin">
+                                <Label
+                                    text="Low Stock Reorder Buffer (%)"
+                                    labelFor="settingsReorderInput"
+                                    class="sapUiTinyMarginBottom"
+                                />
+                                <StepInput
+                                    id="settingsReorderInput"
+                                    width="10rem"
+                                    value="{settings>/reorderBufferPct}"
+                                    min="0"
+                                    max="100"
+                                    step="5"
+                                    class="sapUiSmallMarginBottom"
+                                />
+
+                                <CheckBox
+                                    id="settingsEmailAlertsCheck"
+                                    text="Send email alerts for HIGH severity notifications"
+                                    selected="{settings>/emailAlertsEnabled}"
+                                    class="sapUiTinyMarginBottom"
+                                />
+                                <CheckBox
+                                    id="settingsAutoResolveCheck"
+                                    text="Auto-resolve LOW severity alerts after 7 days"
+                                    selected="{settings>/autoResolveLow}"
+                                />
+                            </VBox>
+                        </Panel>
+
+                        <Panel
+                            id="_IDGenApprovalSettingsPanel"
+                            headerText="Approval Routing"
+                        >
+                            <VBox class="sapUiSmallMargin">
+                                <Label
+                                    text="Purchase Order approval required above"
+                                    labelFor="settingsApprovalLimitInput"
+                                    class="sapUiTinyMarginBottom"
+                                />
+                                <Input
+                                    id="settingsApprovalLimitInput"
+                                    width="12rem"
+                                    type="Number"
+                                    value="{settings>/approvalLimit}"
+                                    class="sapUiSmallMarginBottom"
+                                />
+
+                                <Label
+                                    text="Default Approver Role"
+                                    labelFor="settingsApproverRoleSelect"
+                                    class="sapUiTinyMarginBottom"
+                                />
+                                <Select
+                                    id="settingsApproverRoleSelect"
+                                    width="16rem"
+                                    selectedKey="{settings>/defaultApproverRole}"
+                                >
+                                    <core:Item
+                                        key="INVENTORY_MANAGER"
+                                        text="Inventory Manager"
+                                    />
+                                    <core:Item
+                                        key="ADMINISTRATOR"
+                                        text="Administrator"
+                                    />
+                                </Select>
+                            </VBox>
+                        </Panel>
+
+                        <HBox class="sapUiSmallMarginTop">
+                            <Button
+                                id="_IDGenSaveSettingsBtn"
+                                text="Save Settings"
+                                type="Emphasized"
+                                icon="sap-icon://save"
+                                press=".onSaveSettings"
+                                class="sapUiTinyMarginEnd"
+                            />
+                            <Button
+                                id="_IDGenResetSettingsBtn"
+                                text="Reset to Defaults"
+                                type="Transparent"
+                                press=".onResetSettings"
+                            />
+                        </HBox>
+                    </VBox>
+                    <!-- ================= SPEND ANALYSIS SECTION ================= -->
+                    <VBox
+                        id="spendSection"
+                        visible="false"
+                    >
+                        <Title
+                            id="_IDGenSpendTitle"
+                            text="Spend Analysis"
+                            level="H2"
+                            class="sapUiSmallMarginBottom"
+                        />
+                        <Text
+                            id="_IDGenSpendSubtitle"
+                            text="Total committed spend by supplier, based on open and closed Purchase Orders"
+                            class="sapUiTinyText sapUiSmallMarginBottom"
+                        />
+
+                        <Panel
+                            id="_IDGenSpendPanel"
+                            headerText="Spend by Supplier"
+                        >
+                            <headerToolbar>
+                                <Toolbar id="_IDGenSpendToolbar">
+                                    <Title
+                                        id="_IDGenSpendPanelTitle"
+                                        text="Spend by Supplier"
+                                    />
+                                    <ToolbarSpacer id="_IDGenSpendSpacer" />
+                                    <Button
+                                        id="_IDGenRefreshSpendBtn"
+                                        icon="sap-icon://refresh"
+                                        tooltip="Refresh"
+                                        press=".onRefreshSpend"
+                                    />
+                                </Toolbar>
+                            </headerToolbar>
+                            <Table
+                                id="spendTable"
+                                items="{spend>/bySupplier}"
+                                noDataText="No spend data available"
+                            >
+                                <columns>
+                                    <Column id="_IDGenSpendColSup">
+                                        <Text text="Supplier" />
+                                    </Column>
+                                    <Column
+                                        id="_IDGenSpendColPOs"
+                                        hAlign="End"
+                                    >
+                                        <Text text="Purchase Orders" />
+                                    </Column>
+                                    <Column
+                                        id="_IDGenSpendColQty"
+                                        hAlign="End"
+                                    >
+                                        <Text text="Total Qty Ordered" />
+                                    </Column>
+                                    <Column
+                                        id="_IDGenSpendColTotal"
+                                        hAlign="End"
+                                    >
+                                        <Text text="Total Spend" />
+                                    </Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem id="_IDGenSpendRow">
+                                        <cells>
+                                            <Text text="{spend>supplierName}" />
+                                            <Text text="{spend>poCount}" />
+                                            <Text text="{spend>totalQty}" />
+                                            <ObjectNumber
+                                                number="{spend>totalSpend}"
+                                                unit="INR"
+                                            />
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </Panel>
+                    </VBox>
+
+                    <!-- ================= SUPPLIER PERFORMANCE SECTION ================= -->
+                    <VBox
+                        id="supplierPerfSection"
+                        visible="false"
+                    >
+                        <Title
+                            id="_IDGenSupPerfTitle"
+                            text="Supplier Performance"
+                            level="H2"
+                            class="sapUiSmallMarginBottom"
+                        />
+                        <Text
+                            id="_IDGenSupPerfSubtitle"
+                            text="Ranked by rating and delivery lead time"
+                            class="sapUiTinyText sapUiSmallMarginBottom"
+                        />
+
+                        <Panel
+                            id="_IDGenSupPerfPanel"
+                            headerText="Performance Ranking"
+                        >
+                            <headerToolbar>
+                                <Toolbar id="_IDGenSupPerfToolbar">
+                                    <Title
+                                        id="_IDGenSupPerfPanelTitle"
+                                        text="Performance Ranking"
+                                    />
+                                    <ToolbarSpacer id="_IDGenSupPerfSpacer" />
+                                    <Button
+                                        id="_IDGenRefreshSupPerfBtn"
+                                        icon="sap-icon://refresh"
+                                        tooltip="Refresh"
+                                        press=".onRefreshSupplierPerf"
+                                    />
+                                </Toolbar>
+                            </headerToolbar>
+                            <Table
+                                id="supplierPerfTable"
+                                items="{ path: '/Suppliers', sorter: { path: 'rating', descending: true } }"
+                                noDataText="No suppliers found"
+                            >
+                                <columns>
+                                    <Column id="_IDGenSPColName">
+                                        <Text text="Supplier" />
+                                    </Column>
+                                    <Column
+                                        id="_IDGenSPColRating"
+                                        hAlign="End"
+                                    >
+                                        <Text text="Rating" />
+                                    </Column>
+                                    <Column
+                                        id="_IDGenSPColLead"
+                                        hAlign="End"
+                                    >
+                                        <Text text="Lead Time (days)" />
+                                    </Column>
+                                    <Column id="_IDGenSPColGrade">
+                                        <Text text="Grade" />
+                                    </Column>
+                                    <Column id="_IDGenSPColEligible">
+                                        <Text text="Eligible" />
+                                    </Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem id="_IDGenSPRow">
+                                        <cells>
+                                            <Text text="{name}" />
+                                            <ObjectNumber number="{rating}" />
+                                            <Text text="{leadTimeDays}" />
+                                            <ObjectStatus
+                                                text="{path:'rating', formatter:'.formatter.supplierGradeText'}"
+                                                state="{path:'rating', formatter:'.formatter.supplierGradeState'}"
+                                            />
+                                            <core:Icon
+                                                src="{= ${isEligible} ? 'sap-icon://accept' : 'sap-icon://decline' }"
+                                                color="{= ${isEligible} ? '#2b7d2b' : '#b00' }"
+                                            />
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </Panel>
+                    </VBox>
+
+                    <!-- ================= USER MANAGEMENT SECTION ================= -->
+                    <VBox
+                        id="usersSection"
+                        visible="false"
+                    >
+                        <Toolbar id="_IDGenUsersHeaderToolbar">
+                            <Title
+                                id="_IDGenUsersTitle"
+                                text="User Management"
+                                level="H2"
+                            />
+                            <ToolbarSpacer id="_IDGenUsersSpacer" />
+                            <Button
+                                id="_IDGenAddUserBtn"
+                                text="Add User"
+                                type="Emphasized"
+                                icon="sap-icon://add"
+                                press=".onAddUser"
+                            />
+                        </Toolbar>
+                        <Text
+                            id="_IDGenUsersSubtitle"
+                            text="Users provisioned for the Procurement application"
+                            class="sapUiTinyText sapUiSmallMarginBottom"
+                        />
+
+                        <Table
+                            id="usersTable"
+                            items="{users>/list}"
+                            noDataText="No users found"
+                        >
+                            <columns>
+                                <Column id="_IDGenUserColName">
+                                    <Text text="Name" />
+                                </Column>
+                                <Column id="_IDGenUserColEmail">
+                                    <Text text="Email" />
+                                </Column>
+                                <Column id="_IDGenUserColRole">
+                                    <Text text="Role" />
+                                </Column>
+                                <Column id="_IDGenUserColStatus">
+                                    <Text text="Status" />
+                                </Column>
+                                <Column
+                                    id="_IDGenUserColAction"
+                                    hAlign="End"
+                                >
+                                    <Text text="Action" />
+                                </Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem id="_IDGenUserRow">
+                                    <cells>
+                                        <Text text="{users>name}" />
+                                        <Text text="{users>email}" />
+                                        <ObjectStatus
+                                            text="{users>role}"
+                                            state="Information"
+                                        />
+                                        <ObjectStatus
+                                            text="{= ${users>active} ? 'Active' : 'Deactivated' }"
+                                            state="{= ${users>active} ? 'Success' : 'Error' }"
+                                        />
+                                        <Button
+                                            text="{= ${users>active} ? 'Deactivate' : 'Activate' }"
+                                            type="Transparent"
+                                            press=".onToggleUserStatus"
+                                        />
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </VBox>
+
+                    <!-- ================= ROLES & PERMISSIONS SECTION ================= -->
+                    <VBox
+                        id="rolesSection"
+                        visible="false"
+                    >
+                        <Title
+                            id="_IDGenRolesTitle"
+                            text="Roles &amp; Permissions"
+                            level="H2"
+                            class="sapUiSmallMarginBottom"
+                        />
+                        <Text
+                            id="_IDGenRolesSubtitle"
+                            text="Access scopes defined for this application"
+                            class="sapUiTinyText sapUiSmallMarginBottom"
+                        />
+
+                        <Table
+                            id="rolesTable"
+                            items="{roles>/list}"
+                            noDataText="No roles found"
+                        >
+                            <columns>
+                                <Column id="_IDGenRoleColName">
+                                    <Text text="Role" />
+                                </Column>
+                                <Column id="_IDGenRoleColDesc">
+                                    <Text text="Description" />
+                                </Column>
+                                <Column id="_IDGenRoleColPerms">
+                                    <Text text="Key Permissions" />
+                                </Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem id="_IDGenRoleRow">
+                                    <cells>
+                                        <ObjectStatus
+                                            text="{roles>role}"
+                                            state="Information"
+                                        />
+                                        <Text text="{roles>description}" />
+                                        <Text text="{roles>permissions}" />
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
                     </VBox>
                 </content>
             </Page>

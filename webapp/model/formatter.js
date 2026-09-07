@@ -29,6 +29,21 @@ sap.ui.define([], () => {
                 default: return "None";
             }
         },
-        
+        supplierGradeText(fRating) {
+            if (fRating == null) return "Unrated";
+            if (fRating >= 4.5) return "Excellent";
+            if (fRating >= 3.5) return "Good";
+            if (fRating >= 2.5) return "Average";
+            return "Poor";
+        },
+
+        supplierGradeState(fRating) {
+            if (fRating == null) return "None";
+            if (fRating >= 4.5) return "Success";
+            if (fRating >= 3.5) return "Success";
+            if (fRating >= 2.5) return "Warning";
+            return "Error";
+        }
+
     };
 });

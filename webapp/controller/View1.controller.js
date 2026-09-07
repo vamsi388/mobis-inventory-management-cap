@@ -46,6 +46,27 @@ sap.ui.define([
                 "view"
             );
 
+            // Create the analytics model ONCE, up front, with an empty
+            // but valid shape — this is what VizFrame binds to on first
+            // render, so charts never start out with "no model at all".
+            this.getView().setModel(
+                new JSONModel({
+                    prStatusData: [],
+                    poStatusData: [],
+                    severityData: [],
+                    spendData: [],
+                    ratingData: [],
+                    kpi: {
+                        totalSpend: "0",
+                        avgRating: "0.0",
+                        avgLeadTime: "0.0",
+                        conversionPct: "0%"
+                    }
+                }),
+                "analytics"
+            );
+
+
             this._loadCounts();
         },
 
@@ -97,7 +118,27 @@ sap.ui.define([
                 case "settings":
                     this._showSection("settings");
                     break;
+                case "spend":
+                    this._showSection("spend");
+                    break;
 
+                case "supplierPerf":
+                    this._showSection("supplierPerf");
+                    break;
+
+                case "users":
+                    this._showSection("users");
+                    break;
+
+                case "roles":
+                    this._showSection("roles");
+                    break;
+                case "settings":
+                    this._loadSettings();
+                    break;
+                case "analytics":
+                    this._loadAnalytics();
+                    break;
                 default:
                     this._showSection("dashboard");
                     break;
@@ -120,6 +161,11 @@ sap.ui.define([
                 "alerts",
                 "processflow",
                 "analytics",
+                "settings",
+                "spend",
+                "supplierPerf",
+                "users",
+                "roles",
                 "settings"
             ];
 
@@ -160,7 +206,6 @@ sap.ui.define([
                 }
             }
 
-
             // Load data only when necessary
 
             switch (sKey) {
@@ -192,6 +237,21 @@ sap.ui.define([
 
                 case "processflow":
                     this._initProcessFlowModel();
+                    break;
+                case "spend":
+                    this._loadSpendAnalysis();
+                    break;
+
+                case "supplierPerf":
+                    this._refreshTable("supplierPerfTable");
+                    break;
+
+                case "users":
+                    this._loadUsers();
+                    break;
+
+                case "roles":
+                    this._loadRoles();
                     break;
             }
         },
@@ -598,6 +658,147 @@ sap.ui.define([
             );
 
             this._loadCounts();
+        },
+
+        // =========================================================
+        // SPEND ANALYSIS
+        // =========================================================
+
+        async _loadSpendAnalysis() {
+
+            try {
+                const oResponse = await fetch(
+                    "/procurement/PurchaseOrders?$expand=supplier,items"
+                );
+
+                if (!oResponse.ok) {
+                    throw new Error(`HTTP ${oResponse.status}`);
+                }
+
+                const oData = await oResponse.json();
+                const aPOs = oData.value || [];
+
+                const mBySupplier = {};
+
+                aPOs.forEach((oPO) => {
+                    const sSupplierName = oPO.supplier ? oPO.supplier.name : "Unknown";
+
+                    if (!mBySupplier[sSupplierName]) {
+                        mBySupplier[sSupplierName] = {
+                            supplierName: sSupplierName,
+                            poCount: 0,
+                            totalQty: 0,
+                            totalSpend: 0
+                        };
+                    }
+
+                    mBySupplier[sSupplierName].poCount += 1;
+
+                    (oPO.items || []).forEach((oItem) => {
+                        mBySupplier[sSupplierName].totalQty += oItem.orderedQty || 0;
+                        mBySupplier[sSupplierName].totalSpend +=
+                            (oItem.orderedQty || 0) * (oItem.unitPrice || 0);
+                    });
+                });
+
+                const aBySupplier = Object.values(mBySupplier)
+                    .sort((a, b) => b.totalSpend - a.totalSpend);
+
+                this.getView().setModel(
+                    new JSONModel({ bySupplier: aBySupplier }),
+                    "spend"
+                );
+
+            } catch (e) {
+                MessageBox.error("Unable to load spend analysis: " + e.message);
+            }
+        },
+
+        onRefreshSpend() {
+            this._loadSpendAnalysis();
+        },
+
+
+        // =========================================================
+        // SUPPLIER PERFORMANCE
+        // =========================================================
+
+        onRefreshSupplierPerf() {
+            this._refreshTable("supplierPerfTable");
+        },
+
+
+        // =========================================================
+        // USER MANAGEMENT (front-end demo model — no Users entity in backend yet)
+        // =========================================================
+
+        _loadUsers() {
+
+            if (this.getView().getModel("users")) {
+                return;
+            }
+
+            this.getView().setModel(
+                new JSONModel({
+                    list: [
+                        { name: "Rajesh Kumar", email: "rajesh.kumar@mobis.com", role: "Procurement Team", active: true },
+                        { name: "Priya Sharma", email: "priya.sharma@mobis.com", role: "Inventory Manager", active: true },
+                        { name: "Admin User", email: "admin@mobis.com", role: "Administrator", active: true },
+                        { name: "Vikram Singh", email: "vikram.singh@mobis.com", role: "Warehouse Executive", active: false }
+                    ]
+                }),
+                "users"
+            );
+        },
+
+        onAddUser() {
+            MessageToast.show("Add User dialog — wire this to a real Users entity once available in the backend.");
+        },
+
+        onToggleUserStatus(oEvent) {
+            const oContext = oEvent.getSource().getBindingContext("users");
+            const bCurrent = oContext.getProperty("active");
+            oContext.getModel().setProperty(oContext.getPath() + "/active", !bCurrent);
+        },
+
+
+        // =========================================================
+        // ROLES & PERMISSIONS (static, matches the FSD roles table)
+        // =========================================================
+
+        _loadRoles() {
+
+            if (this.getView().getModel("roles")) {
+                return;
+            }
+
+            this.getView().setModel(
+                new JSONModel({
+                    list: [
+                        {
+                            role: "Warehouse Executive",
+                            description: "Manages day-to-day warehouse stock movement",
+                            permissions: "Receive Stock, Issue Stock, Stock Transfer"
+                        },
+                        {
+                            role: "Procurement Team",
+                            description: "Handles supplier ordering",
+                            permissions: "Create Purchase Requisition/Order, view Supplier data"
+                        },
+                        {
+                            role: "Inventory Manager",
+                            description: "Oversees inventory and approvals",
+                            permissions: "Approve Purchase Orders, monitor stock levels, view reports"
+                        },
+                        {
+                            role: "Administrator",
+                            description: "System configuration",
+                            permissions: "Manage users, roles, and master data"
+                        }
+                    ]
+                }),
+                "roles"
+            );
         },
 
 
@@ -1766,7 +1967,220 @@ sap.ui.define([
             oPage.$().find(".phTile").css("cursor", "pointer");
 
             this._bTileClicksWired = true;
-        }
+        },
+        // =========================================================
+        // SETTINGS
+        // =========================================================
 
+        _getDefaultSettings() {
+            return {
+                currency: "INR",
+                density: "compact",
+                reorderBufferPct: 10,
+                emailAlertsEnabled: true,
+                autoResolveLow: false,
+                approvalLimit: 50000,
+                defaultApproverRole: "INVENTORY_MANAGER"
+            };
+        },
+
+        _loadSettings() {
+
+            if (this.getView().getModel("settings")) {
+                return;
+            }
+
+            const sStored = localStorage.getItem("mobisProcureFlowSettings");
+            const oSettings = sStored ? JSON.parse(sStored) : this._getDefaultSettings();
+
+            this.getView().setModel(new JSONModel(oSettings), "settings");
+        },
+
+        onSaveSettings() {
+
+            const oSettings = this.getView().getModel("settings").getData();
+
+            localStorage.setItem("mobisProcureFlowSettings", JSON.stringify(oSettings));
+
+            MessageToast.show("Settings saved.");
+        },
+
+        onResetSettings() {
+
+            MessageBox.confirm("Reset all settings to their default values?", {
+                actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
+                onClose: (sAction) => {
+
+                    if (sAction !== MessageBox.Action.OK) {
+                        return;
+                    }
+
+                    const oDefaults = this._getDefaultSettings();
+
+                    this.getView().getModel("settings").setData(oDefaults);
+                    localStorage.setItem("mobisProcureFlowSettings", JSON.stringify(oDefaults));
+
+                    MessageToast.show("Settings reset to defaults.");
+                }
+            });
+        },
+        // =========================================================
+        // ANALYTICS
+        // =========================================================
+
+        async _loadAnalytics() {
+
+            const oViewModel = this.getView().getModel("view");
+            oViewModel.setProperty("/busy", true);
+
+            try {
+
+                const [prData, poData, alertData, supplierData, poWithItems] = await Promise.all([
+                    fetch("/procurement/PurchaseRequisitions").then((r) => r.json()),
+                    fetch("/procurement/PurchaseOrders").then((r) => r.json()),
+                    fetch("/procurement/AlertNotifications").then((r) => r.json()),
+                    fetch("/procurement/Suppliers").then((r) => r.json()),
+                    fetch("/procurement/PurchaseOrders?$expand=supplier,items").then((r) => r.json())
+                ]);
+
+                const aPRs = prData.value || [];
+                const aPOs = poData.value || [];
+                const aAlerts = alertData.value || [];
+                const aSuppliers = supplierData.value || [];
+                const aPOsFull = poWithItems.value || [];
+
+                // --- PR status breakdown ---
+                const mPRStatus = {};
+                aPRs.forEach((pr) => {
+                    const sStatus = pr.status || "UNKNOWN";
+                    mPRStatus[sStatus] = (mPRStatus[sStatus] || 0) + 1;
+                });
+                const aPRStatusData = Object.keys(mPRStatus).map((k) => ({ status: k, count: mPRStatus[k] }));
+
+                // --- PO status breakdown ---
+                const mPOStatus = {};
+                aPOs.forEach((po) => {
+                    const sStatus = po.status || "UNKNOWN";
+                    mPOStatus[sStatus] = (mPOStatus[sStatus] || 0) + 1;
+                });
+                const aPOStatusData = Object.keys(mPOStatus).map((k) => ({ status: k, count: mPOStatus[k] }));
+
+                // --- Alerts by severity ---
+                const mSeverity = {};
+                aAlerts.forEach((a) => {
+                    const sSeverity = a.severity || "UNKNOWN";
+                    mSeverity[sSeverity] = (mSeverity[sSeverity] || 0) + 1;
+                });
+                const aSeverityData = Object.keys(mSeverity).map((k) => ({ severity: k, count: mSeverity[k] }));
+
+                // --- Spend by supplier (top 10) ---
+                const mSpend = {};
+                aPOsFull.forEach((po) => {
+                    const sName = (po.supplier && po.supplier.name) || "Unknown";
+                    if (!mSpend[sName]) mSpend[sName] = 0;
+                    (po.items || []).forEach((item) => {
+                        mSpend[sName] += (item.orderedQty || 0) * (item.unitPrice || 0);
+                    });
+                });
+                const aSpendData = Object.keys(mSpend)
+                    .map((k) => ({ supplierName: k, totalSpend: Math.round(mSpend[k]) }))
+                    .sort((a, b) => b.totalSpend - a.totalSpend)
+                    .slice(0, 10);
+
+                // --- Supplier ratings (guard against missing rating field) ---
+                const aRatingData = aSuppliers
+                    .map((s) => ({ supplierName: s.name || "Unknown", rating: s.rating || 0 }))
+                    .sort((a, b) => b.rating - a.rating)
+                    .slice(0, 10);
+
+                // --- KPIs (guard against missing rating/leadTimeDays fields) ---
+                const iTotalSpend = Object.values(mSpend).reduce((sum, v) => sum + v, 0);
+
+                const fAvgRating = aSuppliers.length
+                    ? (aSuppliers.reduce((sum, s) => sum + (s.rating || 0), 0) / aSuppliers.length)
+                    : 0;
+
+                const fAvgLeadTime = aSuppliers.length
+                    ? (aSuppliers.reduce((sum, s) => sum + (s.leadTimeDays || 0), 0) / aSuppliers.length)
+                    : 0;
+
+                const iConvertedPRs = aPRs.filter((pr) => pr.status === "CONVERTED" || pr.status === "APPROVED").length;
+                const fConversionPct = aPRs.length ? Math.round((iConvertedPRs / aPRs.length) * 100) : 0;
+
+                this.getView().setModel(
+                    new JSONModel({
+                        prStatusData: aPRStatusData,
+                        poStatusData: aPOStatusData,
+                        severityData: aSeverityData,
+                        spendData: aSpendData,
+                        ratingData: aRatingData,
+                        kpi: {
+                            totalSpend: Math.round(iTotalSpend).toLocaleString("en-IN"),
+                            avgRating: fAvgRating.toFixed(1),
+                            avgLeadTime: fAvgLeadTime.toFixed(1),
+                            conversionPct: fConversionPct + "%"
+                        }
+                    }),
+                    "analytics"
+                );
+
+            } catch (e) {
+
+                MessageBox.error("Unable to load analytics: " + e.message);
+
+            } finally {
+
+                oViewModel.setProperty("/busy", false);
+            }
+        },
+
+        onRefreshAnalytics() {
+            this._loadAnalytics();
+        },
+        // =========================================================
+        // SIDE NAV SELECTION (recursive — handles nested group items)
+        // =========================================================
+
+        _updateSideNavSelection(sKey) {
+
+            const oSideNavigation = this.byId("sideNavigation");
+
+            if (!oSideNavigation) {
+                return;
+            }
+
+            const oNavigationList = oSideNavigation.getItem();
+
+            if (!oNavigationList) {
+                return;
+            }
+
+            const setSelectionRecursive = (aItems) => {
+
+                if (!aItems) {
+                    return;
+                }
+
+                aItems.forEach((oItem) => {
+
+                    // Guard: only call setSelected if this control actually has it
+                    if (typeof oItem.setSelected === "function" && typeof oItem.getKey === "function") {
+                        oItem.setSelected(oItem.getKey() === sKey);
+                    }
+
+                    // Recurse into nested items (REPORTS / CONFIGURATION groups)
+                    if (typeof oItem.getItems === "function") {
+
+                        const aChildren = oItem.getItems();
+
+                        if (aChildren && aChildren.length) {
+                            setSelectionRecursive(aChildren);
+                        }
+                    }
+                });
+            };
+
+            setSelectionRecursive(oNavigationList.getItems());
+        }
     });
 });
