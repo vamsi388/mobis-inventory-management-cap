@@ -76,6 +76,10 @@ sap.ui.define([
                 oItemsModel.setProperty(oContext.getPath() + "/unitPrice", fUnitPrice);
                 oItemsModel.setProperty(oContext.getPath() + "/estimatedPrice", fUnitPrice * iQty);
 
+                if (oPart.preferredSupplier_ID) {
+                    oItemsModel.setProperty(oContext.getPath() + "/supplierId", oPart.preferredSupplier_ID);
+                }
+
             }).catch(() => {
                 // part lookup failed — leave price as-is
             });
@@ -157,7 +161,7 @@ sap.ui.define([
             const oRequestedByInput = this.byId("prRequestedByInput");
 
             oLocationInput.setSelectedKey(oContext.getProperty("location_ID"));
-            oRequestedByInput.setValue(oContext.getProperty("requestedBy"));
+            oRequestedByInput.setSelectedKey(oContext.getProperty("requestedBy"));
 
             const oItemsResponse = await fetch(
                 `/procurement/PurchaseRequisitionItems?$filter=pr_ID eq ${encodeURIComponent(oContext.getProperty("ID"))}`
@@ -187,7 +191,7 @@ sap.ui.define([
             }
 
             MessageBox.confirm(
-                `Delete Purchase Requisition ${oContext.getProperty("prNumber")}? This cannot be undone.`,
+                `Delete Purchase Requisition ${oContext.getProperty("prNumber")}? `,
                 {
                     actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
                     onClose: async (sAction) => {
@@ -261,7 +265,7 @@ sap.ui.define([
             }
 
             const sLocationId = oLocationInput.getSelectedKey();
-            const sRequestedBy = oRequestedByInput.getValue();
+            const sRequestedBy = oRequestedByInput.getSelectedKey();
 
             const oItemsModel = this.getView().getModel("prItems");
             const aItems = oItemsModel ? oItemsModel.getProperty("/items") : [];
@@ -468,6 +472,116 @@ sap.ui.define([
 
                 MessageBox.error(e.message);
             }
-        }
+        },
+        async onOpenPRObjectPage(oEvent) {
+
+            const oContext = oEvent.getSource().getBindingContext();
+
+            if (!oContext) {
+                return;
+            }
+
+            if (!this._pPRObjectPageDialog) {
+
+                this._pPRObjectPageDialog = Fragment.load({
+                    id: this.getView().getId(),
+                    name: "procurement.fragments.RequisitionObjectPage",
+                    controller: this
+                }).then((oDialog) => {
+                    this.getView().addDependent(oDialog);
+                    this._oPRObjectPageDialog = oDialog;   // NEW — direct reference for closing
+                    return oDialog;
+                });
+            }
+
+            const oDialog = await this._pPRObjectPageDialog;
+            const oObjectPage = this.byId("prObjectPage");
+
+            oObjectPage.bindElement({
+                path: oContext.getPath(),
+                parameters: { $expand: "location" }
+            });
+
+            const sPrId = oContext.getProperty("ID");
+
+            const oItemsResponse = await fetch(
+                `/procurement/PurchaseRequisitionItems?$filter=pr_ID eq ${encodeURIComponent(sPrId)}&$expand=supplier`
+            );
+            const oItemsData = await oItemsResponse.json();
+            const aRawItems = oItemsData.value || [];
+
+            const oInventoryModel = this.getView().getModel("inventory");
+
+            const aItems = await Promise.all(aRawItems.map(async (oItem) => {
+
+                let sPartLabel = oItem.part_ID;
+
+                try {
+                    const oPartBinding = oInventoryModel.bindContext(`/SpareParts('${oItem.part_ID}')`);
+                    const oPart = await oPartBinding.requestObject();
+                    sPartLabel = `${oPart.partNumber} - ${oPart.description}`;
+                } catch (e) {
+                    // inventory lookup failed — fall back to raw ID rather than blocking the page
+                }
+
+                return {
+                    partLabel: sPartLabel,
+                    requiredQty: oItem.requiredQty,
+                    supplierLabel: oItem.supplier ? `${oItem.supplier.name} (${oItem.supplier.supplierCode})` : "N/A",
+                    estimatedPrice: oItem.estimatedPrice
+                };
+            }));
+
+            this.getView().setModel(new JSONModel({ items: aItems }), "prObjItems");
+
+            oDialog.open();
+        },
+
+        onCloseObjectPage() {
+
+            if (this._oPRObjectPageDialog) {
+                this._oPRObjectPageDialog.close();
+            }
+        },
+        async onSendForApproval(oEvent) {
+            const oContext = oEvent.getSource().getBindingContext();
+            if (!oContext) return;
+
+            try {
+                await this._callAction("sendForApproval", { prID: oContext.getProperty("ID") }); // confirm action name
+                MessageToast.show("PR sent for approval.");
+                this._refreshTable("prTable");
+                this._loadCounts();
+            } catch (e) {
+                MessageBox.error(e.message);
+            }
+        },
+
+        async onResubmitPR(oEvent) {
+            const oContext = oEvent.getSource().getBindingContext();
+            if (!oContext) return;
+
+            try {
+                await this._callAction("resubmitPR", { prID: oContext.getProperty("ID") }); // confirm action name
+                MessageToast.show("PR resubmitted.");
+                this._refreshTable("prTable");
+                this._loadCounts();
+            } catch (e) {
+                MessageBox.error(e.message);
+            }
+        },
+                async onClosePR(oEvent) {
+            const oContext = oEvent.getSource().getBindingContext();
+            if (!oContext) return;
+
+            try {
+                await this._callAction("closePR", { prID: oContext.getProperty("ID") });
+                MessageToast.show("PR closed.");
+                this._refreshTable("prTable");
+                this._loadCounts();
+            } catch (e) {
+                MessageBox.error(e.message);
+            }
+        },
     };
 });

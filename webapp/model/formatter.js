@@ -1,6 +1,7 @@
 sap.ui.define([], () => {
     "use strict";
     return {
+
         severityState(sSeverity) {
             switch ((sSeverity || "").toUpperCase()) {
                 case "HIGH": return "Error";
@@ -9,15 +10,17 @@ sap.ui.define([], () => {
                 default: return "None";
             }
         },
+
         prStatusState(sStatus) {
             switch (sStatus) {
-                case "DRAFT": return "None";
-                case "SUBMITTED": return "Warning";
                 case "APPROVED": return "Success";
                 case "REJECTED": return "Error";
-                default: return "None";
+                case "PENDING_APPROVAL":
+                case "SUBMITTED": return "Warning";
+                default: return "None"; // DRAFT, CLOSED
             }
         },
+
         poStatusState(sStatus) {
             switch (sStatus) {
                 case "CREATED": return "None";
@@ -29,6 +32,7 @@ sap.ui.define([], () => {
                 default: return "None";
             }
         },
+
         supplierGradeText(fRating) {
             if (fRating == null) return "Unrated";
             if (fRating >= 4.5) return "Excellent";
@@ -43,6 +47,42 @@ sap.ui.define([], () => {
             if (fRating >= 3.5) return "Success";
             if (fRating >= 2.5) return "Warning";
             return "Error";
+        },
+
+        prCanEdit(sStatus) {
+            return sStatus === "DRAFT";
+        },
+
+        prCanDelete(sStatus) {
+            return sStatus === "DRAFT";
+        },
+
+        prCanSubmit(sStatus) {
+            return sStatus === "DRAFT";
+        },
+
+        prCanSendForApproval(sStatus) {
+            return sStatus === "SUBMITTED";
+        },
+
+        prCanApprove(sStatus) {
+            return sStatus === "PENDING_APPROVAL";
+        },
+
+        prCanReject(sStatus) {
+            return sStatus === "PENDING_APPROVAL";
+        },
+
+        prCanCreatePO(sStatus) {
+            return sStatus === "APPROVED";
+        },
+
+        prCanClose(sStatus) {
+            return sStatus === "APPROVED";
+        },
+
+        prCanResubmit(sStatus) {
+            return sStatus === "REJECTED";
         }
 
     };

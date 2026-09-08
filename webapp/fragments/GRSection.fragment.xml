@@ -6,7 +6,16 @@
             <Button id="_IDGenPostGRBtn" text="Post GR" type="Emphasized" icon="sap-icon://add" press=".onPostGR"/>
             <Button id="_IDGenRefreshGRBtn" icon="sap-icon://refresh" tooltip="Refresh" press=".onRefreshGRs"/>
         </Toolbar>
-        <Table id="grTable" items="{ path: '/GoodsReceipts', sorter: { path: 'createdAt', descending: true } }" growing="true" growingThreshold="15">
+        <Table
+            id="grTable"
+            items="{
+                path: '/GoodsReceipts',
+                parameters: { $expand: 'po,location' },
+                sorter: { path: 'createdAt', descending: true }
+            }"
+            growing="true"
+            growingThreshold="15"
+        >
             <columns>
                 <Column id="_IDGenGRColNum"><Text id="_IDGenGRColNumTxt" text="GR Number"/></Column>
                 <Column id="_IDGenGRColPO"><Text id="_IDGenGRColPOTxt" text="PO"/></Column>
@@ -17,8 +26,8 @@
                 <ColumnListItem id="_IDGenGRRow">
                     <cells>
                         <Text id="_IDGenGRNum" text="{grNumber}"/>
-                        <Text id="_IDGenGRPO" text="{po_ID}"/>
-                        <Text id="_IDGenGRLoc" text="{location_ID}"/>
+                        <Text id="_IDGenGRPO" text="{po/poNumber}"/>
+                        <Text id="_IDGenGRLoc" text="{location/name}"/>
                         <Text id="_IDGenGRRec" text="{receivedBy}"/>
                     </cells>
                 </ColumnListItem>

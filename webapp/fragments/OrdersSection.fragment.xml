@@ -5,7 +5,16 @@
             <ToolbarSpacer id="_IDGenPOSpacer"/>
             <Button id="_IDGenRefreshPOBtn" icon="sap-icon://refresh" tooltip="Refresh" press=".onRefreshPOs"/>
         </Toolbar>
-        <Table id="poTable" items="{ path: '/PurchaseOrders', sorter: { path: 'createdAt', descending: true } }" growing="true" growingThreshold="15">
+        <Table
+            id="poTable"
+            items="{
+                path: '/PurchaseOrders',
+                parameters: { $expand: 'supplier,pr' },
+                sorter: { path: 'createdAt', descending: true }
+            }"
+            growing="true"
+            growingThreshold="15"
+        >
             <columns>
                 <Column id="_IDGenPOColNum"><Text id="_IDGenPOColNumTxt" text="PO Number"/></Column>
                 <Column id="_IDGenPOColSup"><Text id="_IDGenPOColSupTxt" text="Supplier"/></Column>
@@ -17,8 +26,8 @@
                 <ColumnListItem id="_IDGenPORow">
                     <cells>
                         <Text id="_IDGenPONum" text="{poNumber}"/>
-                        <Text id="_IDGenPOSup" text="{supplier_ID}"/>
-                        <Text id="_IDGenPOSrc" text="{pr_ID}"/>
+                        <Text id="_IDGenPOSup" text="{supplier/name}"/>
+                        <Text id="_IDGenPOSrc" text="{pr/prNumber}"/>
                         <ObjectStatus id="_IDGenPOStatus" text="{status}" state="{path:'status', formatter:'.formatter.poStatusState'}"/>
                         <Text id="_IDGenPOS4" text="{s4POId}"/>
                     </cells>
