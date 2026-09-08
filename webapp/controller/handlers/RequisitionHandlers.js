@@ -125,6 +125,93 @@ sap.ui.define([
             if (oDialog) {
                 oDialog.close();
             }
+
+            this._oEditingPRContext = null;
+        },
+
+        async onEditPR(oEvent) {
+
+            const oContext = oEvent.getSource().getBindingContext();
+
+            if (!oContext) {
+                return;
+            }
+
+            this._oEditingPRContext = oContext;
+
+            if (!this._pCreatePRDialog) {
+
+                this._pCreatePRDialog = Fragment.load({
+                    id: this.getView().getId(),
+                    name: "procurement.fragments.CreatePR",
+                    controller: this
+                }).then((oDialog) => {
+                    this.getView().addDependent(oDialog);
+                    return oDialog;
+                });
+            }
+
+            const oDialog = await this._pCreatePRDialog;
+
+            const oLocationInput = this.byId("prLocationInput");
+            const oRequestedByInput = this.byId("prRequestedByInput");
+
+            oLocationInput.setSelectedKey(oContext.getProperty("location_ID"));
+            oRequestedByInput.setValue(oContext.getProperty("requestedBy"));
+
+            const oItemsResponse = await fetch(
+                `/procurement/PurchaseRequisitionItems?$filter=pr_ID eq ${encodeURIComponent(oContext.getProperty("ID"))}`
+            );
+
+            const oItemsData = await oItemsResponse.json();
+
+            const aItems = (oItemsData.value || []).map((i) => ({
+                partId: i.part_ID,
+                requiredQty: i.requiredQty,
+                supplierId: i.supplier_ID || "",
+                unitPrice: 0,
+                estimatedPrice: i.estimatedPrice
+            }));
+
+            this.getView().setModel(new JSONModel({ items: aItems }), "prItems");
+
+            oDialog.open();
+        },
+
+        onDeletePR(oEvent) {
+
+            const oContext = oEvent.getSource().getBindingContext();
+
+            if (!oContext) {
+                return;
+            }
+
+            MessageBox.confirm(
+                `Delete Purchase Requisition ${oContext.getProperty("prNumber")}? This cannot be undone.`,
+                {
+                    actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
+                    onClose: async (sAction) => {
+
+                        if (sAction !== MessageBox.Action.OK) {
+                            return;
+                        }
+
+                        try {
+
+                            await oContext.delete();
+
+                            MessageToast.show("Purchase Requisition deleted.");
+
+                            this._refreshTable("prTable");
+                            this._loadCounts();
+
+                        } catch (e) {
+
+                            MessageBox.error("Could not delete PR: " + e.message);
+                        }
+                    }
+                }
+            );
         },
 
         async _generateNextPRNumber() {
@@ -189,28 +276,54 @@ sap.ui.define([
 
             oViewModel.setProperty("/busy", true);
 
+            const bIsEdit = !!this._oEditingPRContext;
+
             try {
 
-                const sPrNumber = await this._generateNextPRNumber();
+                if (bIsEdit) {
 
-                const oListBinding = oModel.bindList("/PurchaseRequisitions");
+                    const oEditContext = this._oEditingPRContext;
 
-                const oContext = oListBinding.create({
-                    prNumber: sPrNumber,
-                    location_ID: sLocationId,
-                    requestedBy: sRequestedBy,
-                    status: "DRAFT",
-                    items: aItems.map((i) => ({
-                        part_ID: i.partId,
-                        requiredQty: parseInt(i.requiredQty, 10) || 0,
-                        supplier_ID: i.supplierId || null,
-                        estimatedPrice: parseFloat(i.estimatedPrice) || 0
-                    }))
-                });
+                    oEditContext.setProperty("location_ID", sLocationId);
+                    oEditContext.setProperty("requestedBy", sRequestedBy);
 
-                await oContext.created();
+                    await this._callAction("replacePRItems", {
+                        prID: oEditContext.getProperty("ID"),
+                        items: aItems.map((i) => ({
+                            part_ID: i.partId,
+                            requiredQty: parseInt(i.requiredQty, 10) || 0,
+                            supplier_ID: i.supplierId || null,
+                            estimatedPrice: parseFloat(i.estimatedPrice) || 0
+                        }))
+                    });
 
-                MessageToast.show("Purchase Requisition created as DRAFT.");
+                    MessageToast.show("Purchase Requisition updated.");
+
+                } else {
+
+                    const sPrNumber = await this._generateNextPRNumber();
+
+                    const oListBinding = oModel.bindList("/PurchaseRequisitions");
+
+                    const oContext = oListBinding.create({
+                        prNumber: sPrNumber,
+                        location_ID: sLocationId,
+                        requestedBy: sRequestedBy,
+                        status: "DRAFT",
+                        items: aItems.map((i) => ({
+                            part_ID: i.partId,
+                            requiredQty: parseInt(i.requiredQty, 10) || 0,
+                            supplier_ID: i.supplierId || null,
+                            estimatedPrice: parseFloat(i.estimatedPrice) || 0
+                        }))
+                    });
+
+                    await oContext.created();
+
+                    MessageToast.show("Purchase Requisition created as DRAFT.");
+                }
+
+                this._oEditingPRContext = null;
 
                 const oDialog = this.byId("createPRDialog");
 
@@ -223,7 +336,7 @@ sap.ui.define([
 
             } catch (e) {
 
-                MessageBox.error("Could not create PR: " + e.message);
+                MessageBox.error(`Could not ${bIsEdit ? "update" : "create"} PR: ` + e.message);
 
             } finally {
 

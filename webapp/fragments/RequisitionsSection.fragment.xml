@@ -6,7 +6,7 @@
             <Button id="_IDGenCreatePRBtn" text="Create PR" type="Emphasized" icon="sap-icon://add" press=".onCreatePR"/>
             <Button id="_IDGenRefreshPRBtn" icon="sap-icon://refresh" tooltip="Refresh" press=".onRefreshPRs"/>
         </Toolbar>
-        <Table id="prTable" items="{ path: '/PurchaseRequisitions', sorter: { path: 'createdAt', descending: true } }" growing="true" growingThreshold="15">
+        <Table id="prTable" items="{ path: '/PurchaseRequisitions', parameters: { $expand: 'location' }, sorter: { path: 'createdAt', descending: true } }" growing="true" growingThreshold="15">
             <columns>
                 <Column id="_IDGenPRColNum"><Text id="_IDGenPRColNumTxt" text="PR Number"/></Column>
                 <Column id="_IDGenPRColLoc"><Text id="_IDGenPRColLocTxt" text="Location"/></Column>
@@ -26,9 +26,11 @@
                         <MenuButton id="_IDGenPRActionsBtn" icon="sap-icon://overflow" type="Transparent" buttonMode="Regular" tooltip="Actions" class="phRowActionsBtn">
                             <menu>
                                 <Menu id="_IDGenPRActionsMenu">
+                                    <MenuItem id="_IDGenEditPRMenuItem" text="Edit" icon="sap-icon://edit" visible="{= ${status} === 'DRAFT' }" press=".onEditPR"/>
+                                    <MenuItem id="_IDGenDeletePRMenuItem" text="Delete" icon="sap-icon://delete" visible="{= ${status} === 'DRAFT' }" press=".onDeletePR"/>
                                     <MenuItem id="_IDGenSubmitPRMenuItem" text="Submit" icon="sap-icon://paper-plane" visible="{= ${status} === 'DRAFT' }" press=".onSubmitPR"/>
-                                    <MenuItem id="_IDGenApprovePRMenuItem" text="Approve" icon="sap-icon://accept" visible="{= ${status} === 'SUBMITTED' }" press=".onApprovePR"/>
-                                    <MenuItem id="_IDGenRejectPRMenuItem" text="Reject" icon="sap-icon://decline" visible="{= ${status} === 'SUBMITTED' }" press=".onRejectPR"/>
+                                    <MenuItem id="_IDGenApprovePRMenuItem" text="Approve" icon="sap-icon://accept" visible="{= ${status} === 'PENDING_APPROVAL' }" press=".onApprovePR"/>
+                                    <MenuItem id="_IDGenRejectPRMenuItem" text="Reject" icon="sap-icon://decline" visible="{= ${status} === 'PENDING_APPROVAL' }" press=".onRejectPR"/>
                                     <MenuItem id="_IDGenCreatePOMenuItem" text="Create PO" icon="sap-icon://cart" visible="{= ${status} === 'APPROVED' }" press=".onCreatePOFromPR"/>
                                 </Menu>
                             </menu>
