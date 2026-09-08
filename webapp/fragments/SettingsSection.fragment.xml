@@ -1,0 +1,51 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <VBox id="settingsSection" visible="false">
+        <Title id="_IDGenSettingsTitle" text="Settings" level="H2" class="sapUiSmallMarginBottom"/>
+        <Text id="_IDGenSettingsSubtitle" text="Application-level configuration for Mobis ProcureFlow" class="sapUiTinyText sapUiSmallMarginBottom"/>
+
+        <Panel id="_IDGenGeneralSettingsPanel" headerText="General" class="sapUiSmallMarginBottom">
+            <VBox class="sapUiSmallMargin">
+                <Label text="Default Currency" labelFor="settingsCurrencySelect" class="sapUiTinyMarginBottom"/>
+                <Select id="settingsCurrencySelect" width="16rem" selectedKey="{settings>/currency}" class="sapUiSmallMarginBottom">
+                    <core:Item key="INR" text="INR - Indian Rupee"/>
+                    <core:Item key="USD" text="USD - US Dollar"/>
+                    <core:Item key="EUR" text="EUR - Euro"/>
+                </Select>
+
+                <Label text="Content Density" labelFor="settingsDensitySelect" class="sapUiTinyMarginBottom"/>
+                <Select id="settingsDensitySelect" width="16rem" selectedKey="{settings>/density}">
+                    <core:Item key="compact" text="Compact"/>
+                    <core:Item key="cozy" text="Cozy"/>
+                </Select>
+            </VBox>
+        </Panel>
+
+        <Panel id="_IDGenAlertSettingsPanel" headerText="Alert Thresholds" class="sapUiSmallMarginBottom">
+            <VBox class="sapUiSmallMargin">
+                <Label text="Low Stock Reorder Buffer (%)" labelFor="settingsReorderInput" class="sapUiTinyMarginBottom"/>
+                <StepInput id="settingsReorderInput" width="10rem" value="{settings>/reorderBufferPct}" min="0" max="100" step="5" class="sapUiSmallMarginBottom"/>
+
+                <CheckBox id="settingsEmailAlertsCheck" text="Send email alerts for HIGH severity notifications" selected="{settings>/emailAlertsEnabled}" class="sapUiTinyMarginBottom"/>
+                <CheckBox id="settingsAutoResolveCheck" text="Auto-resolve LOW severity alerts after 7 days" selected="{settings>/autoResolveLow}"/>
+            </VBox>
+        </Panel>
+
+        <Panel id="_IDGenApprovalSettingsPanel" headerText="Approval Routing">
+            <VBox class="sapUiSmallMargin">
+                <Label text="Purchase Order approval required above" labelFor="settingsApprovalLimitInput" class="sapUiTinyMarginBottom"/>
+                <Input id="settingsApprovalLimitInput" width="12rem" type="Number" value="{settings>/approvalLimit}" class="sapUiSmallMarginBottom"/>
+
+                <Label text="Default Approver Role" labelFor="settingsApproverRoleSelect" class="sapUiTinyMarginBottom"/>
+                <Select id="settingsApproverRoleSelect" width="16rem" selectedKey="{settings>/defaultApproverRole}">
+                    <core:Item key="INVENTORY_MANAGER" text="Inventory Manager"/>
+                    <core:Item key="ADMINISTRATOR" text="Administrator"/>
+                </Select>
+            </VBox>
+        </Panel>
+
+        <HBox class="sapUiSmallMarginTop">
+            <Button id="_IDGenSaveSettingsBtn" text="Save Settings" type="Emphasized" icon="sap-icon://save" press=".onSaveSettings" class="sapUiTinyMarginEnd"/>
+            <Button id="_IDGenResetSettingsBtn" text="Reset to Defaults" type="Transparent" press=".onResetSettings"/>
+        </HBox>
+    </VBox>
+</core:FragmentDefinition>

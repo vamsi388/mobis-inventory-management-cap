@@ -1,0 +1,134 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:viz.data="sap.viz.ui5.data"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+>
+    <VBox id="analyticsSection" visible="false">
+        <Toolbar id="_IDGenAnalyticsToolbar">
+            <Title id="_IDGenAnalyticsTitle" text="Analytics" level="H2"/>
+            <ToolbarSpacer id="_IDGenAnalyticsSpacer"/>
+            <Button id="_IDGenRefreshAnalyticsBtn" icon="sap-icon://refresh" tooltip="Refresh" press=".onRefreshAnalytics"/>
+        </Toolbar>
+        <Text id="_IDGenAnalyticsSubtitle" text="Procurement KPIs across requisitions, orders, suppliers, and alerts" class="sapUiTinyText sapUiSmallMarginBottom"/>
+
+        <HBox id="_IDGenAnalyticsKpiRow" wrap="Wrap" class="sapUiSmallMarginBottom">
+            <VBox class="phTile phTileBlue sapUiTinyMarginEnd">
+                <Text text="Total Spend (INR)" class="phTileTitle"/>
+                <Text text="{analytics>/kpi/totalSpend}" class="phTileValue"/>
+            </VBox>
+            <VBox class="phTile phTileGreen sapUiTinyMarginEnd">
+                <Text text="Avg Supplier Rating" class="phTileTitle"/>
+                <Text text="{analytics>/kpi/avgRating}" class="phTileValue"/>
+            </VBox>
+            <VBox class="phTile phTileOrange sapUiTinyMarginEnd">
+                <Text text="Avg Lead Time (days)" class="phTileTitle"/>
+                <Text text="{analytics>/kpi/avgLeadTime}" class="phTileValue"/>
+            </VBox>
+            <VBox class="phTile phTilePurple">
+                <Text text="PR to PO Conversion" class="phTileTitle"/>
+                <Text text="{analytics>/kpi/conversionPct}" class="phTileValue"/>
+            </VBox>
+        </HBox>
+
+        <HBox id="_IDGenAnalyticsChartRow1" wrap="Wrap" class="sapUiSmallMarginBottom">
+            <Panel headerText="Requisitions by Status" width="32%" class="phChartPanel sapUiTinyMarginEnd sapUiSmallMarginBottom">
+                <viz:VizFrame id="prStatusChart" vizType="pie" height="260px" width="100%" uiConfig="{applicationSet:'fiori'}">
+                    <viz:dataset>
+                        <viz.data:FlattenedDataset data="{analytics>/prStatusData}">
+                            <viz.data:dimensions>
+                                <viz.data:DimensionDefinition name="Status" value="{status}"/>
+                            </viz.data:dimensions>
+                            <viz.data:measures>
+                                <viz.data:MeasureDefinition name="Count" value="{count}"/>
+                            </viz.data:measures>
+                        </viz.data:FlattenedDataset>
+                    </viz:dataset>
+                    <viz:feeds>
+                        <viz.feeds:FeedItem uid="color" type="Dimension" values="Status"/>
+                        <viz.feeds:FeedItem uid="size" type="Measure" values="Count"/>
+                    </viz:feeds>
+                </viz:VizFrame>
+            </Panel>
+
+            <Panel headerText="Purchase Orders by Status" width="32%" class="phChartPanel sapUiTinyMarginEnd sapUiSmallMarginBottom">
+                <viz:VizFrame id="poStatusChart" vizType="column" height="260px" width="100%" uiConfig="{applicationSet:'fiori'}">
+                    <viz:dataset>
+                        <viz.data:FlattenedDataset data="{analytics>/poStatusData}">
+                            <viz.data:dimensions>
+                                <viz.data:DimensionDefinition name="Status" value="{status}"/>
+                            </viz.data:dimensions>
+                            <viz.data:measures>
+                                <viz.data:MeasureDefinition name="Count" value="{count}"/>
+                            </viz.data:measures>
+                        </viz.data:FlattenedDataset>
+                    </viz:dataset>
+                    <viz:feeds>
+                        <viz.feeds:FeedItem uid="categoryAxis" type="Dimension" values="Status"/>
+                        <viz.feeds:FeedItem uid="valueAxis" type="Measure" values="Count"/>
+                    </viz:feeds>
+                </viz:VizFrame>
+            </Panel>
+
+            <Panel headerText="Alerts by Severity" width="32%" class="phChartPanel sapUiSmallMarginBottom">
+                <viz:VizFrame id="analyticsAlertSeverityChart" vizType="donut" height="260px" width="100%" uiConfig="{applicationSet:'fiori'}">
+                    <viz:dataset>
+                        <viz.data:FlattenedDataset data="{analytics>/severityData}">
+                            <viz.data:dimensions>
+                                <viz.data:DimensionDefinition name="Severity" value="{severity}"/>
+                            </viz.data:dimensions>
+                            <viz.data:measures>
+                                <viz.data:MeasureDefinition name="Count" value="{count}"/>
+                            </viz.data:measures>
+                        </viz.data:FlattenedDataset>
+                    </viz:dataset>
+                    <viz:feeds>
+                        <viz.feeds:FeedItem uid="color" type="Dimension" values="Severity"/>
+                        <viz.feeds:FeedItem uid="size" type="Measure" values="Count"/>
+                    </viz:feeds>
+                </viz:VizFrame>
+            </Panel>
+        </HBox>
+
+        <HBox id="_IDGenAnalyticsChartRow2" wrap="Wrap">
+            <Panel headerText="Spend by Supplier (Top 10)" width="49%" class="phChartPanelWide sapUiTinyMarginEnd sapUiSmallMarginBottom">
+                <viz:VizFrame id="spendBySupplierChart" vizType="bar" height="300px" width="100%" uiConfig="{applicationSet:'fiori'}">
+                    <viz:dataset>
+                        <viz.data:FlattenedDataset data="{analytics>/spendData}">
+                            <viz.data:dimensions>
+                                <viz.data:DimensionDefinition name="Supplier" value="{supplierName}"/>
+                            </viz.data:dimensions>
+                            <viz.data:measures>
+                                <viz.data:MeasureDefinition name="Spend" value="{totalSpend}"/>
+                            </viz.data:measures>
+                        </viz.data:FlattenedDataset>
+                    </viz:dataset>
+                    <viz:feeds>
+                        <viz.feeds:FeedItem uid="categoryAxis" type="Dimension" values="Supplier"/>
+                        <viz.feeds:FeedItem uid="valueAxis" type="Measure" values="Spend"/>
+                    </viz:feeds>
+                </viz:VizFrame>
+            </Panel>
+
+            <Panel headerText="Supplier Ratings" width="49%" class="phChartPanelWide sapUiSmallMarginBottom">
+                <viz:VizFrame id="supplierRatingChart" vizType="bar" height="300px" width="100%" uiConfig="{applicationSet:'fiori'}">
+                    <viz:dataset>
+                        <viz.data:FlattenedDataset data="{analytics>/ratingData}">
+                            <viz.data:dimensions>
+                                <viz.data:DimensionDefinition name="Supplier" value="{supplierName}"/>
+                            </viz.data:dimensions>
+                            <viz.data:measures>
+                                <viz.data:MeasureDefinition name="Rating" value="{rating}"/>
+                            </viz.data:measures>
+                        </viz.data:FlattenedDataset>
+                    </viz:dataset>
+                    <viz:feeds>
+                        <viz.feeds:FeedItem uid="categoryAxis" type="Dimension" values="Supplier"/>
+                        <viz.feeds:FeedItem uid="valueAxis" type="Measure" values="Rating"/>
+                    </viz:feeds>
+                </viz:VizFrame>
+            </Panel>
+        </HBox>
+    </VBox>
+</core:FragmentDefinition>

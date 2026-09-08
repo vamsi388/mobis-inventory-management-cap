@@ -17,11 +17,20 @@
     },
     "dataSources": {
       "mainService": {
-      "uri": "/procurement/",
+        "uri": "/procurement/",
         "type": "OData",
         "settings": {
           "annotations": [],
           "localUri": "localService/mainService/metadata.xml",
+          "odataVersion": "4.0"
+        }
+      },
+      "inventory": {
+        "uri": "/inventory/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/inventory/metadata.xml",
           "odataVersion": "4.0"
         }
       }
@@ -65,6 +74,15 @@
       },
       "": {
         "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "inventory": {
+        "dataSource": "inventory",
         "preload": true,
         "settings": {
           "operationMode": "Server",

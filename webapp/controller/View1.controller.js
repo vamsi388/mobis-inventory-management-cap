@@ -3,32 +3,62 @@ sap.ui.define([
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageToast",
     "sap/m/MessageBox",
-    "sap/ui/core/Fragment",
-    "../model/formatter"
+    "../model/formatter",
+    "./handlers/DashboardHandlers",
+    "./handlers/RequisitionHandlers",
+    "./handlers/OrderHandlers",
+    "./handlers/GRHandlers",
+    "./handlers/SupplierHandlers",
+    "./handlers/AlertHandlers",
+    "./handlers/ProcessFlowHandlers",
+    "./handlers/AnalyticsHandlers",
+    "./handlers/SettingsHandlers",
+    "./handlers/SpendHandlers",
+    "./handlers/UserRoleHandlers"
 ], (
     Controller,
     JSONModel,
     MessageToast,
     MessageBox,
-    Fragment,
-    formatter
+    formatter,
+    DashboardHandlers,
+    RequisitionHandlers,
+    OrderHandlers,
+    GRHandlers,
+    SupplierHandlers,
+    AlertHandlers,
+    ProcessFlowHandlers,
+    AnalyticsHandlers,
+    SettingsHandlers,
+    SpendHandlers,
+    UserRoleHandlers
 ) => {
-
     "use strict";
 
-    return Controller.extend("procurement.controller.View1", {
+    const oControllerMembers = Object.assign(
+        {},
+        DashboardHandlers,
+        RequisitionHandlers,
+        OrderHandlers,
+        GRHandlers,
+        SupplierHandlers,
+        AlertHandlers,
+        ProcessFlowHandlers,
+        AnalyticsHandlers,
+        SettingsHandlers,
+        SpendHandlers,
+        UserRoleHandlers,
+        {
 
-        formatter: formatter,
+            formatter: formatter,
 
+            // =========================================================
+            // INIT
+            // =========================================================
 
-        // =========================================================
-        // INIT
-        // =========================================================
+            onInit() {
 
-        onInit() {
-
-            this.getView().setModel(
-                new JSONModel({
+                this.getView().setModel(new JSONModel({
                     busy: false,
                     counts: {
                         prTotal: 0,
@@ -42,15 +72,9 @@ sap.ui.define([
                         unresolvedPct: 0
                     },
                     severityChartData: []
-                }),
-                "view"
-            );
+                }), "view");
 
-            // Create the analytics model ONCE, up front, with an empty
-            // but valid shape — this is what VizFrame binds to on first
-            // render, so charts never start out with "no model at all".
-            this.getView().setModel(
-                new JSONModel({
+                this.getView().setModel(new JSONModel({
                     prStatusData: [],
                     poStatusData: [],
                     severityData: [],
@@ -62,2125 +86,290 @@ sap.ui.define([
                         avgLeadTime: "0.0",
                         conversionPct: "0%"
                     }
-                }),
-                "analytics"
-            );
-
-
-            this._loadCounts();
-        },
-
-
-        // =========================================================
-        // SIDE NAVIGATION
-        // =========================================================
-
-        onSideNavigationSelect(oEvent) {
-
-            const oItem = oEvent.getParameter("item");
-
-            if (!oItem) {
-                return;
-            }
-
-            const sKey = oItem.getKey();
-
-            switch (sKey) {
-
-                case "dashboard":
-                    this._showSection("dashboard");
-                    break;
-
-                case "requisitions":
-                    this._showSection("requisitions");
-                    break;
-
-                case "orders":
-                    this._showSection("orders");
-                    break;
-
-                case "gr":
-                    this._showSection("gr");
-                    break;
-
-                case "suppliers":
-                    this._showSection("suppliers");
-                    break;
-
-                case "processflow":
-                    this._showSection("processflow");
-                    break;
-
-                case "analytics":
-                    this._showSection("analytics");
-                    break;
-
-                case "settings":
-                    this._showSection("settings");
-                    break;
-                case "spend":
-                    this._showSection("spend");
-                    break;
-
-                case "supplierPerf":
-                    this._showSection("supplierPerf");
-                    break;
-
-                case "users":
-                    this._showSection("users");
-                    break;
-
-                case "roles":
-                    this._showSection("roles");
-                    break;
-                case "settings":
-                    this._loadSettings();
-                    break;
-                case "analytics":
-                    this._loadAnalytics();
-                    break;
-                default:
-                    this._showSection("dashboard");
-                    break;
-            }
-        },
-
-
-        // =========================================================
-        // SHOW SECTION
-        // =========================================================
-
-        _showSection(sKey) {
-
-            const aSections = [
-                "dashboard",
-                "requisitions",
-                "orders",
-                "gr",
-                "suppliers",
-                "alerts",
-                "processflow",
-                "analytics",
-                "settings",
-                "spend",
-                "supplierPerf",
-                "users",
-                "roles",
-                "settings"
-            ];
-
-            aSections.forEach((sSection) => {
-
-                const oSection = this.byId(
-                    sSection + "Section"
-                );
-
-                if (oSection) {
-                    oSection.setVisible(
-                        sSection === sKey
-                    );
-                }
-            });
-
-
-            const oSideNavigation =
-                this.byId("sideNavigation");
-
-            if (oSideNavigation) {
-
-                const oNavigationList =
-                    oSideNavigation.getItem();
-
-                if (oNavigationList) {
-
-                    const aItems =
-                        oNavigationList.getItems();
-
-                    aItems.forEach((oItem) => {
-
-                        oItem.setSelected(
-                            oItem.getKey() === sKey
-                        );
-
-                    });
-                }
-            }
-
-            // Load data only when necessary
-
-            switch (sKey) {
-
-                case "dashboard":
-                    this._loadCounts();
-                    break;
-
-                case "requisitions":
-                    this._refreshTable("prTable");
-                    break;
-
-                case "orders":
-                    this._refreshTable("poTable");
-                    break;
-
-                case "gr":
-                    this._refreshTable("grTable");
-                    break;
-
-                case "suppliers":
-                    this._refreshTable("supplierTable");
-                    break;
-
-                case "alerts":
-                    this._refreshTable("alertsTable");
-                    this._loadCounts();
-                    break;
-
-                case "processflow":
-                    this._initProcessFlowModel();
-                    break;
-                case "spend":
-                    this._loadSpendAnalysis();
-                    break;
-
-                case "supplierPerf":
-                    this._refreshTable("supplierPerfTable");
-                    break;
-
-                case "users":
-                    this._loadUsers();
-                    break;
-
-                case "roles":
-                    this._loadRoles();
-                    break;
-            }
-        },
-
-
-        // =========================================================
-        // BACK TO DASHBOARD (from Alerts section)
-        // =========================================================
-
-        onBackToDashboard() {
-
-            this._showSection("dashboard");
-        },
-
-
-        // =========================================================
-        // DASHBOARD
-        // =========================================================
-
-        _showDashboard() {
-
-            this._showSection("dashboard");
-        },
-
-
-        // =========================================================
-        // GLOBAL SEARCH
-        // =========================================================
-
-        onGlobalSearch(oEvent) {
-
-            const sQuery =
-                oEvent.getParameter("query");
-
-            if (!sQuery) {
-                return;
-            }
-
-            MessageToast.show(
-                "Searching for: " + sQuery
-            );
-        },
-
-
-        // =========================================================
-        // KPI TILE EVENTS
-        // =========================================================
-
-        onPRTilePress() {
-
-            this._showSection("requisitions");
-        },
-
-
-        onPendingTilePress() {
-
-            this._showSection("requisitions");
-        },
-
-
-        onPOTilePress() {
-
-            this._showSection("orders");
-        },
-
-
-        onAlertsTilePress() {
-
-            this._showSection("alerts");
-        },
-
-
-        onViewAllAlerts() {
-
-            this._showSection("alerts");
-        },
-
-
-        onProcessFlowTilePress() {
-
-            this._showSection("processflow");
-        },
-
-
-        // =========================================================
-        // GENERIC ACTION
-        // =========================================================
-
-        async _callAction(
-            sActionName,
-            oParams
-        ) {
-
-            const oViewModel =
-                this.getView().getModel("view");
-
-            oViewModel.setProperty(
-                "/busy",
-                true
-            );
-
-            try {
-
-                const oResponse =
-                    await fetch(
-                        `/procurement/${sActionName}`,
-                        {
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body:
-                                JSON.stringify(
-                                    oParams || {}
-                                )
-                        }
-                    );
-
-
-                const oResult =
-                    await oResponse
-                        .json()
-                        .catch(() => ({}));
-
-
-                if (!oResponse.ok) {
-
-                    const sMessage =
-                        oResult?.error?.message ||
-                        `${sActionName} failed (HTTP ${oResponse.status})`;
-
-                    throw new Error(sMessage);
-                }
-
-
-                return oResult;
-
-            } finally {
-
-                oViewModel.setProperty(
-                    "/busy",
-                    false
-                );
-            }
-        },
-
-
-        // =========================================================
-        // LOAD DASHBOARD COUNTS (+ SEVERITY CHART + STATUS %)
-        // =========================================================
-
-        async _loadCounts() {
-
-            const oViewModel =
-                this.getView().getModel("view");
-
-            try {
-
-                const [
-                    prTotal,
-                    prPending,
-                    poOpen,
-                    alertsOpen,
-                    alertsResolved,
-                    high,
-                    medium,
-                    low
-                ] = await Promise.all([
-
-                    this._count(
-                        "PurchaseRequisitions"
-                    ),
-
-                    this._count(
-                        "PurchaseRequisitions",
-                        "status eq 'SUBMITTED'"
-                    ),
-
-                    this._count(
-                        "PurchaseOrders",
-                        "status ne 'RECEIVED' and " +
-                        "status ne 'CLOSED' and " +
-                        "status ne 'CANCELLED'"
-                    ),
-
-                    this._count(
-                        "AlertNotifications",
-                        "isResolved eq false"
-                    ),
-
-                    this._count(
-                        "AlertNotifications",
-                        "isResolved eq true"
-                    ),
-
-                    this._count(
-                        "AlertNotifications",
-                        "severity eq 'HIGH'"
-                    ),
-
-                    this._count(
-                        "AlertNotifications",
-                        "severity eq 'MEDIUM'"
-                    ),
-
-                    this._count(
-                        "AlertNotifications",
-                        "severity eq 'LOW'"
-                    )
-                ]);
-
-
-                const iTotalAlerts =
-                    (alertsOpen + alertsResolved) || 1;
-
-
-                oViewModel.setProperty(
-                    "/counts",
-                    {
-                        prTotal,
-                        prPending,
-                        poOpen,
-                        alertsOpen,
-                        alertsResolved
-                    }
-                );
-
-
-                oViewModel.setProperty(
-                    "/statusPct",
-                    {
-                        resolvedPct:
-                            Math.round(
-                                (alertsResolved / iTotalAlerts) * 100
-                            ),
-
-                        unresolvedPct:
-                            Math.round(
-                                (alertsOpen / iTotalAlerts) * 100
-                            )
-                    }
-                );
-
-
-                oViewModel.setProperty(
-                    "/severityChartData",
-                    [
-                        { severity: "High", count: high },
-                        { severity: "Medium", count: medium },
-                        { severity: "Low", count: low }
-                    ]
-                );
-
-            } catch (e) {
-
-                console.error(
-                    "Failed to load dashboard counts:",
-                    e
-                );
-            }
-        },
-
-
-        // =========================================================
-        // COUNT
-        // =========================================================
-
-        async _count(
-            sEntitySet,
-            sFilter
-        ) {
-
-            let sUrl =
-                `/procurement/${sEntitySet}/$count`;
-
-            if (sFilter) {
-
-                sUrl +=
-                    `?$filter=${encodeURIComponent(sFilter)}`;
-            }
-
-
-            const oResponse =
-                await fetch(
-                    sUrl,
-                    {
-                        method: "GET",
-                        headers: {
-                            Accept: "text/plain"
-                        }
-                    }
-                );
-
-
-            if (!oResponse.ok) {
-
-                throw new Error(
-                    `Count failed for ${sEntitySet} (HTTP ${oResponse.status})`
-                );
-            }
-
-
-            const sText =
-                await oResponse.text();
-
-            return parseInt(
-                sText,
-                10
-            ) || 0;
-        },
-
-
-        // =========================================================
-        // REFRESH TABLE
-        // =========================================================
-
-        _refreshTable(sId) {
-
-            const oTable =
-                this.byId(sId);
-
-            if (!oTable) {
-                return;
-            }
-
-
-            const oBinding =
-                oTable.getBinding("items");
-
-            if (oBinding) {
-
-                oBinding.refresh();
-            }
-        },
-
-
-        // =========================================================
-        // REFRESH PR
-        // =========================================================
-
-        onRefreshPRs() {
-
-            this._refreshTable(
-                "prTable"
-            );
-
-            this._loadCounts();
-        },
-
-
-        // =========================================================
-        // REFRESH PO
-        // =========================================================
-
-        onRefreshPOs() {
-
-            this._refreshTable(
-                "poTable"
-            );
-
-            this._loadCounts();
-        },
-
-
-        // =========================================================
-        // REFRESH GR
-        // =========================================================
-
-        onRefreshGRs() {
-
-            this._refreshTable(
-                "grTable"
-            );
-        },
-
-
-        // =========================================================
-        // REFRESH SUPPLIERS
-        // =========================================================
-
-        onRefreshSuppliers() {
-
-            this._refreshTable(
-                "supplierTable"
-            );
-
-            MessageToast.show(
-                "Suppliers refreshed"
-            );
-        },
-
-
-        // =========================================================
-        // REFRESH ALERTS
-        // =========================================================
-
-        onRefreshAlerts() {
-
-            this._refreshTable(
-                "alertsTable"
-            );
-
-            this._loadCounts();
-        },
-
-        // =========================================================
-        // SPEND ANALYSIS
-        // =========================================================
-
-        async _loadSpendAnalysis() {
-
-            try {
-                const oResponse = await fetch(
-                    "/procurement/PurchaseOrders?$expand=supplier,items"
-                );
-
-                if (!oResponse.ok) {
-                    throw new Error(`HTTP ${oResponse.status}`);
-                }
-
-                const oData = await oResponse.json();
-                const aPOs = oData.value || [];
-
-                const mBySupplier = {};
-
-                aPOs.forEach((oPO) => {
-                    const sSupplierName = oPO.supplier ? oPO.supplier.name : "Unknown";
-
-                    if (!mBySupplier[sSupplierName]) {
-                        mBySupplier[sSupplierName] = {
-                            supplierName: sSupplierName,
-                            poCount: 0,
-                            totalQty: 0,
-                            totalSpend: 0
-                        };
-                    }
-
-                    mBySupplier[sSupplierName].poCount += 1;
-
-                    (oPO.items || []).forEach((oItem) => {
-                        mBySupplier[sSupplierName].totalQty += oItem.orderedQty || 0;
-                        mBySupplier[sSupplierName].totalSpend +=
-                            (oItem.orderedQty || 0) * (oItem.unitPrice || 0);
-                    });
-                });
-
-                const aBySupplier = Object.values(mBySupplier)
-                    .sort((a, b) => b.totalSpend - a.totalSpend);
-
-                this.getView().setModel(
-                    new JSONModel({ bySupplier: aBySupplier }),
-                    "spend"
-                );
-
-            } catch (e) {
-                MessageBox.error("Unable to load spend analysis: " + e.message);
-            }
-        },
-
-        onRefreshSpend() {
-            this._loadSpendAnalysis();
-        },
-
-
-        // =========================================================
-        // SUPPLIER PERFORMANCE
-        // =========================================================
-
-        onRefreshSupplierPerf() {
-            this._refreshTable("supplierPerfTable");
-        },
-
-
-        // =========================================================
-        // USER MANAGEMENT (front-end demo model — no Users entity in backend yet)
-        // =========================================================
-
-        _loadUsers() {
-
-            if (this.getView().getModel("users")) {
-                return;
-            }
-
-            this.getView().setModel(
-                new JSONModel({
-                    list: [
-                        { name: "Rajesh Kumar", email: "rajesh.kumar@mobis.com", role: "Procurement Team", active: true },
-                        { name: "Priya Sharma", email: "priya.sharma@mobis.com", role: "Inventory Manager", active: true },
-                        { name: "Admin User", email: "admin@mobis.com", role: "Administrator", active: true },
-                        { name: "Vikram Singh", email: "vikram.singh@mobis.com", role: "Warehouse Executive", active: false }
-                    ]
-                }),
-                "users"
-            );
-        },
-
-        onAddUser() {
-            MessageToast.show("Add User dialog — wire this to a real Users entity once available in the backend.");
-        },
-
-        onToggleUserStatus(oEvent) {
-            const oContext = oEvent.getSource().getBindingContext("users");
-            const bCurrent = oContext.getProperty("active");
-            oContext.getModel().setProperty(oContext.getPath() + "/active", !bCurrent);
-        },
-
-
-        // =========================================================
-        // ROLES & PERMISSIONS (static, matches the FSD roles table)
-        // =========================================================
-
-        _loadRoles() {
-
-            if (this.getView().getModel("roles")) {
-                return;
-            }
-
-            this.getView().setModel(
-                new JSONModel({
-                    list: [
-                        {
-                            role: "Warehouse Executive",
-                            description: "Manages day-to-day warehouse stock movement",
-                            permissions: "Receive Stock, Issue Stock, Stock Transfer"
-                        },
-                        {
-                            role: "Procurement Team",
-                            description: "Handles supplier ordering",
-                            permissions: "Create Purchase Requisition/Order, view Supplier data"
-                        },
-                        {
-                            role: "Inventory Manager",
-                            description: "Oversees inventory and approvals",
-                            permissions: "Approve Purchase Orders, monitor stock levels, view reports"
-                        },
-                        {
-                            role: "Administrator",
-                            description: "System configuration",
-                            permissions: "Manage users, roles, and master data"
-                        }
-                    ]
-                }),
-                "roles"
-            );
-        },
-
-
-        // =========================================================
-        // CREATE PURCHASE REQUISITION
-        // =========================================================
-
-        async onCreatePR() {
-
-            if (!this._pCreatePRDialog) {
-
-                this._pCreatePRDialog =
-                    Fragment.load({
-
-                        id:
-                            this.getView().getId(),
-
-                        name:
-                            "procurement.fragments.CreatePR",
-
-                        controller:
-                            this
-
-                    }).then((oDialog) => {
-
-                        this.getView()
-                            .addDependent(oDialog);
-
-                        return oDialog;
-                    });
-            }
-
-
-            this.getView().setModel(
-                new JSONModel({
-                    items: []
-                }),
-                "prItems"
-            );
-
-
-            (
-                await this._pCreatePRDialog
-            ).open();
-        },
-
-
-        // =========================================================
-        // ADD PR ITEM
-        // =========================================================
-
-        onAddPRItemRow() {
-
-            const oModel =
-                this.getView()
-                    .getModel("prItems");
-
-            const aItems =
-                oModel.getProperty("/items");
-
-
-            aItems.push({
-
-                partId: "",
-                requiredQty: 1,
-                supplierId: "",
-                estimatedPrice: 0
-
-            });
-
-
-            oModel.setProperty(
-                "/items",
-                aItems
-            );
-        },
-
-
-        // =========================================================
-        // REMOVE PR ITEM
-        // =========================================================
-
-        onRemovePRItemRow(oEvent) {
-
-            const oContext =
-                oEvent
-                    .getSource()
-                    .getParent()
-                    .getBindingContext(
-                        "prItems"
-                    );
-
-
-            if (!oContext) {
-                return;
-            }
-
-
-            const oModel =
-                this.getView()
-                    .getModel("prItems");
-
-
-            const aItems =
-                oModel.getProperty("/items");
-
-
-            const iIndex =
-                parseInt(
-                    oContext
-                        .getPath()
-                        .split("/")
-                        .pop(),
-                    10
-                );
-
-
-            if (
-                Number.isNaN(iIndex)
-            ) {
-                return;
-            }
-
-
-            aItems.splice(
-                iIndex,
-                1
-            );
-
-
-            oModel.setProperty(
-                "/items",
-                aItems
-            );
-        },
-
-
-        // =========================================================
-        // CANCEL PR
-        // =========================================================
-
-        onCancelPRDialog() {
-
-            const oDialog =
-                this.byId(
-                    "createPRDialog"
-                );
-
-            if (oDialog) {
-                oDialog.close();
-            }
-        },
-
-
-        // =========================================================
-        // SAVE PR
-        // =========================================================
-
-        async onSavePR() {
-
-            const oLocationInput =
-                this.byId(
-                    "prLocationInput"
-                );
-
-            const oRequestedByInput =
-                this.byId(
-                    "prRequestedByInput"
-                );
-
-
-            if (
-                !oLocationInput ||
-                !oRequestedByInput
-            ) {
-
-                MessageBox.error(
-                    "PR dialog controls could not be found."
-                );
-
-                return;
-            }
-
-
-            const sLocationId =
-                oLocationInput.getValue();
-
-
-            const sRequestedBy =
-                oRequestedByInput.getValue();
-
-
-            const oItemsModel =
-                this.getView()
-                    .getModel("prItems");
-
-
-            const aItems =
-                oItemsModel
-                    ? oItemsModel.getProperty(
-                        "/items"
-                    )
-                    : [];
-
-
-            if (
-                !sLocationId ||
-                !sRequestedBy ||
-                !aItems.length
-            ) {
-
-                MessageToast.show(
-                    "Please fill Location, Requested By, and add at least one item."
-                );
-
-                return;
-            }
-
-
-            const oModel =
-                this.getView().getModel();
-
-
-            const oViewModel =
-                this.getView()
-                    .getModel("view");
-
-
-            oViewModel.setProperty(
-                "/busy",
-                true
-            );
-
-
-            try {
-
-                const oListBinding =
-                    oModel.bindList(
-                        "/PurchaseRequisitions"
-                    );
-
-
-                const oContext =
-                    oListBinding.create({
-
-                        location_ID:
-                            sLocationId,
-
-                        requestedBy:
-                            sRequestedBy,
-
-                        status:
-                            "DRAFT",
-
-                        items:
-                            aItems.map(
-                                (i) => ({
-
-                                    part_ID:
-                                        i.partId,
-
-                                    requiredQty:
-                                        parseInt(
-                                            i.requiredQty,
-                                            10
-                                        ) || 0,
-
-                                    supplier_ID:
-                                        i.supplierId ||
-                                        null,
-
-                                    estimatedPrice:
-                                        parseFloat(
-                                            i.estimatedPrice
-                                        ) || 0
-
-                                })
-                            )
-                    });
-
-
-                await oContext.created();
-
-
-                MessageToast.show(
-                    "Purchase Requisition created as DRAFT."
-                );
-
-
-                const oDialog =
-                    this.byId(
-                        "createPRDialog"
-                    );
-
-
-                if (oDialog) {
-                    oDialog.close();
-                }
-
-
-                this._refreshTable(
-                    "prTable"
-                );
+                }), "analytics");
 
                 this._loadCounts();
+            },
 
-            } catch (e) {
+            // =========================================================
+            // SIDE NAVIGATION
+            // =========================================================
 
-                MessageBox.error(
-                    "Could not create PR: " +
-                    e.message
-                );
+            onSideNavigationSelect(oEvent) {
 
-            } finally {
+                const oItem = oEvent.getParameter("item");
 
-                oViewModel.setProperty(
-                    "/busy",
-                    false
-                );
-            }
-        },
-
-
-        // =========================================================
-        // SUBMIT PR
-        // =========================================================
-
-        async onSubmitPR(oEvent) {
-
-            const oContext =
-                oEvent
-                    .getSource()
-                    .getBindingContext();
-
-
-            if (!oContext) {
-                return;
-            }
-
-
-            try {
-
-                await this._callAction(
-                    "submitPR",
-                    {
-                        prID:
-                            oContext.getProperty(
-                                "ID"
-                            )
-                    }
-                );
-
-
-                MessageToast.show(
-                    "PR submitted for approval."
-                );
-
-
-                this._refreshTable(
-                    "prTable"
-                );
-
-                this._loadCounts();
-
-            } catch (e) {
-
-                MessageBox.error(
-                    e.message
-                );
-            }
-        },
-
-
-        // =========================================================
-        // APPROVE PR
-        // =========================================================
-
-        onApprovePR(oEvent) {
-
-            const oContext =
-                oEvent
-                    .getSource()
-                    .getBindingContext();
-
-
-            if (!oContext) {
-                return;
-            }
-
-
-            MessageBox.confirm(
-                "Approve this Purchase Requisition?",
-                {
-
-                    actions: [
-                        MessageBox.Action.OK,
-                        MessageBox.Action.CANCEL
-                    ],
-
-
-                    onClose: async (
-                        sAction
-                    ) => {
-
-                        if (
-                            sAction !==
-                            MessageBox.Action.OK
-                        ) {
-                            return;
-                        }
-
-
-                        try {
-
-                            await this._callAction(
-                                "approvePR",
-                                {
-
-                                    prID:
-                                        oContext.getProperty(
-                                            "ID"
-                                        ),
-
-                                    approver:
-                                        "Inventory Manager"
-                                }
-                            );
-
-
-                            MessageToast.show(
-                                "PR approved."
-                            );
-
-
-                            this._refreshTable(
-                                "prTable"
-                            );
-
-                            this._loadCounts();
-
-                        } catch (e) {
-
-                            MessageBox.error(
-                                e.message
-                            );
-                        }
-                    }
-                }
-            );
-        },
-
-
-        // =========================================================
-        // REJECT PR
-        // =========================================================
-
-        onRejectPR(oEvent) {
-
-            const oContext =
-                oEvent
-                    .getSource()
-                    .getBindingContext();
-
-
-            if (!oContext) {
-                return;
-            }
-
-
-            MessageBox.confirm(
-                "Reject this PR?",
-                {
-
-                    actions: [
-                        MessageBox.Action.OK,
-                        MessageBox.Action.CANCEL
-                    ],
-
-
-                    onClose: async (
-                        sAction
-                    ) => {
-
-                        if (
-                            sAction !==
-                            MessageBox.Action.OK
-                        ) {
-                            return;
-                        }
-
-
-                        try {
-
-                            await this._callAction(
-                                "rejectPR",
-                                {
-
-                                    prID:
-                                        oContext.getProperty(
-                                            "ID"
-                                        ),
-
-                                    approver:
-                                        "Inventory Manager",
-
-                                    reason:
-                                        "Rejected via Procurement app"
-                                }
-                            );
-
-
-                            MessageToast.show(
-                                "PR rejected."
-                            );
-
-
-                            this._refreshTable(
-                                "prTable"
-                            );
-
-                            this._loadCounts();
-
-                        } catch (e) {
-
-                            MessageBox.error(
-                                e.message
-                            );
-                        }
-                    }
-                }
-            );
-        },
-
-
-        // =========================================================
-        // CREATE PO FROM PR
-        // =========================================================
-
-        async onCreatePOFromPR(
-            oEvent
-        ) {
-
-            const oContext =
-                oEvent
-                    .getSource()
-                    .getBindingContext();
-
-
-            if (!oContext) {
-                return;
-            }
-
-
-            try {
-
-                const aPOs =
-                    await this._callAction(
-                        "createPOFromPR",
-                        {
-
-                            prID:
-                                oContext.getProperty(
-                                    "ID"
-                                )
-                        }
-                    );
-
-
-                MessageToast.show(
-                    `Created ${Array.isArray(aPOs)
-                        ? aPOs.length
-                        : 1
-                    } Purchase Order(s).`
-                );
-
-
-                this._refreshTable(
-                    "prTable"
-                );
-
-                this._refreshTable(
-                    "poTable"
-                );
-
-                this._loadCounts();
-
-            } catch (e) {
-
-                MessageBox.error(
-                    e.message
-                );
-            }
-        },
-
-
-        // =========================================================
-        // POST GOODS RECEIPT
-        // =========================================================
-
-        async onPostGR() {
-
-            if (!this._pPostGRDialog) {
-
-                this._pPostGRDialog =
-                    Fragment.load({
-
-                        id:
-                            this.getView()
-                                .getId(),
-
-                        name:
-                            "procurement.fragments.PostGR",
-
-                        controller:
-                            this
-
-                    }).then((oDialog) => {
-
-                        this.getView()
-                            .addDependent(oDialog);
-
-                        return oDialog;
-                    });
-            }
-
-
-            this.getView().setModel(
-                new JSONModel({
-                    items: []
-                }),
-                "grItems"
-            );
-
-
-            (
-                await this._pPostGRDialog
-            ).open();
-        },
-
-
-        // =========================================================
-        // PO CHANGE FOR GR
-        // =========================================================
-
-        async onGRPoChange(
-            oEvent
-        ) {
-
-            const sPoId =
-                oEvent
-                    .getSource()
-                    .getSelectedKey();
-
-
-            if (!sPoId) {
-                return;
-            }
-
-
-            try {
-
-                const oResponse =
-                    await fetch(
-                        `/procurement/PurchaseOrderItems?$filter=po_ID eq ${encodeURIComponent(sPoId)}`
-                    );
-
-
-                if (!oResponse.ok) {
-
-                    throw new Error(
-                        `HTTP ${oResponse.status}`
-                    );
-                }
-
-
-                const oData =
-                    await oResponse.json();
-
-
-                const aItems =
-                    (oData.value || [])
-                        .map((i) => ({
-
-                            poItemID:
-                                i.ID,
-
-                            orderedQty:
-                                i.orderedQty,
-
-                            receivedQty:
-                                i.receivedQty,
-
-                            receiveNow:
-                                0
-                        }));
-
-
-                const oModel =
-                    this.getView()
-                        .getModel(
-                            "grItems"
-                        );
-
-
-                if (oModel) {
-
-                    oModel.setProperty(
-                        "/items",
-                        aItems
-                    );
-                }
-
-            } catch (e) {
-
-                MessageBox.error(
-                    "Unable to load PO items: " +
-                    e.message
-                );
-            }
-        },
-
-
-        // =========================================================
-        // CANCEL GR
-        // =========================================================
-
-        onCancelGRDialog() {
-
-            const oDialog =
-                this.byId(
-                    "postGRDialog"
-                );
-
-
-            if (oDialog) {
-                oDialog.close();
-            }
-        },
-
-
-        // =========================================================
-        // SUBMIT GR
-        // =========================================================
-
-        async onSubmitGR() {
-
-            const oPoSelect =
-                this.byId(
-                    "grPoSelect"
-                );
-
-            const oLocationInput =
-                this.byId(
-                    "grLocationInput"
-                );
-
-            const oReceivedByInput =
-                this.byId(
-                    "grReceivedByInput"
-                );
-
-
-            if (
-                !oPoSelect ||
-                !oLocationInput ||
-                !oReceivedByInput
-            ) {
-
-                MessageBox.error(
-                    "Goods Receipt dialog controls could not be found."
-                );
-
-                return;
-            }
-
-
-            const sPoId =
-                oPoSelect.getSelectedKey();
-
-
-            const sLocationId =
-                oLocationInput.getValue();
-
-
-            const sReceivedBy =
-                oReceivedByInput.getValue();
-
-
-            const oItemsModel =
-                this.getView()
-                    .getModel(
-                        "grItems"
-                    );
-
-
-            const aItems =
-                oItemsModel
-                    ? oItemsModel.getProperty(
-                        "/items"
-                    )
-                    : [];
-
-
-            const aSubmitItems =
-                aItems
-                    .filter(
-                        (i) =>
-                            parseInt(
-                                i.receiveNow,
-                                10
-                            ) > 0
-                    )
-                    .map(
-                        (i) => ({
-
-                            poItemID:
-                                i.poItemID,
-
-                            receivedQty:
-                                parseInt(
-                                    i.receiveNow,
-                                    10
-                                )
-                        })
-                    );
-
-
-            if (
-                !sPoId ||
-                !sLocationId ||
-                !sReceivedBy ||
-                !aSubmitItems.length
-            ) {
-
-                MessageToast.show(
-                    "Select a PO, fill Location/Received By, and enter at least one receive quantity."
-                );
-
-                return;
-            }
-
-
-            try {
-
-                await this._callAction(
-                    "postGoodsReceipt",
-                    {
-
-                        poID:
-                            sPoId,
-
-                        locationID:
-                            sLocationId,
-
-                        receivedBy:
-                            sReceivedBy,
-
-                        items:
-                            aSubmitItems
-                    }
-                );
-
-
-                MessageToast.show(
-                    "Goods Receipt posted."
-                );
-
-
-                const oDialog =
-                    this.byId(
-                        "postGRDialog"
-                    );
-
-
-                if (oDialog) {
-                    oDialog.close();
-                }
-
-
-                this._refreshTable(
-                    "grTable"
-                );
-
-                this._refreshTable(
-                    "poTable"
-                );
-
-                this._loadCounts();
-
-            } catch (e) {
-
-                MessageBox.error(
-                    e.message
-                );
-            }
-        },
-
-
-        // =========================================================
-        // RESOLVE ALERT
-        // =========================================================
-
-        async onResolveAlert(
-            oEvent
-        ) {
-
-            const oContext =
-                oEvent
-                    .getSource()
-                    .getBindingContext();
-
-
-            if (!oContext) {
-                return;
-            }
-
-
-            try {
-
-                await this._callAction(
-                    "resolveAlert",
-                    {
-
-                        alertID:
-                            oContext.getProperty(
-                                "ID"
-                            )
-                    }
-                );
-
-
-                MessageToast.show(
-                    "Alert resolved."
-                );
-
-
-                this._refreshTable(
-                    "alertsTable"
-                );
-
-                this._loadCounts();
-
-            } catch (e) {
-
-                MessageBox.error(
-                    e.message
-                );
-            }
-        },
-
-
-        // =========================================================
-        // PROCESS FLOW
-        // =========================================================
-
-        _initProcessFlowModel() {
-
-            if (!this.getView().getModel("pf")) {
-
-                this.getView().setModel(
-                    new JSONModel({
-                        nodes: [],
-                        lanes: [
-                            { laneId: "lane1", icon: "sap-icon://request", text: "Requisition", position: 0 },
-                            { laneId: "lane2", icon: "sap-icon://cart", text: "Purchase Order", position: 1 },
-                            { laneId: "lane3", icon: "sap-icon://shipping-status", text: "Goods Receipt", position: 2 }
-                        ]
-                    }),
-                    "pf"
-                );
-            }
-        },
-
-
-        onProcessFlowPrChange(oEvent) {
-
-            const sPrId =
-                oEvent.getSource().getSelectedKey();
-
-            if (sPrId) {
-                this._loadProcessFlow(sPrId);
-            }
-        },
-
-
-        onRefreshProcessFlow() {
-
-            const oSelect =
-                this.byId("pfPrSelect");
-
-            const sPrId =
-                oSelect ? oSelect.getSelectedKey() : null;
-
-            if (sPrId) {
-                this._loadProcessFlow(sPrId);
-            }
-        },
-
-
-        async _loadProcessFlow(sPrId) {
-
-            const oViewModel =
-                this.getView().getModel("view");
-
-            oViewModel.setProperty("/busy", true);
-
-            try {
-
-                const [prResp, poResp] = await Promise.all([
-                    fetch(`/procurement/PurchaseRequisitions(${sPrId})`),
-                    fetch(`/procurement/PurchaseOrders?$filter=pr_ID eq ${sPrId}`)
-                ]);
-
-                const oPr = await prResp.json();
-                const oPoData = await poResp.json();
-                const aPOs = oPoData.value || [];
-
-                let aGRs = [];
-
-                if (aPOs.length) {
-
-                    const oGrResp =
-                        await fetch(`/procurement/GoodsReceipts?$filter=po_ID eq ${aPOs[0].ID}`);
-
-                    aGRs = (await oGrResp.json()).value || [];
-                }
-
-                const mapPrState = (s) => ({
-                    DRAFT: "Neutral",
-                    SUBMITTED: "Positive",
-                    APPROVED: "Positive",
-                    REJECTED: "Negative",
-                    CONVERTED: "Positive"
-                }[s] || "Neutral");
-
-                const mapPoState = (s) => ({
-                    CREATED: "Neutral",
-                    SENT: "Positive",
-                    PARTIALLY_RECEIVED: "Critical",
-                    RECEIVED: "Positive",
-                    CLOSED: "Positive",
-                    CANCELLED: "Negative"
-                }[s] || "Neutral");
-
-                const aNodes = [
-                    {
-                        lane: "lane1",
-                        nodeId: "pr",
-                        title: oPr.prNumber,
-                        texts: [oPr.status, "Requested by " + oPr.requestedBy],
-                        state: mapPrState(oPr.status),
-                        stateText: oPr.status,
-                        children: aPOs.length ? ["po"] : []
-                    }
-                ];
-
-                if (aPOs.length) {
-
-                    aNodes.push({
-                        lane: "lane2",
-                        nodeId: "po",
-                        title: aPOs[0].poNumber,
-                        texts: [aPOs[0].status],
-                        state: mapPoState(aPOs[0].status),
-                        stateText: aPOs[0].status,
-                        children: aGRs.length ? ["gr"] : []
-                    });
-                }
-
-                if (aGRs.length) {
-
-                    aNodes.push({
-                        lane: "lane3",
-                        nodeId: "gr",
-                        title: aGRs[0].grNumber,
-                        texts: ["Received by " + aGRs[0].receivedBy],
-                        state: "Positive",
-                        stateText: "RECEIVED",
-                        children: []
-                    });
-                }
-
-                const aLanes = [
-                    { laneId: "lane1", icon: "sap-icon://request", text: "Requisition", position: 0 },
-                    { laneId: "lane2", icon: "sap-icon://cart", text: "Purchase Order", position: 1 },
-                    { laneId: "lane3", icon: "sap-icon://shipping-status", text: "Goods Receipt", position: 2 }
-                ];
-
-                this.getView().setModel(
-                    new JSONModel({ nodes: aNodes, lanes: aLanes }),
-                    "pf"
-                );
-
-            } catch (e) {
-
-                MessageBox.error(
-                    "Unable to load process flow: " + e.message
-                );
-
-            } finally {
-
-                oViewModel.setProperty("/busy", false);
-            }
-        },
-
-
-        onProcessFlowNodePress(oEvent) {
-
-            MessageToast.show(
-                "Node: " + oEvent.getParameter("nodeId")
-            );
-        },
-        // =========================================================
-        // AFTER RENDERING — wire tile clicks (VBox has no native press event)
-        // =========================================================
-
-        // =========================================================
-        // AFTER RENDERING — wire tile clicks via delegation (survives re-renders)
-        // =========================================================
-
-        onAfterRendering() {
-
-            this._wireDashboardTileClicksOnce();
-        },
-
-
-        _wireDashboardTileClicksOnce() {
-
-            if (this._bTileClicksWired) {
-                return;
-            }
-
-            const oPage = this.byId("mainPage");
-
-            if (!oPage) {
-                return;
-            }
-
-            const mTileHandlers = {
-                "_IDGenTilePRTotal": this.onPRTilePress,
-                "_IDGenTilePending": this.onPendingTilePress,
-                "_IDGenTilePO": this.onPOTilePress,
-                "_IDGenTileAlerts": this.onAlertsTilePress,
-                "_IDGenTileProcessFlow": this.onProcessFlowTilePress
-            };
-
-            const oView = this.getView();
-
-            // delegate from the Page's DOM root, so it works no matter
-            // how many times the tiles inside get re-rendered
-            oPage.$().on("click.tileDelegation", ".phTile", (oJQEvent) => {
-
-                const sClickedDomId = oJQEvent.currentTarget.id;
-
-                Object.keys(mTileHandlers).forEach((sLocalId) => {
-
-                    const oTile = oView.byId(sLocalId);
-
-                    if (oTile && oTile.getId() === sClickedDomId) {
-                        mTileHandlers[sLocalId].call(this);
-                    }
-                });
-            });
-
-            // make tiles look clickable
-            oPage.$().find(".phTile").css("cursor", "pointer");
-
-            this._bTileClicksWired = true;
-        },
-        // =========================================================
-        // SETTINGS
-        // =========================================================
-
-        _getDefaultSettings() {
-            return {
-                currency: "INR",
-                density: "compact",
-                reorderBufferPct: 10,
-                emailAlertsEnabled: true,
-                autoResolveLow: false,
-                approvalLimit: 50000,
-                defaultApproverRole: "INVENTORY_MANAGER"
-            };
-        },
-
-        _loadSettings() {
-
-            if (this.getView().getModel("settings")) {
-                return;
-            }
-
-            const sStored = localStorage.getItem("mobisProcureFlowSettings");
-            const oSettings = sStored ? JSON.parse(sStored) : this._getDefaultSettings();
-
-            this.getView().setModel(new JSONModel(oSettings), "settings");
-        },
-
-        onSaveSettings() {
-
-            const oSettings = this.getView().getModel("settings").getData();
-
-            localStorage.setItem("mobisProcureFlowSettings", JSON.stringify(oSettings));
-
-            MessageToast.show("Settings saved.");
-        },
-
-        onResetSettings() {
-
-            MessageBox.confirm("Reset all settings to their default values?", {
-                actions: [MessageBox.Action.OK, MessageBox.Action.CANCEL],
-                onClose: (sAction) => {
-
-                    if (sAction !== MessageBox.Action.OK) {
-                        return;
-                    }
-
-                    const oDefaults = this._getDefaultSettings();
-
-                    this.getView().getModel("settings").setData(oDefaults);
-                    localStorage.setItem("mobisProcureFlowSettings", JSON.stringify(oDefaults));
-
-                    MessageToast.show("Settings reset to defaults.");
-                }
-            });
-        },
-        // =========================================================
-        // ANALYTICS
-        // =========================================================
-
-        async _loadAnalytics() {
-
-            const oViewModel = this.getView().getModel("view");
-            oViewModel.setProperty("/busy", true);
-
-            try {
-
-                const [prData, poData, alertData, supplierData, poWithItems] = await Promise.all([
-                    fetch("/procurement/PurchaseRequisitions").then((r) => r.json()),
-                    fetch("/procurement/PurchaseOrders").then((r) => r.json()),
-                    fetch("/procurement/AlertNotifications").then((r) => r.json()),
-                    fetch("/procurement/Suppliers").then((r) => r.json()),
-                    fetch("/procurement/PurchaseOrders?$expand=supplier,items").then((r) => r.json())
-                ]);
-
-                const aPRs = prData.value || [];
-                const aPOs = poData.value || [];
-                const aAlerts = alertData.value || [];
-                const aSuppliers = supplierData.value || [];
-                const aPOsFull = poWithItems.value || [];
-
-                // --- PR status breakdown ---
-                const mPRStatus = {};
-                aPRs.forEach((pr) => {
-                    const sStatus = pr.status || "UNKNOWN";
-                    mPRStatus[sStatus] = (mPRStatus[sStatus] || 0) + 1;
-                });
-                const aPRStatusData = Object.keys(mPRStatus).map((k) => ({ status: k, count: mPRStatus[k] }));
-
-                // --- PO status breakdown ---
-                const mPOStatus = {};
-                aPOs.forEach((po) => {
-                    const sStatus = po.status || "UNKNOWN";
-                    mPOStatus[sStatus] = (mPOStatus[sStatus] || 0) + 1;
-                });
-                const aPOStatusData = Object.keys(mPOStatus).map((k) => ({ status: k, count: mPOStatus[k] }));
-
-                // --- Alerts by severity ---
-                const mSeverity = {};
-                aAlerts.forEach((a) => {
-                    const sSeverity = a.severity || "UNKNOWN";
-                    mSeverity[sSeverity] = (mSeverity[sSeverity] || 0) + 1;
-                });
-                const aSeverityData = Object.keys(mSeverity).map((k) => ({ severity: k, count: mSeverity[k] }));
-
-                // --- Spend by supplier (top 10) ---
-                const mSpend = {};
-                aPOsFull.forEach((po) => {
-                    const sName = (po.supplier && po.supplier.name) || "Unknown";
-                    if (!mSpend[sName]) mSpend[sName] = 0;
-                    (po.items || []).forEach((item) => {
-                        mSpend[sName] += (item.orderedQty || 0) * (item.unitPrice || 0);
-                    });
-                });
-                const aSpendData = Object.keys(mSpend)
-                    .map((k) => ({ supplierName: k, totalSpend: Math.round(mSpend[k]) }))
-                    .sort((a, b) => b.totalSpend - a.totalSpend)
-                    .slice(0, 10);
-
-                // --- Supplier ratings (guard against missing rating field) ---
-                const aRatingData = aSuppliers
-                    .map((s) => ({ supplierName: s.name || "Unknown", rating: s.rating || 0 }))
-                    .sort((a, b) => b.rating - a.rating)
-                    .slice(0, 10);
-
-                // --- KPIs (guard against missing rating/leadTimeDays fields) ---
-                const iTotalSpend = Object.values(mSpend).reduce((sum, v) => sum + v, 0);
-
-                const fAvgRating = aSuppliers.length
-                    ? (aSuppliers.reduce((sum, s) => sum + (s.rating || 0), 0) / aSuppliers.length)
-                    : 0;
-
-                const fAvgLeadTime = aSuppliers.length
-                    ? (aSuppliers.reduce((sum, s) => sum + (s.leadTimeDays || 0), 0) / aSuppliers.length)
-                    : 0;
-
-                const iConvertedPRs = aPRs.filter((pr) => pr.status === "CONVERTED" || pr.status === "APPROVED").length;
-                const fConversionPct = aPRs.length ? Math.round((iConvertedPRs / aPRs.length) * 100) : 0;
-
-                this.getView().setModel(
-                    new JSONModel({
-                        prStatusData: aPRStatusData,
-                        poStatusData: aPOStatusData,
-                        severityData: aSeverityData,
-                        spendData: aSpendData,
-                        ratingData: aRatingData,
-                        kpi: {
-                            totalSpend: Math.round(iTotalSpend).toLocaleString("en-IN"),
-                            avgRating: fAvgRating.toFixed(1),
-                            avgLeadTime: fAvgLeadTime.toFixed(1),
-                            conversionPct: fConversionPct + "%"
-                        }
-                    }),
-                    "analytics"
-                );
-
-            } catch (e) {
-
-                MessageBox.error("Unable to load analytics: " + e.message);
-
-            } finally {
-
-                oViewModel.setProperty("/busy", false);
-            }
-        },
-
-        onRefreshAnalytics() {
-            this._loadAnalytics();
-        },
-        // =========================================================
-        // SIDE NAV SELECTION (recursive — handles nested group items)
-        // =========================================================
-
-        _updateSideNavSelection(sKey) {
-
-            const oSideNavigation = this.byId("sideNavigation");
-
-            if (!oSideNavigation) {
-                return;
-            }
-
-            const oNavigationList = oSideNavigation.getItem();
-
-            if (!oNavigationList) {
-                return;
-            }
-
-            const setSelectionRecursive = (aItems) => {
-
-                if (!aItems) {
+                if (!oItem) {
                     return;
                 }
 
-                aItems.forEach((oItem) => {
+                const sKey = oItem.getKey();
 
-                    // Guard: only call setSelected if this control actually has it
-                    if (typeof oItem.setSelected === "function" && typeof oItem.getKey === "function") {
-                        oItem.setSelected(oItem.getKey() === sKey);
-                    }
+                this._showSection(sKey || "dashboard");
+            },
 
-                    // Recurse into nested items (REPORTS / CONFIGURATION groups)
-                    if (typeof oItem.getItems === "function") {
+            // =========================================================
+            // SHOW SECTION
+            // =========================================================
 
-                        const aChildren = oItem.getItems();
+            _showSection(sKey) {
 
-                        if (aChildren && aChildren.length) {
-                            setSelectionRecursive(aChildren);
-                        }
+                const aSections = [
+                    "dashboard",
+                    "requisitions",
+                    "orders",
+                    "gr",
+                    "suppliers",
+                    "alerts",
+                    "processflow",
+                    "analytics",
+                    "settings",
+                    "spend",
+                    "supplierPerf",
+                    "users",
+                    "roles"
+                ];
+
+                aSections.forEach((sSection) => {
+
+                    const oSection = this.byId(sSection + "Section");
+
+                    if (oSection) {
+                        oSection.setVisible(sSection === sKey);
                     }
                 });
-            };
 
-            setSelectionRecursive(oNavigationList.getItems());
+                this._updateSideNavSelection(sKey);
+
+                switch (sKey) {
+
+                    case "dashboard":
+                        this._loadCounts();
+                        break;
+
+                    case "requisitions":
+                        this._refreshTable("prTable");
+                        break;
+
+                    case "orders":
+                        this._refreshTable("poTable");
+                        break;
+
+                    case "gr":
+                        this._refreshTable("grTable");
+                        break;
+
+                    case "suppliers":
+                        this._refreshTable("supplierTable");
+                        break;
+
+                    case "alerts":
+                        this._refreshTable("alertsTable");
+                        this._loadCounts();
+                        break;
+
+                    case "processflow":
+                        this._initProcessFlowModel();
+                        break;
+
+                    case "analytics":
+                        this._loadAnalytics();
+                        break;
+
+                    case "settings":
+                        this._loadSettings();
+                        break;
+
+                    case "spend":
+                        this._loadSpendAnalysis();
+                        break;
+
+                    case "supplierPerf":
+                        this._refreshTable("supplierPerfTable");
+                        break;
+
+                    case "users":
+                        this._loadUsers();
+                        break;
+
+                    case "roles":
+                        this._loadRoles();
+                        break;
+                }
+            },
+
+            // =========================================================
+            // BACK TO DASHBOARD
+            // =========================================================
+
+            onBackToDashboard() {
+                this._showSection("dashboard");
+            },
+
+            // =========================================================
+            // GLOBAL SEARCH
+            // =========================================================
+
+            onGlobalSearch(oEvent) {
+
+                const sQuery = oEvent.getParameter("query");
+
+                if (!sQuery) {
+                    return;
+                }
+
+                MessageToast.show("Searching for: " + sQuery);
+            },
+
+            // =========================================================
+            // GENERIC ACTION
+            // =========================================================
+
+            async _callAction(sActionName, oParams) {
+
+                const oViewModel = this.getView().getModel("view");
+
+                oViewModel.setProperty("/busy", true);
+
+                try {
+
+                    const oResponse = await fetch(`/procurement/${sActionName}`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(oParams || {})
+                    });
+
+                    const oResult = await oResponse.json().catch(() => ({}));
+
+                    if (!oResponse.ok) {
+
+                        const sMessage = oResult?.error?.message ||
+                            `${sActionName} failed (HTTP ${oResponse.status})`;
+
+                        throw new Error(sMessage);
+                    }
+
+                    return oResult;
+
+                } finally {
+
+                    oViewModel.setProperty("/busy", false);
+                }
+            },
+
+            // =========================================================
+            // REFRESH TABLE
+            // =========================================================
+
+            _refreshTable(sId) {
+
+                const oTable = this.byId(sId);
+
+                if (!oTable) {
+                    return;
+                }
+
+                const oBinding = oTable.getBinding("items");
+
+                if (oBinding) {
+                    oBinding.refresh();
+                }
+            },
+
+            // =========================================================
+            // SIDE NAV SELECTION (recursive — handles nested group items)
+            // =========================================================
+
+            _updateSideNavSelection(sKey) {
+
+                const oSideNavigation = this.byId("sideNavigation");
+
+                if (!oSideNavigation) {
+                    return;
+                }
+
+                const oNavigationList = oSideNavigation.getItem();
+
+                if (!oNavigationList) {
+                    return;
+                }
+
+                const setSelectionRecursive = (aItems) => {
+
+                    if (!aItems) {
+                        return;
+                    }
+
+                    aItems.forEach((oItem) => {
+
+                        if (typeof oItem.setSelected === "function" && typeof oItem.getKey === "function") {
+                            oItem.setSelected(oItem.getKey() === sKey);
+                        }
+
+                        if (typeof oItem.getItems === "function") {
+
+                            const aChildren = oItem.getItems();
+
+                            if (aChildren && aChildren.length) {
+                                setSelectionRecursive(aChildren);
+                            }
+                        }
+                    });
+                };
+
+                setSelectionRecursive(oNavigationList.getItems());
+            },
+
+            // =========================================================
+            // AFTER RENDERING — wire tile clicks via delegation
+            // =========================================================
+
+            onAfterRendering() {
+                this._wireDashboardTileClicksOnce();
+            },
+
+            _wireDashboardTileClicksOnce() {
+
+                if (this._bTileClicksWired) {
+                    return;
+                }
+
+                const oPage = this.byId("mainPage");
+
+                if (!oPage) {
+                    return;
+                }
+
+                const mTileHandlers = {
+                    "_IDGenTilePRTotal": this.onPRTilePress,
+                    "_IDGenTilePending": this.onPendingTilePress,
+                    "_IDGenTilePO": this.onPOTilePress,
+                    "_IDGenTileAlerts": this.onAlertsTilePress,
+                    "_IDGenTileProcessFlow": this.onProcessFlowTilePress
+                };
+
+                const oView = this.getView();
+
+                oPage.$().on("click.tileDelegation", ".phTile", (oJQEvent) => {
+
+                    const sClickedDomId = oJQEvent.currentTarget.id;
+
+                    Object.keys(mTileHandlers).forEach((sLocalId) => {
+
+                        const oTile = oView.byId(sLocalId);
+
+                        if (oTile && oTile.getId() === sClickedDomId) {
+                            mTileHandlers[sLocalId].call(this);
+                        }
+                    });
+                });
+
+                oPage.$().find(".phTile").css("cursor", "pointer");
+
+                this._bTileClicksWired = true;
+            }
         }
-    });
+    );
+
+    return Controller.extend("procurement.controller.View1", oControllerMembers);
 });

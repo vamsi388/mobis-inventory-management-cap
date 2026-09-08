@@ -37,6 +37,9 @@ server:
           - path: /procurement
             url: https://3f219d91trial-dev-mobis-spare-parts-portal-srv.cfapps.us10-001.hana.ondemand.com
             destination: procurement-srv
+          - path: /inventory
+            url: https://3f219d91trial-dev-mobis-spare-parts-portal-srv.cfapps.us10-001.hana.ondemand.com
+            destination: procurement-srv
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -45,6 +48,10 @@ server:
           - urlPath: /procurement
             metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
+            generateMockData: true
+          - urlPath: /inventory
+            metadataPath: ./webapp/localService/inventory/metadata.xml
+            mockdataPath: ./webapp/localService/inventory/data
             generateMockData: true
         annotations: []
 builder:

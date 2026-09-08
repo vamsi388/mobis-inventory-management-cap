@@ -1,0 +1,29 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <VBox id="ordersSection" visible="false">
+        <Toolbar id="_IDGenPOToolbar">
+            <Title id="_IDGenPOTitle" text="Purchase Orders"/>
+            <ToolbarSpacer id="_IDGenPOSpacer"/>
+            <Button id="_IDGenRefreshPOBtn" icon="sap-icon://refresh" tooltip="Refresh" press=".onRefreshPOs"/>
+        </Toolbar>
+        <Table id="poTable" items="{ path: '/PurchaseOrders', sorter: { path: 'createdAt', descending: true } }" growing="true" growingThreshold="15">
+            <columns>
+                <Column id="_IDGenPOColNum"><Text id="_IDGenPOColNumTxt" text="PO Number"/></Column>
+                <Column id="_IDGenPOColSup"><Text id="_IDGenPOColSupTxt" text="Supplier"/></Column>
+                <Column id="_IDGenPOColSrc"><Text id="_IDGenPOColSrcTxt" text="Source PR"/></Column>
+                <Column id="_IDGenPOColStatus"><Text id="_IDGenPOColStatusTxt" text="Status"/></Column>
+                <Column id="_IDGenPOColS4"><Text id="_IDGenPOColS4Txt" text="S/4 PO ID"/></Column>
+            </columns>
+            <items>
+                <ColumnListItem id="_IDGenPORow">
+                    <cells>
+                        <Text id="_IDGenPONum" text="{poNumber}"/>
+                        <Text id="_IDGenPOSup" text="{supplier_ID}"/>
+                        <Text id="_IDGenPOSrc" text="{pr_ID}"/>
+                        <ObjectStatus id="_IDGenPOStatus" text="{status}" state="{path:'status', formatter:'.formatter.poStatusState'}"/>
+                        <Text id="_IDGenPOS4" text="{s4POId}"/>
+                    </cells>
+                </ColumnListItem>
+            </items>
+        </Table>
+    </VBox>
+</core:FragmentDefinition>

@@ -1,0 +1,29 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:tnt="sap.tnt" xmlns:core="sap.ui.core">
+    <tnt:SideNavigation id="sideNavigation" itemSelect=".onSideNavigationSelect">
+        <tnt:item>
+            <tnt:NavigationList id="_IDGenNavList">
+                <tnt:NavigationListItem id="_IDGenNavDashboard" key="dashboard" text="Dashboard" icon="sap-icon://home" selected="true"/>
+                <tnt:NavigationListItem id="_IDGenNavPR" key="requisitions" text="Purchase Requisitions" icon="sap-icon://request"/>
+                <tnt:NavigationListItem id="_IDGenNavPO" key="orders" text="Purchase Orders" icon="sap-icon://cart"/>
+                <tnt:NavigationListItem id="_IDGenNavGR" key="gr" text="Goods Receipt" icon="sap-icon://shipping-status"/>
+                <tnt:NavigationListItem id="_IDGenNavSuppliers" key="suppliers" text="Suppliers" icon="sap-icon://supplier"/>
+
+                <tnt:NavigationListItem id="_IDGenNavReportsGroup" text="REPORTS" icon="" expanded="true" enabled="true">
+                    <tnt:items>
+                        <tnt:NavigationListItem id="_IDGenNavAnalytics" key="analytics" text="Analytics" icon="sap-icon://line-chart"/>
+                        <tnt:NavigationListItem id="_IDGenNavSpend" key="spend" text="Spend Analysis" icon="sap-icon://money-bills"/>
+                        <tnt:NavigationListItem id="_IDGenNavSupPerf" key="supplierPerf" text="Supplier Performance" icon="sap-icon://performance"/>
+                    </tnt:items>
+                </tnt:NavigationListItem>
+
+                <tnt:NavigationListItem id="_IDGenNavConfigGroup" text="CONFIGURATION" icon="" expanded="true" enabled="true">
+                    <tnt:items>
+                        <tnt:NavigationListItem id="_IDGenNavSettings" key="settings" text="Settings" icon="sap-icon://action-settings"/>
+                        <tnt:NavigationListItem id="_IDGenNavUsers" key="users" text="User Management" icon="sap-icon://group"/>
+                        <tnt:NavigationListItem id="_IDGenNavRoles" key="roles" text="Roles &amp; Permissions" icon="sap-icon://key-user-settings"/>
+                    </tnt:items>
+                </tnt:NavigationListItem>
+            </tnt:NavigationList>
+        </tnt:item>
+    </tnt:SideNavigation>
+</core:FragmentDefinition>

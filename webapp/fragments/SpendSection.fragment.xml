@@ -1,0 +1,34 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <VBox id="spendSection" visible="false">
+        <Title id="_IDGenSpendTitle" text="Spend Analysis" level="H2" class="sapUiSmallMarginBottom"/>
+        <Text id="_IDGenSpendSubtitle" text="Total committed spend by supplier, based on open and closed Purchase Orders" class="sapUiTinyText sapUiSmallMarginBottom"/>
+
+        <Panel id="_IDGenSpendPanel" headerText="Spend by Supplier">
+            <headerToolbar>
+                <Toolbar id="_IDGenSpendToolbar">
+                    <Title id="_IDGenSpendPanelTitle" text="Spend by Supplier"/>
+                    <ToolbarSpacer id="_IDGenSpendSpacer"/>
+                    <Button id="_IDGenRefreshSpendBtn" icon="sap-icon://refresh" tooltip="Refresh" press=".onRefreshSpend"/>
+                </Toolbar>
+            </headerToolbar>
+            <Table id="spendTable" items="{spend>/bySupplier}" noDataText="No spend data available">
+                <columns>
+                    <Column id="_IDGenSpendColSup"><Text text="Supplier"/></Column>
+                    <Column id="_IDGenSpendColPOs" hAlign="End"><Text text="Purchase Orders"/></Column>
+                    <Column id="_IDGenSpendColQty" hAlign="End"><Text text="Total Qty Ordered"/></Column>
+                    <Column id="_IDGenSpendColTotal" hAlign="End"><Text text="Total Spend"/></Column>
+                </columns>
+                <items>
+                    <ColumnListItem id="_IDGenSpendRow">
+                        <cells>
+                            <Text text="{spend>supplierName}"/>
+                            <Text text="{spend>poCount}"/>
+                            <Text text="{spend>totalQty}"/>
+                            <ObjectNumber number="{spend>totalSpend}" unit="INR"/>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </Panel>
+    </VBox>
+</core:FragmentDefinition>

@@ -7,7 +7,9 @@
             <l:VerticalLayout id="_IDGenVerticalLayout1" class="sapUiContentPadding" width="100%">
                 <l:content>
                     <Label id="_IDGenLabel4" text="{i18n>prLocationLabel}" labelFor="prLocationInput"/>
-                    <Input id="prLocationInput" placeholder="{i18n>prLocationPlaceholder}" width="100%"/>
+                    <Select id="prLocationInput" width="100%" items="{/Locations}">
+                        <core:Item key="{ID}" text="{name} ({locationCode})"/>
+                    </Select>
 
                     <Label id="_IDGenLabel5" text="{i18n>prRequestedByLabel}" labelFor="prRequestedByInput" class="sapUiTinyMarginTop"/>
                     <Input id="prRequestedByInput" placeholder="{i18n>prRequestedByPlaceholder}" width="100%"/>
@@ -29,10 +31,23 @@
                         <items>
                             <ColumnListItem id="_IDGenColumnListItem7">
                                 <cells>
-                                    <Input id="_IDGenInput1" value="{prItems>partId}"/>
-                                    <Input id="_IDGenInput2" value="{prItems>requiredQty}" type="Number"/>
-                                    <Input id="_IDGenInput3" value="{prItems>supplierId}"/>
-                                    <Input id="_IDGenInput4" value="{prItems>estimatedPrice}" type="Number"/>
+                                    <ComboBox
+                                        id="_IDGenPartCombo"
+                                        selectedKey="{prItems>partId}"
+                                        items="{inventory>/SpareParts}"
+                                        change=".onPRItemPartChange"
+                                    >
+                                        <core:Item key="{inventory>ID}" text="{inventory>partNumber} - {inventory>description}"/>
+                                    </ComboBox>
+                                                                        <Input id="_IDGenInput2" value="{prItems>requiredQty}" type="Number" liveChange=".onPRItemQtyChange"/>
+                                    <ComboBox
+                                        id="_IDGenSupplierCombo"
+                                        selectedKey="{prItems>supplierId}"
+                                        items="{/Suppliers}"
+                                    >
+                                        <core:Item key="{ID}" text="{name} ({supplierCode})"/>
+                                    </ComboBox>
+                                    <Input id="_IDGenInput4" value="{prItems>estimatedPrice}" type="Number" editable="false"/>
                                     <Button id="_IDGenButton16" icon="sap-icon://delete" type="Transparent" press=".onRemovePRItemRow"/>
                                 </cells>
                             </ColumnListItem>

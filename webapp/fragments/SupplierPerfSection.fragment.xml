@@ -1,0 +1,36 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <VBox id="supplierPerfSection" visible="false">
+        <Title id="_IDGenSupPerfTitle" text="Supplier Performance" level="H2" class="sapUiSmallMarginBottom"/>
+        <Text id="_IDGenSupPerfSubtitle" text="Ranked by rating and delivery lead time" class="sapUiTinyText sapUiSmallMarginBottom"/>
+
+        <Panel id="_IDGenSupPerfPanel" headerText="Performance Ranking">
+            <headerToolbar>
+                <Toolbar id="_IDGenSupPerfToolbar">
+                    <Title id="_IDGenSupPerfPanelTitle" text="Performance Ranking"/>
+                    <ToolbarSpacer id="_IDGenSupPerfSpacer"/>
+                    <Button id="_IDGenRefreshSupPerfBtn" icon="sap-icon://refresh" tooltip="Refresh" press=".onRefreshSupplierPerf"/>
+                </Toolbar>
+            </headerToolbar>
+            <Table id="supplierPerfTable" items="{ path: '/Suppliers', sorter: { path: 'rating', descending: true } }" noDataText="No suppliers found">
+                <columns>
+                    <Column id="_IDGenSPColName"><Text text="Supplier"/></Column>
+                    <Column id="_IDGenSPColRating" hAlign="End"><Text text="Rating"/></Column>
+                    <Column id="_IDGenSPColLead" hAlign="End"><Text text="Lead Time (days)"/></Column>
+                    <Column id="_IDGenSPColGrade"><Text text="Grade"/></Column>
+                    <Column id="_IDGenSPColEligible"><Text text="Eligible"/></Column>
+                </columns>
+                <items>
+                    <ColumnListItem id="_IDGenSPRow">
+                        <cells>
+                            <Text text="{name}"/>
+                            <ObjectNumber number="{rating}"/>
+                            <Text text="{leadTimeDays}"/>
+                            <ObjectStatus text="{path:'rating', formatter:'.formatter.supplierGradeText'}" state="{path:'rating', formatter:'.formatter.supplierGradeState'}"/>
+                            <core:Icon src="{= ${isEligible} ? 'sap-icon://accept' : 'sap-icon://decline' }" color="{= ${isEligible} ? '#2b7d2b' : '#b00' }"/>
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </Panel>
+    </VBox>
+</core:FragmentDefinition>

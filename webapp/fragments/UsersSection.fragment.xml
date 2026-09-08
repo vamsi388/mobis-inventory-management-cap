@@ -1,0 +1,31 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <VBox id="usersSection" visible="false">
+        <Toolbar id="_IDGenUsersHeaderToolbar">
+            <Title id="_IDGenUsersTitle" text="User Management" level="H2"/>
+            <ToolbarSpacer id="_IDGenUsersSpacer"/>
+            <Button id="_IDGenAddUserBtn" text="Add User" type="Emphasized" icon="sap-icon://add" press=".onAddUser"/>
+        </Toolbar>
+        <Text id="_IDGenUsersSubtitle" text="Users provisioned for the Procurement application" class="sapUiTinyText sapUiSmallMarginBottom"/>
+
+        <Table id="usersTable" items="{users>/list}" noDataText="No users found">
+            <columns>
+                <Column id="_IDGenUserColName"><Text text="Name"/></Column>
+                <Column id="_IDGenUserColEmail"><Text text="Email"/></Column>
+                <Column id="_IDGenUserColRole"><Text text="Role"/></Column>
+                <Column id="_IDGenUserColStatus"><Text text="Status"/></Column>
+                <Column id="_IDGenUserColAction" hAlign="End"><Text text="Action"/></Column>
+            </columns>
+            <items>
+                <ColumnListItem id="_IDGenUserRow">
+                    <cells>
+                        <Text text="{users>name}"/>
+                        <Text text="{users>email}"/>
+                        <ObjectStatus text="{users>role}" state="Information"/>
+                        <ObjectStatus text="{= ${users>active} ? 'Active' : 'Deactivated' }" state="{= ${users>active} ? 'Success' : 'Error' }"/>
+                        <Button text="{= ${users>active} ? 'Deactivate' : 'Activate' }" type="Transparent" press=".onToggleUserStatus"/>
+                    </cells>
+                </ColumnListItem>
+            </items>
+        </Table>
+    </VBox>
+</core:FragmentDefinition>

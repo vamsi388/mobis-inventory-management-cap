@@ -1,0 +1,28 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <VBox id="grSection" visible="false">
+        <Toolbar id="_IDGenGRToolbar">
+            <Title id="_IDGenGRTitle" text="Goods Receipt"/>
+            <ToolbarSpacer id="_IDGenGRSpacer"/>
+            <Button id="_IDGenPostGRBtn" text="Post GR" type="Emphasized" icon="sap-icon://add" press=".onPostGR"/>
+            <Button id="_IDGenRefreshGRBtn" icon="sap-icon://refresh" tooltip="Refresh" press=".onRefreshGRs"/>
+        </Toolbar>
+        <Table id="grTable" items="{ path: '/GoodsReceipts', sorter: { path: 'createdAt', descending: true } }" growing="true" growingThreshold="15">
+            <columns>
+                <Column id="_IDGenGRColNum"><Text id="_IDGenGRColNumTxt" text="GR Number"/></Column>
+                <Column id="_IDGenGRColPO"><Text id="_IDGenGRColPOTxt" text="PO"/></Column>
+                <Column id="_IDGenGRColLoc"><Text id="_IDGenGRColLocTxt" text="Location"/></Column>
+                <Column id="_IDGenGRColRec"><Text id="_IDGenGRColRecTxt" text="Received By"/></Column>
+            </columns>
+            <items>
+                <ColumnListItem id="_IDGenGRRow">
+                    <cells>
+                        <Text id="_IDGenGRNum" text="{grNumber}"/>
+                        <Text id="_IDGenGRPO" text="{po_ID}"/>
+                        <Text id="_IDGenGRLoc" text="{location_ID}"/>
+                        <Text id="_IDGenGRRec" text="{receivedBy}"/>
+                    </cells>
+                </ColumnListItem>
+            </items>
+        </Table>
+    </VBox>
+</core:FragmentDefinition>

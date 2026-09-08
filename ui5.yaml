@@ -19,6 +19,9 @@ server:
           - path: /procurement
             url: https://3f219d91trial-dev-mobis-spare-parts-portal-srv.cfapps.us10-001.hana.ondemand.com
             destination: procurement-srv
+          - path: /inventory
+            url: https://3f219d91trial-dev-mobis-spare-parts-portal-srv.cfapps.us10-001.hana.ondemand.com
+            destination: procurement-srv
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:

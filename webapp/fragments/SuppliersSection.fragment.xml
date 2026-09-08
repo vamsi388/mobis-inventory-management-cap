@@ -1,0 +1,33 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <VBox id="suppliersSection" visible="false">
+        <Toolbar id="_IDGenSupToolbar">
+            <Title id="_IDGenSupTitle" text="Suppliers"/>
+            <ToolbarSpacer id="_IDGenSupSpacer"/>
+            <Button id="_IDGenRefreshSupBtn" icon="sap-icon://refresh" tooltip="Refresh" press=".onRefreshSuppliers"/>
+        </Toolbar>
+        <Table id="supplierTable" items="{/Suppliers}" growing="true" growingThreshold="20">
+            <columns>
+                <Column id="_IDGenSupColCode"><Text id="_IDGenSupColCodeTxt" text="Code"/></Column>
+                <Column id="_IDGenSupColName"><Text id="_IDGenSupColNameTxt" text="Name"/></Column>
+                <Column id="_IDGenSupColEmail"><Text id="_IDGenSupColEmailTxt" text="Email"/></Column>
+                <Column id="_IDGenSupColPhone"><Text id="_IDGenSupColPhoneTxt" text="Phone"/></Column>
+                <Column id="_IDGenSupColRating"><Text id="_IDGenSupColRatingTxt" text="Rating"/></Column>
+                <Column id="_IDGenSupColLead"><Text id="_IDGenSupColLeadTxt" text="Lead Time"/></Column>
+                <Column id="_IDGenSupColEligible"><Text id="_IDGenSupColEligibleTxt" text="Eligible"/></Column>
+            </columns>
+            <items>
+                <ColumnListItem id="_IDGenSupRow">
+                    <cells>
+                        <Text id="_IDGenSupCode" text="{supplierCode}"/>
+                        <Text id="_IDGenSupName" text="{name}"/>
+                        <Text id="_IDGenSupEmail" text="{email}"/>
+                        <Text id="_IDGenSupPhone" text="{phone}"/>
+                        <ObjectNumber id="_IDGenSupRating" number="{rating}"/>
+                        <Text id="_IDGenSupLead" text="{leadTimeDays}"/>
+                        <core:Icon id="_IDGenSupEligible" src="{= ${isEligible} ? 'sap-icon://accept' : 'sap-icon://decline' }" color="{= ${isEligible} ? '#2b7d2b' : '#b00' }"/>
+                    </cells>
+                </ColumnListItem>
+            </items>
+        </Table>
+    </VBox>
+</core:FragmentDefinition>

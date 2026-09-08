@@ -1,0 +1,244 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:viz.data="sap.viz.ui5.data"
+    xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
+>
+    <VBox
+        id="alertsSection"
+        visible="false"
+    >
+        <HBox
+            id="_IDGenAlertsBackRow"
+            alignItems="Center"
+            class="sapUiTinyMarginBottom"
+        >
+            <Button
+                id="_IDGenBackToDashboardBtn"
+                icon="sap-icon://nav-back"
+                text="Back to Dashboard"
+                type="Transparent"
+                press=".onBackToDashboard"
+            />
+        </HBox>
+
+        <VBox
+            id="_IDGenAlertsHeaderBox"
+            class="sapUiSmallMarginBottom"
+        >
+            <Title
+                id="_IDGenAlertsTitle"
+                text="Alerts Dashboard"
+                level="H2"
+            />
+            <Text
+                id="_IDGenAlertsSubtitle"
+                text="Monitor and resolve critical procurement alerts"
+                class="sapUiTinyText"
+            />
+        </VBox>
+
+        <HBox
+            id="_IDGenAlertsChartRow"
+            wrap="Wrap"
+        >
+            <VBox
+                id="_IDGenAlertsLeftCol"
+                width="32%"
+                class="sapUiSmallMarginEnd"
+            >
+                <Panel
+                    id="_IDGenSeverityPanel"
+                    headerText="Alerts by Severity"
+                    class="sapUiSmallMarginBottom"
+                >
+                    <viz:VizFrame
+                        id="severityChart"
+                        vizType="donut"
+                        height="240px"
+                        width="100%"
+                        uiConfig="{applicationSet:'fiori'}"
+                        vizProperties="{title: {visible: false}, legend: {visible: true}}"
+                    >
+                        <viz:dataset>
+                            <viz.data:FlattenedDataset
+                                data="{view>/severityChartData}"
+                            >
+                                <viz.data:dimensions>
+                                    <viz.data:DimensionDefinition
+                                        name="Severity"
+                                        value="{severity}"
+                                    />
+                                </viz.data:dimensions>
+                                <viz.data:measures>
+                                    <viz.data:MeasureDefinition
+                                        name="Count"
+                                        value="{count}"
+                                    />
+                                </viz.data:measures>
+                            </viz.data:FlattenedDataset>
+                        </viz:dataset>
+                        <viz:feeds>
+                            <viz.feeds:FeedItem
+                                id="_IDGenFeed1"
+                                uid="color"
+                                type="Dimension"
+                                values="Severity"
+                            />
+                            <viz.feeds:FeedItem
+                                id="_IDGenFeed2"
+                                uid="size"
+                                type="Measure"
+                                values="Count"
+                            />
+                        </viz:feeds>
+                    </viz:VizFrame>
+                </Panel>
+                <Panel
+                    id="_IDGenStatusPanel"
+                    headerText="Alerts by Status"
+                >
+                    <VBox
+                        id="_IDGenStatusBox"
+                        class="sapUiTinyMargin"
+                    >
+                        <Text
+                            id="_IDGenResolvedLbl"
+                            text="Resolved"
+                            class="sapUiTinyMarginBottom"
+                        />
+                        <ProgressIndicator
+                            id="_IDGenResolvedBar"
+                            percentValue="{view>/statusPct/resolvedPct}"
+                            displayValue="{view>/counts/alertsResolved} ({view>/statusPct/resolvedPct}%)"
+                            state="Success"
+                            class="sapUiTinyMarginBottom"
+                        />
+                        <Text
+                            id="_IDGenUnresolvedLbl"
+                            text="Unresolved"
+                            class="sapUiTinyMarginBottom"
+                        />
+                        <ProgressIndicator
+                            id="_IDGenUnresolvedBar"
+                            percentValue="{view>/statusPct/unresolvedPct}"
+                            displayValue="{view>/counts/alertsOpen} ({view>/statusPct/unresolvedPct}%)"
+                            state="Error"
+                        />
+                    </VBox>
+                </Panel>
+            </VBox>
+
+            <VBox
+                id="_IDGenAlertsRightCol"
+                width="66%"
+            >
+                <Panel
+                    id="_IDGenAllAlertsPanel"
+                    headerText="All Alerts"
+                >
+                    <headerToolbar>
+                        <Toolbar id="_IDGenAllAlertsToolbar">
+                            <Title
+                                id="_IDGenAllAlertsTitle"
+                                text="All Alerts"
+                            />
+                            <ToolbarSpacer id="_IDGenAllAlertsSpacer" />
+                            <Button
+                                id="_IDGenRefreshAlertsBtn"
+                                icon="sap-icon://refresh"
+                                tooltip="Refresh"
+                                press=".onRefreshAlerts"
+                            />
+                        </Toolbar>
+                    </headerToolbar>
+                    <Table
+                        id="alertsTable"
+                        items="{ path: '/AlertNotifications', sorter: { path: 'createdAt', descending: true } }"
+                        growing="true"
+                        growingThreshold="20"
+                    >
+                        <columns>
+                            <Column id="_IDGenColType">
+                                <Text
+                                    id="_IDGenColTypeTxt"
+                                    text="Type"
+                                />
+                            </Column>
+                            <Column id="_IDGenColMsg">
+                                <Text
+                                    id="_IDGenColMsgTxt"
+                                    text="Message"
+                                />
+                            </Column>
+                            <Column id="_IDGenColSev">
+                                <Text
+                                    id="_IDGenColSevTxt"
+                                    text="Severity"
+                                />
+                            </Column>
+                            <Column id="_IDGenColStatus">
+                                <Text
+                                    id="_IDGenColStatusTxt"
+                                    text="Status"
+                                />
+                            </Column>
+                            <Column id="_IDGenColRaised">
+                                <Text
+                                    id="_IDGenColRaisedTxt"
+                                    text="Raised On"
+                                />
+                            </Column>
+                            <Column
+                                id="_IDGenColAction"
+                                hAlign="End"
+                            >
+                                <Text
+                                    id="_IDGenColActionTxt"
+                                    text="Action"
+                                />
+                            </Column>
+                        </columns>
+                        <items>
+                            <ColumnListItem id="_IDGenAlertRow">
+                                <cells>
+                                    <Text
+                                        id="_IDGenAlertType"
+                                        text="{alertType}"
+                                    />
+                                    <Text
+                                        id="_IDGenAlertMsg"
+                                        text="{message}"
+                                        maxLines="2"
+                                    />
+                                    <ObjectStatus
+                                        id="_IDGenAlertSev"
+                                        text="{severity}"
+                                        state="{path:'severity', formatter:'.formatter.severityState'}"
+                                    />
+                                    <ObjectStatus
+                                        id="_IDGenAlertStatus"
+                                        text="{= ${isResolved} ? 'Resolved' : 'Open' }"
+                                        state="{= ${isResolved} ? 'Success' : 'Warning' }"
+                                    />
+                                    <Text
+                                        id="_IDGenAlertRaised"
+                                        text="{ path: 'createdAt', type: 'sap.ui.model.type.DateTime', formatOptions: { style: 'medium' } }"
+                                    />
+                                    <Button
+                                        id="_IDGenResolveBtn"
+                                        text="Resolve"
+                                        type="Emphasized"
+                                        enabled="{= !${isResolved} }"
+                                        press=".onResolveAlert"
+                                    />
+                                </cells>
+                            </ColumnListItem>
+                        </items>
+                    </Table>
+                </Panel>
+            </VBox>
+        </HBox>
+    </VBox>
+</core:FragmentDefinition>
