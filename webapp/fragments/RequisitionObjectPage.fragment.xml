@@ -6,213 +6,117 @@
 >
     <Dialog
         id="prObjectPageDialog"
-        contentWidth="60rem"
-        contentHeight="82vh"
+        contentWidth="70rem"
+        contentHeight="85vh"
         showHeader="false"
         resizable="true"
     >
         <content>
-            <uxap:ObjectPageLayout
-                id="prObjectPage"
-                showTitleInHFMode="true"
-            >
+            <uxap:ObjectPageLayout id="prObjectPage" showTitleInHFMode="true">
+
                 <uxap:headerTitle>
-                    <uxap:ObjectPageDynamicHeaderTitle
-                        id="_IDGenPRObjHeaderTitle"
-                    >
+                    <uxap:ObjectPageDynamicHeaderTitle id="_IDGenPRObjHeaderTitle">
                         <uxap:expandedHeading>
-                            <Title
-                                id="_IDGenPRObjTitleExp"
-                                text="{prNumber}"
-                                wrapping="false"
-                            />
+                            <Title id="_IDGenPRObjTitleExp" text="{prNumber}" wrapping="false"/>
                         </uxap:expandedHeading>
                         <uxap:snappedHeading>
-                            <Title
-                                id="_IDGenPRObjTitleSnap"
-                                text="{prNumber}"
-                                wrapping="false"
-                            />
+                            <Title id="_IDGenPRObjTitleSnap" text="{prNumber}" wrapping="false"/>
                         </uxap:snappedHeading>
                         <uxap:actions>
-                            <Button
-                                id="_IDGenPRObjSubmitBtn"
-                                text="Submit for Approval"
-                                type="Emphasized"
-                                press=".onSubmitPR"
-                                enabled="{path:'status', formatter:'.formatter.prCanSubmit'}"
-                            />
-                            <Button
-                                id="_IDGenPRObjApproveBtn"
-                                text="Approve"
-                                type="Accept"
-                                press=".onApprovePR"
-                                enabled="{path:'status', formatter:'.formatter.prCanApprove'}"
-                            />
-                            <Button
-                                id="_IDGenPRObjRejectBtn"
-                                text="Reject"
-                                type="Reject"
-                                press=".onRejectPR"
-                                enabled="{path:'status', formatter:'.formatter.prCanReject'}"
-                            />
-                            <Button
-                                id="_IDGenPRObjCreatePOBtn"
-                                text="Create Purchase Order"
-                                type="Emphasized"
-                                press=".onCreatePOFromPR"
-                                enabled="{path:'status', formatter:'.formatter.prCanCreatePO'}"
-                            />
-                            <Button
-                                id="_IDGenPRObjEditBtn"
-                                text="Edit"
-                                icon="sap-icon://edit"
-                                press=".onEditPR"
-                                enabled="{path:'status', formatter:'.formatter.prCanEdit'}"
-                            />
-                            <Button
-                                id="_IDGenPRObjCloseBtn"
-                                icon="sap-icon://decline"
-                                tooltip="Close"
-                                type="Transparent"
-                                press=".onCloseObjectPage"
-                            />
+                            <Button id="_IDGenPRObjEditBtn" text="Edit" icon="sap-icon://edit" press=".onEditPR" enabled="{path:'status', formatter:'.formatter.prCanEdit'}"/>
+                            <Button id="_IDGenPRObjDeleteBtn" text="Delete" icon="sap-icon://delete" type="Reject" press=".onDeletePR" enabled="{path:'status', formatter:'.formatter.prCanDelete'}"/>
+                            <Button id="_IDGenPRObjSubmitBtn" text="Submit" icon="sap-icon://paper-plane" type="Emphasized" press=".onSubmitPR" enabled="{path:'status', formatter:'.formatter.prCanSubmit'}"/>
+                            <Button id="_IDGenPRObjSendApprovalBtn" text="Send for Approval" icon="sap-icon://forward" type="Emphasized" press=".onSendForApproval" enabled="{path:'status', formatter:'.formatter.prCanSendForApproval'}"/>
+                            <Button id="_IDGenPRObjApproveBtn" text="Approve" icon="sap-icon://accept" type="Accept" press=".onApprovePR" enabled="{path:'status', formatter:'.formatter.prCanApprove'}"/>
+                            <Button id="_IDGenPRObjRejectBtn" text="Reject" icon="sap-icon://decline" type="Reject" press=".onRejectPR" enabled="{path:'status', formatter:'.formatter.prCanReject'}"/>
+                            <Button id="_IDGenPRObjCreatePOBtn" text="Create PO" icon="sap-icon://cart" type="Emphasized" press=".onCreatePOFromPR" enabled="{path:'status', formatter:'.formatter.prCanCreatePO'}"/>
+                            <Button id="_IDGenPRObjCloseBtn2" text="Close PR" icon="sap-icon://complete" type="Emphasized" press=".onClosePR" enabled="{path:'status', formatter:'.formatter.prCanClose'}"/>
+                            <Button id="_IDGenPRObjResubmitBtn" text="Resubmit" icon="sap-icon://reset" press=".onResubmitPR" enabled="{path:'status', formatter:'.formatter.prCanResubmit'}"/>
+                            <Button id="_IDGenPRObjCloseDialogBtn" icon="sap-icon://decline" tooltip="Close" type="Transparent" press=".onCloseObjectPage"/>
                         </uxap:actions>
                     </uxap:ObjectPageDynamicHeaderTitle>
                 </uxap:headerTitle>
 
                 <uxap:headerContent>
                     <l:VerticalLayout id="_IDGenPRObjHeaderVL">
-                        <ObjectStatus
-                            id="_IDGenPRObjStatus"
-                            text="{status}"
+                        <HBox id="_IDGenPRObjStatusRow" alignItems="Center" class="sapUiTinyMarginBottom">
+                            <ObjectStatus
+                                id="_IDGenPRObjStatus"
+                                text="{status}"
+                                state="{path:'status', formatter:'.formatter.prStatusState'}"
+                                icon="{path:'status', formatter:'.formatter.prStatusIcon'}"
+                                class="sapUiTinyMarginEnd"
+                            />
+                            <ObjectNumber
+                                id="_IDGenPRObjAgeVal"
+                                number="{path:'createdAt', formatter:'.formatter.daysSinceCreated'}"
+                                unit="days open"
+                                state="{path:'createdAt', formatter:'.formatter.ageState'}"
+                            />
+                        </HBox>
+
+                        <ProgressIndicator
+                            id="_IDGenPRObjWorkflowProgress"
+                            percentValue="{path:'status', formatter:'.formatter.prWorkflowPct'}"
+                            displayValue="{path:'status', formatter:'.formatter.prWorkflowLabel'}"
                             state="{path:'status', formatter:'.formatter.prStatusState'}"
-                            class="sapUiTinyMarginBottom"
+                            class="sapUiSmallMarginBottom"
                         />
+
                         <l:HorizontalLayout id="_IDGenPRObjHeaderHL">
-                            <VBox
-                                id="_IDGenPRObjLocBox"
-                                class="sapUiMediumMarginEnd"
-                            >
-                                <Text
-                                    id="_IDGenPRObjLocLbl"
-                                    text="Location"
-                                    class="sapUiTinyText"
-                                />
-                                <Text
-                                    id="_IDGenPRObjLocVal"
-                                    text="{location/name} ({location/locationCode})"
-                                />
+                            <VBox id="_IDGenPRObjLocBox" class="sapUiMediumMarginEnd">
+                                <Text id="_IDGenPRObjLocLbl" text="Location" class="sapUiTinyText"/>
+                                <Text id="_IDGenPRObjLocVal" text="{location/name} ({location/locationCode})"/>
                             </VBox>
-                            <VBox
-                                id="_IDGenPRObjReqBox"
-                                class="sapUiMediumMarginEnd"
-                            >
-                                <Text
-                                    id="_IDGenPRObjReqLbl"
-                                    text="Requested By"
-                                    class="sapUiTinyText"
-                                />
-                                <Text
-                                    id="_IDGenPRObjReqVal"
-                                    text="{requestedBy}"
-                                />
+                            <VBox id="_IDGenPRObjReqBox" class="sapUiMediumMarginEnd">
+                                <Text id="_IDGenPRObjReqLbl" text="Requested By" class="sapUiTinyText"/>
+                                <Text id="_IDGenPRObjReqVal" text="{requestedBy}"/>
                             </VBox>
-                            <VBox
-                                id="_IDGenPRObjAppBox"
-                                class="sapUiMediumMarginEnd"
-                            >
-                                <Text
-                                    id="_IDGenPRObjAppLbl"
-                                    text="Approved By"
-                                    class="sapUiTinyText"
-                                />
-                                <Text
-                                    id="_IDGenPRObjAppVal"
-                                    text="{= ${approvedBy} ? ${approvedBy} : 'N/A'}"
-                                />
+                            <VBox id="_IDGenPRObjAppBox" class="sapUiMediumMarginEnd">
+                                <Text id="_IDGenPRObjAppLbl" text="Approved By" class="sapUiTinyText"/>
+                                <Text id="_IDGenPRObjAppVal" text="{= ${approvedBy} ? ${approvedBy} : 'N/A'}"/>
                             </VBox>
-                            <VBox id="_IDGenPRObjCreatedBox">
-                                <Text
-                                    id="_IDGenPRObjCreatedLbl"
-                                    text="Created"
-                                    class="sapUiTinyText"
-                                />
-                                <Text
-                                    id="_IDGenPRObjCreatedVal"
-                                    text="{path:'createdAt', type:'sap.ui.model.type.DateTime', formatOptions:{style:'medium'}}"
-                                />
+                            <VBox id="_IDGenPRObjCreatedBox" class="sapUiMediumMarginEnd">
+                                <Text id="_IDGenPRObjCreatedLbl" text="Created" class="sapUiTinyText"/>
+                                <Text id="_IDGenPRObjCreatedVal" text="{path:'createdAt', type:'sap.ui.model.type.DateTime', formatOptions:{style:'medium'}}"/>
+                            </VBox>
+                            <VBox id="_IDGenPRObjItemCountBox" class="sapUiMediumMarginEnd">
+                                <Text id="_IDGenPRObjItemCountLbl" text="Line Items" class="sapUiTinyText"/>
+                                <Text id="_IDGenPRObjItemCountVal" text="{prObjItems>/items/length}"/>
+                            </VBox>
+                            <VBox id="_IDGenPRObjTotalBox">
+                                <Text id="_IDGenPRObjTotalLbl" text="Total Estimated Cost" class="sapUiTinyText"/>
+                                <ObjectNumber id="_IDGenPRObjTotalVal" number="{prObjItems>/totalEstimated}" unit="USD" emphasized="true"/>
                             </VBox>
                         </l:HorizontalLayout>
                     </l:VerticalLayout>
                 </uxap:headerContent>
 
                 <uxap:sections>
-                    <uxap:ObjectPageSection
-                        id="_IDGenPRObjItemsSection"
-                        title="Requisition Items"
-                    >
+
+                    <!-- ===== REQUISITION ITEMS (enriched) ===== -->
+                    <uxap:ObjectPageSection id="_IDGenPRObjItemsSection" title="Requisition Items">
                         <uxap:subSections>
                             <uxap:ObjectPageSubSection id="_IDGenPRObjItemsSub">
                                 <uxap:blocks>
-                                    <Table
-                                        id="_IDGenPRObjItemsTable"
-                                        items="{prObjItems>/items}"
-                                    >
+                                    <Table id="_IDGenPRObjItemsTable" items="{prObjItems>/items}" noDataText="No items on this requisition">
                                         <columns>
-                                            <Column id="_IDGenPRObjColPart">
-                                                <Text
-                                                    id="_IDGenPRObjColPartTxt"
-                                                    text="Spare Part"
-                                                />
-                                            </Column>
-                                            <Column
-                                                id="_IDGenPRObjColQty"
-                                                hAlign="End"
-                                            >
-                                                <Text
-                                                    id="_IDGenPRObjColQtyTxt"
-                                                    text="Required Qty"
-                                                />
-                                            </Column>
-                                            <Column id="_IDGenPRObjColSup">
-                                                <Text
-                                                    id="_IDGenPRObjColSupTxt"
-                                                    text="Preferred Supplier"
-                                                />
-                                            </Column>
-                                            <Column
-                                                id="_IDGenPRObjColPrice"
-                                                hAlign="End"
-                                            >
-                                                <Text
-                                                    id="_IDGenPRObjColPriceTxt"
-                                                    text="Estimated Price"
-                                                />
-                                            </Column>
+                                            <Column id="_IDGenPRObjColPart"><Text id="_IDGenPRObjColPartTxt" text="Spare Part"/></Column>
+                                            <Column id="_IDGenPRObjColCategory"><Text id="_IDGenPRObjColCategoryTxt" text="Category"/></Column>
+                                            <Column id="_IDGenPRObjColQty" hAlign="End"><Text id="_IDGenPRObjColQtyTxt" text="Required Qty"/></Column>
+                                            <Column id="_IDGenPRObjColSup"><Text id="_IDGenPRObjColSupTxt" text="Preferred Supplier"/></Column>
+                                            <Column id="_IDGenPRObjColPrice" hAlign="End"><Text id="_IDGenPRObjColPriceTxt" text="Est. Unit Price"/></Column>
+                                            <Column id="_IDGenPRObjColLineTotal" hAlign="End"><Text id="_IDGenPRObjColLineTotalTxt" text="Line Total"/></Column>
                                         </columns>
                                         <items>
-                                            <ColumnListItem
-                                                id="_IDGenPRObjItemRow"
-                                            >
+                                            <ColumnListItem id="_IDGenPRObjItemRow">
                                                 <cells>
-                                                    <Text
-                                                        id="_IDGenPRObjItemPart"
-                                                        text="{prObjItems>partLabel}"
-                                                    />
-                                                    <Text
-                                                        id="_IDGenPRObjItemQty"
-                                                        text="{prObjItems>requiredQty}"
-                                                    />
-                                                    <Text
-                                                        id="_IDGenPRObjItemSup"
-                                                        text="{prObjItems>supplierLabel}"
-                                                    />
-                                                    <ObjectNumber
-                                                        id="_IDGenPRObjItemPrice"
-                                                        number="{prObjItems>estimatedPrice}"
-                                                        unit="USD"
-                                                    />
+                                                    <Text id="_IDGenPRObjItemPart" text="{prObjItems>partLabel}"/>
+                                                    <Text id="_IDGenPRObjItemCategory" text="{prObjItems>categoryLabel}"/>
+                                                    <Text id="_IDGenPRObjItemQty" text="{prObjItems>requiredQty}"/>
+                                                    <Text id="_IDGenPRObjItemSup" text="{prObjItems>supplierLabel}"/>
+                                                    <ObjectNumber id="_IDGenPRObjItemPrice" number="{prObjItems>estimatedPrice}" unit="USD"/>
+                                                    <ObjectNumber id="_IDGenPRObjItemLineTotal" number="{prObjItems>lineTotal}" unit="USD" emphasized="true"/>
                                                 </cells>
                                             </ColumnListItem>
                                         </items>
@@ -222,45 +126,76 @@
                         </uxap:subSections>
                     </uxap:ObjectPageSection>
 
-                    <uxap:ObjectPageSection
-                        id="_IDGenPRObjApprovalSection"
-                        title="Approval"
-                        visible="{= ${status} === 'REJECTED' || ${status} === 'APPROVED' || ${status} === 'CLOSED'}"
-                    >
+                    <!-- ===== APPROVAL TIMELINE (full history, not just last action) ===== -->
+                    <uxap:ObjectPageSection id="_IDGenPRObjApprovalSection" title="Approval History">
                         <uxap:subSections>
-                            <uxap:ObjectPageSubSection
-                                id="_IDGenPRObjApprovalSub"
-                            >
+                            <uxap:ObjectPageSubSection id="_IDGenPRObjApprovalSub">
                                 <uxap:blocks>
-                                    <l:VerticalLayout
-                                        id="_IDGenPRObjApprovalVL"
-                                    >
-                                        <Text
-                                            id="_IDGenPRObjApprovedAtLbl"
-                                            text="Actioned On"
-                                            class="sapUiTinyText"
-                                        />
-                                        <Text
-                                            id="_IDGenPRObjApprovedAtVal"
-                                            text="{path:'approvedAt', type:'sap.ui.model.type.DateTime', formatOptions:{style:'medium'}}"
-                                            class="sapUiSmallMarginBottom"
-                                        />
-                                        <Text
-                                            id="_IDGenPRObjRejectLbl"
-                                            text="Rejection Reason"
-                                            class="sapUiTinyText"
-                                            visible="{= ${status} === 'REJECTED'}"
-                                        />
-                                        <Text
-                                            id="_IDGenPRObjRejectVal"
-                                            text="{rejectionReason}"
-                                            visible="{= ${status} === 'REJECTED'}"
-                                        />
-                                    </l:VerticalLayout>
+                                    <List id="_IDGenPRObjTimelineList" items="{prObjTimeline>/events}" noDataText="No approval activity yet">
+                                        <items>
+                                            <StandardListItem
+                                                id="_IDGenPRObjTimelineItem"
+                                                icon="{prObjTimeline>icon}"
+                                                iconInset="false"
+                                                title="{prObjTimeline>label}"
+                                                description="{prObjTimeline>actor}"
+                                                info="{prObjTimeline>timestamp}"
+                                                infoState="{prObjTimeline>infoState}"
+                                            />
+                                        </items>
+                                    </List>
+
+                                    <MessageStrip
+                                        id="_IDGenPRObjRejectStrip"
+                                        type="Error"
+                                        showIcon="true"
+                                        text="{rejectionReason}"
+                                        visible="{= ${status} === 'REJECTED'}"
+                                        class="sapUiSmallMarginTop"
+                                    />
                                 </uxap:blocks>
                             </uxap:ObjectPageSubSection>
                         </uxap:subSections>
                     </uxap:ObjectPageSection>
+
+                    <!-- ===== RELATED PURCHASE ORDERS ===== -->
+                    <uxap:ObjectPageSection
+                        id="_IDGenPRObjRelatedPOSection"
+                        title="Related Purchase Orders"
+                        visible="{= ${status} === 'APPROVED' || ${status} === 'CLOSED'}"
+                    >
+                        <uxap:subSections>
+                            <uxap:ObjectPageSubSection id="_IDGenPRObjRelatedPOSub">
+                                <uxap:blocks>
+                                    <Table
+                                        id="_IDGenPRObjRelatedPOTable"
+                                        items="{prObjRelatedPO>/orders}"
+                                        noDataText="No Purchase Orders created from this requisition yet"
+                                    >
+                                        <columns>
+                                            <Column id="_IDGenPRObjPOColNum"><Text id="_IDGenPRObjPOColNumTxt" text="PO Number"/></Column>
+                                            <Column id="_IDGenPRObjPOColSup"><Text id="_IDGenPRObjPOColSupTxt" text="Supplier"/></Column>
+                                            <Column id="_IDGenPRObjPOColStatus"><Text id="_IDGenPRObjPOColStatusTxt" text="Status"/></Column>
+                                            <Column id="_IDGenPRObjPOColS4"><Text id="_IDGenPRObjPOColS4Txt" text="S/4 PO ID"/></Column>
+                                            <Column id="_IDGenPRObjPOColAction" hAlign="End"><Text id="_IDGenPRObjPOColActionTxt" text=""/></Column>
+                                        </columns>
+                                        <items>
+                                            <ColumnListItem id="_IDGenPRObjPORow">
+                                                <cells>
+                                                    <Text id="_IDGenPRObjPONum" text="{prObjRelatedPO>poNumber}"/>
+                                                    <Text id="_IDGenPRObjPOSup" text="{prObjRelatedPO>supplierName}"/>
+                                                    <ObjectStatus id="_IDGenPRObjPOStatus" text="{prObjRelatedPO>status}" state="{path:'prObjRelatedPO>status', formatter:'.formatter.poStatusState'}"/>
+                                                    <Text id="_IDGenPRObjPOS4" text="{prObjRelatedPO>s4POId}"/>
+                                                    <Button id="_IDGenPRObjPOViewBtn" text="View" type="Transparent" press=".onViewRelatedPO"/>
+                                                </cells>
+                                            </ColumnListItem>
+                                        </items>
+                                    </Table>
+                                </uxap:blocks>
+                            </uxap:ObjectPageSubSection>
+                        </uxap:subSections>
+                    </uxap:ObjectPageSection>
+
                 </uxap:sections>
             </uxap:ObjectPageLayout>
         </content>

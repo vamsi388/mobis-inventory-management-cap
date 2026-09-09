@@ -14,9 +14,11 @@ sap.ui.define([
                 this.getView().setModel(new JSONModel({
                     nodes: [],
                     lanes: [
-                        { laneId: "lane1", icon: "sap-icon://request", text: "Requisition", position: 0 },
-                        { laneId: "lane2", icon: "sap-icon://cart", text: "Purchase Order", position: 1 },
-                        { laneId: "lane3", icon: "sap-icon://shipping-status", text: "Goods Receipt", position: 2 }
+                        { laneId: "lane1", icon: "sap-icon://request", text: "Draft", position: 0 },
+                        { laneId: "lane2", icon: "sap-icon://paper-plane", text: "Submitted", position: 1 },
+                        { laneId: "lane3", icon: "sap-icon://approvals", text: "Pending Approval", position: 2 },
+                        { laneId: "lane4", icon: "sap-icon://decision", text: "Decision", position: 3 },
+                        { laneId: "lane5", icon: "sap-icon://complete", text: "Closed", position: 4 }
                     ]
                 }), "pf");
             }
@@ -40,6 +42,17 @@ sap.ui.define([
                 this._loadProcessFlow(sPrId);
             }
         },
+        onShowProcessFlowSection() {
+
+            this._initProcessFlowModel();
+
+            const oSelect = this.byId("pfPrSelect");
+            const oBinding = oSelect ? oSelect.getBinding("items") : null;
+
+            if (oBinding) {
+                oBinding.refresh();
+            }
+        },
 
         async _loadProcessFlow(sPrId) {
 
@@ -48,82 +61,107 @@ sap.ui.define([
 
             try {
 
-                const [prResp, poResp] = await Promise.all([
-                    fetch(`/procurement/PurchaseRequisitions(${sPrId})`),
-                    fetch(`/procurement/PurchaseOrders?$filter=pr_ID eq ${sPrId}`)
-                ]);
+                const oPrResp = await fetch(`/procurement/PurchaseRequisitions(${sPrId})`);
+                const oPr = await oPrResp.json();
 
-                const oPr = await prResp.json();
-                const oPoData = await poResp.json();
-                const aPOs = oPoData.value || [];
+                const sStatus = oPr.status || "DRAFT";
 
-                let aGRs = [];
+                // happy-path order, used to work out what's "completed" vs "not yet reached"
+                const aHappyPath = ["DRAFT", "SUBMITTED", "PENDING_APPROVAL", "APPROVED", "CLOSED"];
+                const iCurrentIdx = aHappyPath.indexOf(sStatus);
+                const bWasRejected = sStatus === "REJECTED";
 
-                if (aPOs.length) {
+                const stageState = (iStageIdx) => {
 
-                    const oGrResp = await fetch(`/procurement/GoodsReceipts?$filter=po_ID eq ${aPOs[0].ID}`);
-                    aGRs = (await oGrResp.json()).value || [];
-                }
+                    if (bWasRejected) {
+                        // once rejected: Draft/Submitted/Pending are completed, Approved/Closed never reached
+                        return iStageIdx <= 2 ? "Positive" : "Neutral";
+                    }
 
-                const mapPrState = (s) => ({
-                    DRAFT: "Neutral",
-                    SUBMITTED: "Positive",
-                    APPROVED: "Positive",
-                    REJECTED: "Negative",
-                    CONVERTED: "Positive"
-                }[s] || "Neutral");
-
-                const mapPoState = (s) => ({
-                    CREATED: "Neutral",
-                    SENT: "Positive",
-                    PARTIALLY_RECEIVED: "Critical",
-                    RECEIVED: "Positive",
-                    CLOSED: "Positive",
-                    CANCELLED: "Negative"
-                }[s] || "Neutral");
+                    return iStageIdx <= iCurrentIdx ? "Positive" : "Neutral";
+                };
 
                 const aNodes = [
                     {
                         lane: "lane1",
-                        nodeId: "pr",
-                        title: oPr.prNumber,
-                        texts: [oPr.status, "Requested by " + oPr.requestedBy],
-                        state: mapPrState(oPr.status),
-                        stateText: oPr.status,
-                        children: aPOs.length ? ["po"] : []
+                        nodeId: "draft",
+                        title: "Draft",
+                        texts: [oPr.prNumber, "Requested by " + oPr.requestedBy],
+                        state: stageState(0),
+                        stateText: "DRAFT",
+                        highlighted: sStatus === "DRAFT",
+                        focused: sStatus === "DRAFT",
+                        children: ["submitted"]
+                    },
+                    {
+                        lane: "lane2",
+                        nodeId: "submitted",
+                        title: "Submitted",
+                        texts: ["Submitted for review"],
+                        state: stageState(1),
+                        stateText: "SUBMITTED",
+                        highlighted: sStatus === "SUBMITTED",
+                        focused: sStatus === "SUBMITTED",
+                        children: ["pending"]
+                    },
+                    {
+                        lane: "lane3",
+                        nodeId: "pending",
+                        title: "Pending Approval",
+                        texts: ["Awaiting decision"],
+                        state: stageState(2),
+                        stateText: "PENDING_APPROVAL",
+                        highlighted: sStatus === "PENDING_APPROVAL",
+                        focused: sStatus === "PENDING_APPROVAL",
+                        // always branches into both possible outcomes
+                        children: ["approved", "rejected"]
+                    },
+                    {
+                        lane: "lane4",
+                        nodeId: "approved",
+                        title: "Approved",
+                        texts: [oPr.approvedBy ? "Approved by " + oPr.approvedBy : "Not yet approved"],
+                        state: (sStatus === "APPROVED" || sStatus === "CLOSED") ? "Positive" : "Neutral",
+                        stateText: "APPROVED",
+                        highlighted: sStatus === "APPROVED",
+                        focused: sStatus === "APPROVED",
+                        // always connects onward to Closed — that's the intended path once approved
+                        children: ["closed"]
+                    },
+                    {
+                        lane: "lane4",
+                        nodeId: "rejected",
+                        title: "Rejected",
+                        texts: [
+                            oPr.rejectionReason || "No reason provided",
+                            "Resubmit to return to Draft"
+                        ],
+                        state: bWasRejected ? "Negative" : "Neutral",
+                        stateText: "REJECTED",
+                        highlighted: bWasRejected,
+                        focused: bWasRejected,
+                        // terminal — rejection doesn't flow onwarthis.byId("pfPrSelect").getBinding("items").refresh();d to Closed
+                        children: []
+                    },
+                    {
+                        lane: "lane5",
+                        nodeId: "closed",
+                        title: sStatus === "CLOSED" ? "Closed" : "Closed (pending)",
+                        texts: [sStatus === "CLOSED" ? "Procurement completed" : "Awaiting final closure"],
+                        state: sStatus === "CLOSED" ? "Positive" : "Neutral",
+                        stateText: "CLOSED",
+                        highlighted: sStatus === "CLOSED",
+                        focused: sStatus === "CLOSED",
+                        children: []
                     }
                 ];
 
-                if (aPOs.length) {
-
-                    aNodes.push({
-                        lane: "lane2",
-                        nodeId: "po",
-                        title: aPOs[0].poNumber,
-                        texts: [aPOs[0].status],
-                        state: mapPoState(aPOs[0].status),
-                        stateText: aPOs[0].status,
-                        children: aGRs.length ? ["gr"] : []
-                    });
-                }
-
-                if (aGRs.length) {
-
-                    aNodes.push({
-                        lane: "lane3",
-                        nodeId: "gr",
-                        title: aGRs[0].grNumber,
-                        texts: ["Received by " + aGRs[0].receivedBy],
-                        state: "Positive",
-                        stateText: "RECEIVED",
-                        children: []
-                    });
-                }
-
                 const aLanes = [
-                    { laneId: "lane1", icon: "sap-icon://request", text: "Requisition", position: 0 },
-                    { laneId: "lane2", icon: "sap-icon://cart", text: "Purchase Order", position: 1 },
-                    { laneId: "lane3", icon: "sap-icon://shipping-status", text: "Goods Receipt", position: 2 }
+                    { laneId: "lane1", icon: "sap-icon://request", text: "Draft", position: 0 },
+                    { laneId: "lane2", icon: "sap-icon://paper-plane", text: "Submitted", position: 1 },
+                    { laneId: "lane3", icon: "sap-icon://approvals", text: "Pending Approval", position: 2 },
+                    { laneId: "lane4", icon: "sap-icon://decision", text: "Decision", position: 3 },
+                    { laneId: "lane5", icon: "sap-icon://complete", text: "Closed", position: 4 }
                 ];
 
                 this.getView().setModel(new JSONModel({ nodes: aNodes, lanes: aLanes }), "pf");
@@ -141,6 +179,33 @@ sap.ui.define([
         onProcessFlowNodePress(oEvent) {
 
             MessageToast.show("Node: " + oEvent.getParameter("nodeId"));
-        }
+        },
+        onPRComboLiveChange(oEvent) {
+
+            const oComboBox = oEvent.getSource();
+            const sTypedValue = oEvent.getParameter("value") || "";
+
+            const oBinding = oComboBox.getBinding("items");
+
+            if (!oBinding) {
+                return;
+            }
+
+            if (!sTypedValue) {
+                oBinding.filter([]);
+                return;
+            }
+
+            const aFilters = [
+                new Filter("prNumber", FilterOperator.Contains, sTypedValue),
+                new Filter("status", FilterOperator.Contains, sTypedValue)
+            ];
+
+            oBinding.filter(new Filter({ filters: aFilters, and: false }));
+
+            if (!oComboBox.isOpen()) {
+                oComboBox.open();
+            }
+        },
     };
 });

@@ -31,6 +31,39 @@ sap.ui.define([
 
             (await this._pCreatePRDialog).open();
         },
+        onPRSearch(oEvent) {
+
+            const sQuery = (oEvent.getParameter("newValue") ?? oEvent.getParameter("query") ?? "").trim();
+
+            const oTable = this.byId("prTable");
+
+            if (!oTable) {
+                return;
+            }
+
+            const oBinding = oTable.getBinding("items");
+
+            if (!oBinding) {
+                return;
+            }
+
+            if (!sQuery) {
+                oBinding.filter([]);
+                return;
+            }
+
+            const Filter = sap.ui.require("sap/ui/model/Filter") || sap.ui.requireSync("sap/ui/model/Filter");
+            const FilterOperator = sap.ui.require("sap/ui/model/FilterOperator") || sap.ui.requireSync("sap/ui/model/FilterOperator");
+
+            const aFilters = [
+                new Filter("prNumber", FilterOperator.Contains, sQuery),
+                new Filter("requestedBy", FilterOperator.Contains, sQuery),
+                new Filter("status", FilterOperator.Contains, sQuery),
+                new Filter("location/name", FilterOperator.Contains, sQuery)
+            ];
+
+            oBinding.filter(new Filter({ filters: aFilters, and: false }));
+        },
 
         onAddPRItemRow() {
 
@@ -287,19 +320,14 @@ sap.ui.define([
                 if (bIsEdit) {
 
                     const oEditContext = this._oEditingPRContext;
+                    const sGroupId = "prEditGroup";               // NEW — deferred group for this save
 
-                    oEditContext.setProperty("location_ID", sLocationId);
-                    oEditContext.setProperty("requestedBy", sRequestedBy);
+                    oEditContext.setProperty("location_ID", sLocationId, sGroupId);   // CHANGED — pass group
+                    oEditContext.setProperty("requestedBy", sRequestedBy, sGroupId);  // CHANGED — pass group
 
-                    await this._callAction("replacePRItems", {
-                        prID: oEditContext.getProperty("ID"),
-                        items: aItems.map((i) => ({
-                            part_ID: i.partId,
-                            requiredQty: parseInt(i.requiredQty, 10) || 0,
-                            supplier_ID: i.supplierId || null,
-                            estimatedPrice: parseFloat(i.estimatedPrice) || 0
-                        }))
-                    });
+                    await this._replacePRItemsViaCRUD(oEditContext, aItems, sGroupId); // CHANGED — pass group
+
+                    await oModel.submitBatch(sGroupId);            // NEW — flush header property changes too
 
                     MessageToast.show("Purchase Requisition updated.");
 
@@ -532,7 +560,9 @@ sap.ui.define([
                 };
             }));
 
-            this.getView().setModel(new JSONModel({ items: aItems }), "prObjItems");
+            const fTotal = aItems.reduce((fSum, i) => fSum + (parseFloat(i.estimatedPrice) || 0), 0);
+
+            this.getView().setModel(new JSONModel({ items: aItems, totalEstimated: fTotal }), "prObjItems");
 
             oDialog.open();
         },
@@ -570,7 +600,7 @@ sap.ui.define([
                 MessageBox.error(e.message);
             }
         },
-                async onClosePR(oEvent) {
+        async onClosePR(oEvent) {
             const oContext = oEvent.getSource().getBindingContext();
             if (!oContext) return;
 
@@ -583,5 +613,115 @@ sap.ui.define([
                 MessageBox.error(e.message);
             }
         },
+        async _loadPRObjectPageDetails(sPrId) {
+
+            // Fetch item lines with expand for real supplier/part names
+            const oItemsResp = await fetch(`/procurement/PurchaseRequisitionItems?$filter=pr_ID eq ${sPrId}&$expand=part,supplier`);
+            const oItemsData = await oItemsResp.json();
+            const aRawItems = oItemsData.value || [];
+
+            const aItems = aRawItems.map((i) => {
+                const fPrice = i.estimatedPrice || 0;
+                const iQty = i.requiredQty || 0;
+
+                return {
+                    partLabel: (i.part && i.part.description) || i.part_ID || "Unknown Part",
+                    categoryLabel: (i.part && i.part.category) || "—",
+                    requiredQty: iQty,
+                    supplierLabel: (i.supplier && i.supplier.name) || "Not specified",
+                    estimatedPrice: fPrice,
+                    lineTotal: Math.round(fPrice * iQty)
+                };
+            });
+
+            const iTotalEstimated = aItems.reduce((sum, i) => sum + i.lineTotal, 0);
+
+            this.getView().setModel(new JSONModel({
+                items: aItems,
+                totalEstimated: iTotalEstimated
+            }), "prObjItems");
+
+            // Build approval timeline from the PR's own audit fields
+            // (extend this once you have a dedicated audit-log entity)
+            const oPrResp = await fetch(`/procurement/PurchaseRequisitions(${sPrId})`);
+            const oPr = await oPrResp.json();
+
+            const aEvents = [];
+
+            aEvents.push({
+                label: "Requisition Created",
+                actor: oPr.requestedBy || "Unknown",
+                timestamp: this._formatTimelineDate(oPr.createdAt),
+                icon: "sap-icon://create",
+                infoState: "None"
+            });
+
+            if (oPr.status === "SUBMITTED" || oPr.status === "APPROVED" || oPr.status === "REJECTED" || oPr.status === "CLOSED") {
+                aEvents.push({
+                    label: "Submitted for Approval",
+                    actor: oPr.requestedBy || "Unknown",
+                    timestamp: this._formatTimelineDate(oPr.submittedAt || oPr.createdAt),
+                    icon: "sap-icon://paper-plane",
+                    infoState: "None"
+                });
+            }
+
+            if (oPr.status === "APPROVED" || oPr.status === "CLOSED") {
+                aEvents.push({
+                    label: "Approved",
+                    actor: oPr.approvedBy || "Unknown",
+                    timestamp: this._formatTimelineDate(oPr.approvedAt),
+                    icon: "sap-icon://accept",
+                    infoState: "Success"
+                });
+            }
+
+            if (oPr.status === "REJECTED") {
+                aEvents.push({
+                    label: "Rejected",
+                    actor: oPr.approvedBy || "Unknown",
+                    timestamp: this._formatTimelineDate(oPr.approvedAt),
+                    icon: "sap-icon://decline",
+                    infoState: "Error"
+                });
+            }
+
+            if (oPr.status === "CLOSED") {
+                aEvents.push({
+                    label: "Purchase Requisition Closed",
+                    actor: oPr.approvedBy || "System",
+                    timestamp: this._formatTimelineDate(oPr.closedAt || oPr.approvedAt),
+                    icon: "sap-icon://complete",
+                    infoState: "Success"
+                });
+            }
+
+            this.getView().setModel(new JSONModel({ events: aEvents }), "prObjTimeline");
+
+            // Related POs
+            const oPoResp = await fetch(`/procurement/PurchaseOrders?$filter=pr_ID eq ${sPrId}&$expand=supplier`);
+            const oPoData = await oPoResp.json();
+            const aOrders = (oPoData.value || []).map((po) => ({
+                poNumber: po.poNumber,
+                supplierName: (po.supplier && po.supplier.name) || "Unknown",
+                status: po.status,
+                s4POId: po.s4POId || "—"
+            }));
+
+            this.getView().setModel(new JSONModel({ orders: aOrders }), "prObjRelatedPO");
+        },
+
+        _formatTimelineDate(sIsoDate) {
+            if (!sIsoDate) return "—";
+            const oDate = new Date(sIsoDate);
+            return oDate.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) +
+                " " + oDate.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+        },
+
+        onViewRelatedPO(oEvent) {
+            const oContext = oEvent.getSource().getBindingContext("prObjRelatedPO");
+            MessageToast.show(`Open PO: ${oContext.getProperty("poNumber")}`);
+            // Wire this to your existing PO Object Page open logic once you have one
+        }
     };
 });

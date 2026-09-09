@@ -5,165 +5,480 @@
     xmlns:viz.data="sap.viz.ui5.data"
     xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
 >
-    <VBox id="dashboardSection" visible="true">
-        <VBox id="_IDGenDashHeaderBox" class="sapUiSmallMarginBottom">
-            <Title id="_IDGenDashTitle" text="Dashboard" level="H2"/>
-            <Text id="_IDGenDashSubtitle" text="Overview of procurement activity" class="sapUiTinyText"/>
+    <VBox
+        id="dashboardSection"
+        visible="true"
+        class= "background"
+    >
+        <!-- ===== WELCOME BANNER ===== -->
+        <VBox
+            id="welcomeBanner"
+            class="phWelcomeBanner"
+        >
+            <!-- Top row: welcome text + hide button ONLY -->
+            <HBox
+                id="_IDGenWelcomeTopRow"
+                justifyContent="SpaceBetween"
+                alignItems="Start"
+                class="phWelcomeTopRow"
+            >
+                <VBox id="_IDGenWelcomeTextBox">
+                    <Title
+                        id="_IDGenWelcomeTitle"
+                        text="Welcome to ProcureHub"
+                        class="phWelcomeTitle"
+                    />
+                    <Text
+                        id="_IDGenWelcomeSubtitle"
+                        text="Track requisitions, orders, and supplier performance in one place."
+                        class="phWelcomeSubtitle"
+                    />
+                </VBox>
+             
+            </HBox>
+
+            <!-- Tile row: SIBLING below top row, still inside the banner -->
+            <HBox
+                id="_IDGenTileRow"
+                wrap="Wrap"
+                class="phTileRow phTileRowInBanner"
+            >
+                <!-- ===== TILE: Purchase Requisitions ===== -->
+                <VBox
+                    id="_IDGenTilePRTotal"
+                    class="phTile phTileBlue"
+                    press=".onPRTilePress"
+                >
+                    <HBox
+                        id="_IDGenTilePRTop"
+                        justifyContent="SpaceBetween"
+                        alignItems="Start"
+                    >
+                        <VBox id="_IDGenTilePRTextBox">
+                            <Text
+                                id="_IDGenTilePRTitle"
+                                text="Purchase Requisitions"
+                                class="phTileTitle"
+                            />
+                            <Text
+                                id="_IDGenTilePRSub"
+                                text="Total"
+                                class="phTileSub"
+                            />
+                        </VBox>
+                        <core:Icon
+                            id="_IDGenTilePRIcon"
+                            src="sap-icon://request"
+                            class="phTileIconBadge phIconBlue"
+                        />
+                    </HBox>
+                    <HBox
+                        id="_IDGenTilePRBottom"
+                        alignItems="Center"
+                        justifyContent="SpaceBetween"
+                        class="phTileBottom"
+                    >
+                        <Text
+                            id="_IDGenTilePRValue"
+                            text="{view>/counts/prTotal}"
+                            class="phTileValue"
+                        />
+                        <core:Icon
+                            id="_IDGenTilePRSpark"
+                            src="sap-icon://line-chart"
+                            class="phSparkIcon phSparkBlue"
+                        />
+                    </HBox>
+                    <HBox
+                        id="_IDGenTilePRTrendBox"
+                        alignItems="Center"
+                        class="phTrendBox"
+                    >
+                        <core:Icon
+                            id="_IDGenTilePRTrendIcon"
+                            src="sap-icon://trend-up"
+                            class="phTrendIcon phTrendUp"
+                        />
+                        <Text
+                            id="_IDGenTilePRTrendTxt"
+                            text="12% vs last 7 days"
+                            class="phTrendText phTrendUp"
+                        />
+                    </HBox>
+                </VBox>
+
+                <!-- ===== TILE: Pending Approval ===== -->
+                <VBox
+                    id="_IDGenTilePending"
+                    class="phTile phTileOrange"
+                    press=".onPendingTilePress"
+                >
+                    <HBox
+                        id="_IDGenTilePendingTop"
+                        justifyContent="SpaceBetween"
+                        alignItems="Start"
+                    >
+                        <VBox id="_IDGenTilePendingTextBox">
+                            <Text
+                                id="_IDGenTilePendingTitle"
+                                text="Pending Approval"
+                                class="phTileTitle"
+                            />
+                            <Text
+                                id="_IDGenTilePendingSub"
+                                text="Submitted PRs"
+                                class="phTileSub"
+                            />
+                        </VBox>
+                        <core:Icon
+                            id="_IDGenTilePendingIcon"
+                            src="sap-icon://alarm-clock"
+                            class="phTileIconBadge phIconOrange"
+                        />
+                    </HBox>
+                    <HBox
+                        id="_IDGenTilePendingBottom"
+                        alignItems="Center"
+                        justifyContent="SpaceBetween"
+                        class="phTileBottom"
+                    >
+                        <Text
+                            id="_IDGenTilePendingValue"
+                            text="{view>/counts/prPending}"
+                            class="phTileValue"
+                        />
+                    </HBox>
+                    <HBox
+                        id="_IDGenTilePendingTrendBox"
+                        alignItems="Center"
+                        class="phTrendBox"
+                    >
+                        <Text
+                            id="_IDGenTilePendingTrendTxt"
+                            text="No change"
+                            class="phTrendText phTrendNeutral"
+                        />
+                    </HBox>
+                </VBox>
+
+                <!-- ===== TILE: Open Purchase Orders ===== -->
+                <VBox
+                    id="_IDGenTilePO"
+                    class="phTile phTileGreen"
+                    press=".onPOTilePress"
+                >
+                    <HBox
+                        id="_IDGenTilePOTop"
+                        justifyContent="SpaceBetween"
+                        alignItems="Start"
+                    >
+                        <VBox id="_IDGenTilePOTextBox">
+                            <Text
+                                id="_IDGenTilePOTitle"
+                                text="Open Purchase Orders"
+                                class="phTileTitle"
+                            />
+                            <Text
+                                id="_IDGenTilePOSub"
+                                text="Created / Sent / Partial"
+                                class="phTileSub"
+                            />
+                        </VBox>
+                        <core:Icon
+                            id="_IDGenTilePOIcon"
+                            src="sap-icon://cart"
+                            class="phTileIconBadge phIconGreen"
+                        />
+                    </HBox>
+                    <HBox
+                        id="_IDGenTilePOBottom"
+                        alignItems="Center"
+                        justifyContent="SpaceBetween"
+                        class="phTileBottom"
+                    >
+                        <Text
+                            id="_IDGenTilePOValue"
+                            text="{view>/counts/poOpen}"
+                            class="phTileValue"
+                        />
+                        <core:Icon
+                            id="_IDGenTilePOSpark"
+                            src="sap-icon://line-chart"
+                            class="phSparkIcon phSparkGreen"
+                        />
+                    </HBox>
+                    <HBox
+                        id="_IDGenTilePOTrendBox"
+                        alignItems="Center"
+                        class="phTrendBox"
+                    >
+                        <core:Icon
+                            id="_IDGenTilePOTrendIcon"
+                            src="sap-icon://trend-up"
+                            class="phTrendIcon phTrendUp"
+                        />
+                        <Text
+                            id="_IDGenTilePOTrendTxt"
+                            text="8% vs last 7 days"
+                            class="phTrendText phTrendUp"
+                        />
+                    </HBox>
+                </VBox>
+
+                <!-- ===== TILE: Unresolved Alerts ===== -->
+                <VBox
+                    id="_IDGenTileAlerts"
+                    class="phTile phTileRed"
+                    press=".onAlertsTilePress"
+                >
+                    <HBox
+                        id="_IDGenTileAlertsTop"
+                        justifyContent="SpaceBetween"
+                        alignItems="Start"
+                    >
+                        <VBox id="_IDGenTileAlertsTextBox">
+                            <Text
+                                id="_IDGenTileAlertsTitle"
+                                text="Unresolved Alerts"
+                                class="phTileTitle"
+                            />
+                            <Text
+                                id="_IDGenTileAlertsSub"
+                                text="Needs attention"
+                                class="phTileSub"
+                            />
+                        </VBox>
+                        <core:Icon
+                            id="_IDGenTileAlertsIcon"
+                            src="sap-icon://alert"
+                            class="phTileIconBadge phIconRed"
+                        />
+                    </HBox>
+                    <HBox
+                        id="_IDGenTileAlertsBottom"
+                        alignItems="Center"
+                        justifyContent="SpaceBetween"
+                        class="phTileBottom"
+                    >
+                        <Text
+                            id="_IDGenTileAlertsValue"
+                            text="{view>/counts/alertsOpen}"
+                            class="phTileValue"
+                        />
+                        <core:Icon
+                            id="_IDGenTileAlertsSpark"
+                            src="sap-icon://line-chart"
+                            class="phSparkIcon phSparkRed"
+                        />
+                    </HBox>
+                    <HBox
+                        id="_IDGenTileAlertsTrendBox"
+                        alignItems="Center"
+                        class="phTrendBox"
+                    >
+                        <core:Icon
+                            id="_IDGenTileAlertsTrendIcon"
+                            src="sap-icon://trend-up"
+                            class="phTrendIcon phTrendDown"
+                        />
+                        <Text
+                            id="_IDGenTileAlertsTrendTxt"
+                            text="15% vs last 7 days"
+                            class="phTrendText phTrendDown"
+                        />
+                    </HBox>
+                </VBox>
+            </HBox>
+            <!-- end tile row -->
         </VBox>
+        <!-- ===== TILE: Process Flow ===== -->
+      <!-- ===== TILE: Process Flow (wide layout) ===== -->
 
-        <HBox id="_IDGenTileRow" wrap="Wrap" class="phTileRow">
 
-            <!-- ===== TILE: Purchase Requisitions ===== -->
-            <VBox id="_IDGenTilePRTotal" class="phTile phTileBlue" press=".onPRTilePress">
-                <HBox id="_IDGenTilePRTop" justifyContent="SpaceBetween" alignItems="Start">
-                    <VBox id="_IDGenTilePRTextBox">
-                        <Text id="_IDGenTilePRTitle" text="Purchase Requisitions" class="phTileTitle"/>
-                        <Text id="_IDGenTilePRSub" text="Total" class="phTileSub"/>
-                    </VBox>
-                    <core:Icon id="_IDGenTilePRIcon" src="sap-icon://request" class="phTileIconBadge phIconBlue"/>
-                </HBox>
-                <HBox id="_IDGenTilePRBottom" alignItems="Center" justifyContent="SpaceBetween" class="phTileBottom">
-                    <Text id="_IDGenTilePRValue" text="{view>/counts/prTotal}" class="phTileValue"/>
-                    <core:Icon id="_IDGenTilePRSpark" src="sap-icon://line-chart" class="phSparkIcon phSparkBlue"/>
-                </HBox>
-                <HBox id="_IDGenTilePRTrendBox" alignItems="Center" class="phTrendBox">
-                    <core:Icon id="_IDGenTilePRTrendIcon" src="sap-icon://trend-up" class="phTrendIcon phTrendUp"/>
-                    <Text id="_IDGenTilePRTrendTxt" text="12% vs last 7 days" class="phTrendText phTrendUp"/>
-                </HBox>
-            </VBox>
+<HBox id="_IDGenTileProcessFlow" class="phTile phTileWide phTilePurple" press=".onProcessFlowTilePress" justifyContent="SpaceBetween" alignItems="Center">
+    <HBox id="_IDGenPFLeftGroup" alignItems="Center">
+        <core:Icon id="_IDGenTilePFIcon" src="sap-icon://process" class="phTileIconBadge phIconPurple phIconBadgeLg"/>
+        <VBox id="_IDGenTilePFTextBox" class="phPFTextBox">
+            <Text id="_IDGenTilePFTitle" text="Process Flow" class="phTileTitle"/>
+            <Text id="_IDGenTilePFSub" text="PR to GR tracking" class="phTileSub"/>
+            <HBox id="_IDGenTilePFValueRow" alignItems="Baseline" class="phPFValueRow">
+                <Text id="_IDGenTilePFValue" text="{view>/counts/prTotal}" class="phTileValue"/>
+                <Text id="_IDGenTilePFValueLbl" text="requisitions tracked" class="phPFValueLbl"/>
+            </HBox>
+            <HBox id="_IDGenTilePFTrendBox" alignItems="Center" class="phTrendBox">
+                <core:Icon id="_IDGenTilePFTrendIcon" src="sap-icon://arrow-right" class="phTrendIcon phTrendNeutral"/>
+                <Text id="_IDGenTilePFTrendTxt" text="View end-to-end flow" class="phTrendText phTrendNeutral"/>
+            </HBox>
+        </VBox>
+    </HBox>
+    <core:Icon id="_IDGenTilePFSpark" src="sap-icon://workflow-tasks" class="phSparkIcon phSparkPurple phSparkLg"/>
+</HBox>
 
-            <!-- ===== TILE: Pending Approval ===== -->
-            <VBox id="_IDGenTilePending" class="phTile phTileOrange" press=".onPendingTilePress">
-                <HBox id="_IDGenTilePendingTop" justifyContent="SpaceBetween" alignItems="Start">
-                    <VBox id="_IDGenTilePendingTextBox">
-                        <Text id="_IDGenTilePendingTitle" text="Pending Approval" class="phTileTitle"/>
-                        <Text id="_IDGenTilePendingSub" text="Submitted PRs" class="phTileSub"/>
-                    </VBox>
-                    <core:Icon id="_IDGenTilePendingIcon" src="sap-icon://alarm-clock" class="phTileIconBadge phIconOrange"/>
-                </HBox>
-                <HBox id="_IDGenTilePendingBottom" alignItems="Center" justifyContent="SpaceBetween" class="phTileBottom">
-                    <Text id="_IDGenTilePendingValue" text="{view>/counts/prPending}" class="phTileValue"/>
-                </HBox>
-                <HBox id="_IDGenTilePendingTrendBox" alignItems="Center" class="phTrendBox">
-                    <Text id="_IDGenTilePendingTrendTxt" text="No change" class="phTrendText phTrendNeutral"/>
-                </HBox>
-            </VBox>
+        <!-- =====Alerts Overview ===== -->
 
-            <!-- ===== TILE: Open Purchase Orders ===== -->
-            <VBox id="_IDGenTilePO" class="phTile phTileGreen" press=".onPOTilePress">
-                <HBox id="_IDGenTilePOTop" justifyContent="SpaceBetween" alignItems="Start">
-                    <VBox id="_IDGenTilePOTextBox">
-                        <Text id="_IDGenTilePOTitle" text="Open Purchase Orders" class="phTileTitle"/>
-                        <Text id="_IDGenTilePOSub" text="Created / Sent / Partial" class="phTileSub"/>
-                    </VBox>
-                    <core:Icon id="_IDGenTilePOIcon" src="sap-icon://cart" class="phTileIconBadge phIconGreen"/>
-                </HBox>
-                <HBox id="_IDGenTilePOBottom" alignItems="Center" justifyContent="SpaceBetween" class="phTileBottom">
-                    <Text id="_IDGenTilePOValue" text="{view>/counts/poOpen}" class="phTileValue"/>
-                    <core:Icon id="_IDGenTilePOSpark" src="sap-icon://line-chart" class="phSparkIcon phSparkGreen"/>
-                </HBox>
-                <HBox id="_IDGenTilePOTrendBox" alignItems="Center" class="phTrendBox">
-                    <core:Icon id="_IDGenTilePOTrendIcon" src="sap-icon://trend-up" class="phTrendIcon phTrendUp"/>
-                    <Text id="_IDGenTilePOTrendTxt" text="8% vs last 7 days" class="phTrendText phTrendUp"/>
-                </HBox>
-            </VBox>
-
-            <!-- ===== TILE: Unresolved Alerts ===== -->
-            <VBox id="_IDGenTileAlerts" class="phTile phTileRed" press=".onAlertsTilePress">
-                <HBox id="_IDGenTileAlertsTop" justifyContent="SpaceBetween" alignItems="Start">
-                    <VBox id="_IDGenTileAlertsTextBox">
-                        <Text id="_IDGenTileAlertsTitle" text="Unresolved Alerts" class="phTileTitle"/>
-                        <Text id="_IDGenTileAlertsSub" text="Needs attention" class="phTileSub"/>
-                    </VBox>
-                    <core:Icon id="_IDGenTileAlertsIcon" src="sap-icon://alert" class="phTileIconBadge phIconRed"/>
-                </HBox>
-                <HBox id="_IDGenTileAlertsBottom" alignItems="Center" justifyContent="SpaceBetween" class="phTileBottom">
-                    <Text id="_IDGenTileAlertsValue" text="{view>/counts/alertsOpen}" class="phTileValue"/>
-                    <core:Icon id="_IDGenTileAlertsSpark" src="sap-icon://line-chart" class="phSparkIcon phSparkRed"/>
-                </HBox>
-                <HBox id="_IDGenTileAlertsTrendBox" alignItems="Center" class="phTrendBox">
-                    <core:Icon id="_IDGenTileAlertsTrendIcon" src="sap-icon://trend-up" class="phTrendIcon phTrendDown"/>
-                    <Text id="_IDGenTileAlertsTrendTxt" text="15% vs last 7 days" class="phTrendText phTrendDown"/>
-                </HBox>
-            </VBox>
-
-            <!-- ===== TILE: Process Flow ===== -->
-            <VBox id="_IDGenTileProcessFlow" class="phTile phTilePurple" press=".onProcessFlowTilePress">
-                <HBox id="_IDGenTilePFTop" justifyContent="SpaceBetween" alignItems="Start">
-                    <VBox id="_IDGenTilePFTextBox">
-                        <Text id="_IDGenTilePFTitle" text="Process Flow" class="phTileTitle"/>
-                        <Text id="_IDGenTilePFSub" text="PR to GR tracking" class="phTileSub"/>
-                    </VBox>
-                    <core:Icon id="_IDGenTilePFIcon" src="sap-icon://process" class="phTileIconBadge phIconPurple"/>
-                </HBox>
-                <HBox id="_IDGenTilePFBottom" alignItems="Center" justifyContent="SpaceBetween" class="phTileBottom">
-                    <Text id="_IDGenTilePFValue" text="{view>/counts/prTotal}" class="phTileValue"/>
-                    <core:Icon id="_IDGenTilePFSpark" src="sap-icon://workflow-tasks" class="phSparkIcon phSparkPurple"/>
-                </HBox>
-                <HBox id="_IDGenTilePFTrendBox" alignItems="Center" class="phTrendBox">
-                    <core:Icon id="_IDGenTilePFTrendIcon" src="sap-icon://arrow-right" class="phTrendIcon phTrendNeutral"/>
-                    <Text id="_IDGenTilePFTrendTxt" text="View end-to-end flow" class="phTrendText phTrendNeutral"/>
-                </HBox>
-            </VBox>
-        </HBox>
-
-        <Panel id="_IDGenRecentAlertsPanel" headerText="Alerts Overview">
+        <Panel
+            id="_IDGenRecentAlertsPanel"
+            headerText="Alerts Overview"
+        >
             <headerToolbar>
                 <Toolbar id="_IDGenRecentToolbar">
-                    <Title id="_IDGenRecentTitle" text="Alerts Overview"/>
-                    <ToolbarSpacer id="_IDGenRecentSpacer"/>
-                    <Button id="_IDGenViewAllBtn" text="View all alerts" type="Transparent" press=".onViewAllAlerts"/>
+                    <Title
+                        id="_IDGenRecentTitle"
+                        text="Alerts Overview"
+                    />
+                    <ToolbarSpacer id="_IDGenRecentSpacer" />
+                    <Button
+                        id="_IDGenViewAllBtn"
+                        text="View all alerts"
+                        type="Transparent"
+                        press=".onViewAllAlerts"
+                    />
                 </Toolbar>
             </headerToolbar>
 
-            <HBox id="_IDGenDashAlertsAnalyticsRow" wrap="Wrap" alignItems="Stretch" justifyContent="SpaceBetween" class="sapUiSmallMargin phAlertsRow">
-
-                <VBox id="_IDGenDashSeverityBox" class="phAlertsCol" width="34%">
-                    <Text id="_IDGenDashSeverityLbl" text="By Severity" class="phAlertsColLbl"/>
-                    <viz:VizFrame id="dashSeverityChart" vizType="donut" height="260px" width="100%" uiConfig="{applicationSet:'fiori'}">
+            <HBox
+                id="_IDGenDashAlertsAnalyticsRow"
+                wrap="Wrap"
+                alignItems="Stretch"
+                justifyContent="SpaceBetween"
+                class="sapUiSmallMargin phKpiRow"
+            >
+                <!-- ===== CARD: By Severity (donut) ===== -->
+                <VBox
+                    id="_IDGenDashSeverityBox"
+                    class="phAlertsCol phKpiCard phKpiBlue"
+                    width="32%"
+                >
+                    <Text
+                        id="_IDGenDashSeverityLbl"
+                        text="By Severity"
+                        class="phKpiLabel"
+                    />
+                    <viz:VizFrame
+                        id="dashSeverityChart"
+                        vizType="donut"
+                        height="220px"
+                        width="100%"
+                        uiConfig="{applicationSet:'fiori'}"
+                    >
                         <viz:dataset>
-                            <viz.data:FlattenedDataset data="{view>/severityChartData}">
+                            <viz.data:FlattenedDataset
+                                data="{view>/severityChartData}"
+                            >
                                 <viz.data:dimensions>
-                                    <viz.data:DimensionDefinition name="Severity" value="{severity}"/>
+                                    <viz.data:DimensionDefinition
+                                        name="Severity"
+                                        value="{severity}"
+                                    />
                                 </viz.data:dimensions>
                                 <viz.data:measures>
-                                    <viz.data:MeasureDefinition name="Count" value="{count}"/>
+                                    <viz.data:MeasureDefinition
+                                        name="Count"
+                                        value="{count}"
+                                    />
                                 </viz.data:measures>
                             </viz.data:FlattenedDataset>
                         </viz:dataset>
                         <viz:feeds>
-                            <viz.feeds:FeedItem id="_IDGenDashSevFeed1" uid="color" type="Dimension" values="Severity"/>
-                            <viz.feeds:FeedItem id="_IDGenDashSevFeed2" uid="size" type="Measure" values="Count"/>
+                            <viz.feeds:FeedItem
+                                id="_IDGenDashSevFeed1"
+                                uid="color"
+                                type="Dimension"
+                                values="Severity"
+                            />
+                            <viz.feeds:FeedItem
+                                id="_IDGenDashSevFeed2"
+                                uid="size"
+                                type="Measure"
+                                values="Count"
+                            />
                         </viz:feeds>
                     </viz:VizFrame>
                 </VBox>
 
-                <VBox id="_IDGenDashStatusBox" class="phAlertsCol phAlertsColStatus" width="28%">
-                    <Text id="_IDGenDashStatusLbl" text="By Status" class="phAlertsColLbl"/>
-                    <VBox id="_IDGenDashStatusInner" class="sapUiSmallMarginTop">
-                        <Text id="_IDGenDashResolvedLbl" text="Resolved" class="sapUiTinyMarginBottom"/>
-                        <ProgressIndicator id="_IDGenDashResolvedBar"
+                <!-- ===== CARD: By Status (resolved/unresolved) ===== -->
+                <VBox
+                    id="_IDGenDashStatusBox"
+                    class="phAlertsCol phKpiCard phKpiOrange"
+                    width="32%"
+                >
+                    <Text
+                        id="_IDGenDashStatusLbl"
+                        text="By Status"
+                        class="phKpiLabel"
+                    />
+                    <VBox
+                        id="_IDGenDashStatusInner"
+                        class="sapUiSmallMarginTop"
+                    >
+                        <Text
+                            id="_IDGenDashResolvedLbl"
+                            text="Resolved"
+                            class="phKpiProgressLabel sapUiTinyMarginBottom"
+                        />
+                        <ProgressIndicator
+                            id="_IDGenDashResolvedBar"
                             percentValue="{view>/statusPct/resolvedPct}"
                             displayValue="{view>/counts/alertsResolved} ({view>/statusPct/resolvedPct}%)"
-                            state="Success" class="sapUiSmallMarginBottom"/>
-                        <Text id="_IDGenDashUnresolvedLbl" text="Unresolved" class="sapUiTinyMarginBottom"/>
-                        <ProgressIndicator id="_IDGenDashUnresolvedBar"
+                            state="Success"
+                            class="sapUiSmallMarginBottom"
+                        />
+                        <Text
+                            id="_IDGenDashUnresolvedLbl"
+                            text="Unresolved"
+                            class="phKpiProgressLabel sapUiTinyMarginBottom"
+                        />
+                        <ProgressIndicator
+                            id="_IDGenDashUnresolvedBar"
                             percentValue="{view>/statusPct/unresolvedPct}"
                             displayValue="{view>/counts/alertsOpen} ({view>/statusPct/unresolvedPct}%)"
-                            state="Error"/>
+                            state="Error"
+                        />
                     </VBox>
                 </VBox>
 
-                <VBox id="_IDGenDashQuickCounts" class="phAlertsCol" width="22%" justifyContent="Center">
-                    <Text id="_IDGenDashQuickLbl" text=" " class="phAlertsColLbl"/>
-                    <HBox id="_IDGenDashTotalRow" alignItems="Center" class="sapUiTinyMarginBottom">
-                        <Text id="_IDGenDashTotalLbl" text="Total Alerts: " class="sapUiTinyMarginEnd"/>
-                        <Text id="_IDGenDashTotalVal" text="{= ${view>/counts/alertsOpen} + ${view>/counts/alertsResolved} }" class="phTileValue"/>
-                    </HBox>
-                    <HBox id="_IDGenDashOpenRow" alignItems="Center">
-                        <Text id="_IDGenDashOpenLbl" text="Needs Attention: " class="sapUiTinyMarginEnd"/>
-                        <Text id="_IDGenDashOpenVal" text="{view>/counts/alertsOpen}" class="phTileValue wdRedText"/>
-                    </HBox>
+                <!-- ===== CARD: Quick Counts ===== -->
+                <VBox
+                    id="_IDGenDashQuickCounts"
+                    class="phAlertsCol phKpiCard phKpiPurple"
+                    width="32%"
+                    justifyContent="Center"
+                >
+                    <Text
+                        id="_IDGenDashQuickLbl"
+                        text="Summary"
+                        class="phKpiLabel"
+                    />
+                    <VBox
+                        id="_IDGenDashTotalRow"
+                        class="sapUiSmallMarginTop"
+                    >
+                        <Text
+                            id="_IDGenDashTotalLbl"
+                            text="Total Alerts"
+                            class="phKpiProgressLabel"
+                        />
+                        <Text
+                            id="_IDGenDashTotalVal"
+                            text="{= ${view>/counts/alertsOpen} + ${view>/counts/alertsResolved} }"
+                            class="phKpiBigNumber"
+                        />
+                    </VBox>
+                    <VBox
+                        id="_IDGenDashOpenRow"
+                        class="sapUiMediumMarginTop"
+                    >
+                        <Text
+                            id="_IDGenDashOpenLbl"
+                            text="Needs Attention"
+                            class="phKpiProgressLabel"
+                        />
+                        <Text
+                            id="_IDGenDashOpenVal"
+                            text="{view>/counts/alertsOpen}"
+                            class="phKpiBigNumber"
+                        />
+                    </VBox>
                 </VBox>
             </HBox>
         </Panel>

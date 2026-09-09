@@ -89,6 +89,21 @@ sap.ui.define([
                 }), "analytics");
 
                 this._loadCounts();
+                    // NEW — allow searching PR ComboBox by any part of the number/status, not just prefix
+    const oPfSelect = this.byId("pfPrSelect");
+
+    if (oPfSelect) {
+        oPfSelect.setFilterFunction((sValue, oItem) => {
+
+            const sQuery = sValue.toLowerCase();
+
+            const sText = (oItem.getText() || "").toLowerCase();
+            const sAdditional = (oItem.getAdditionalText() || "").toLowerCase();
+
+            return sText.includes(sQuery) || sAdditional.includes(sQuery);
+        });
+    }
+
             },
 
             // =========================================================
@@ -170,6 +185,14 @@ sap.ui.define([
 
                     case "processflow":
                         this._initProcessFlowModel();
+
+                        const oPfSelect = this.byId("pfPrSelect");
+                        const oPfBinding = oPfSelect ? oPfSelect.getBinding("items") : null;
+
+                        if (oPfBinding) {
+                            oPfBinding.refresh();
+                        }
+
                         break;
 
                     case "analytics":

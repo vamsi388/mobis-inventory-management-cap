@@ -78,30 +78,54 @@ html {
     box-shadow: var(--ph-shadow-sm);
 }
 
-.sapTntNavLI {
-    margin: 2px 10px !important;
+/* ===================== SIDE NAVIGATION ===================== */
+
+.sapTntSideNavigation {
+    background: var(--ph-surface) !important;
+    border-right: 1px solid var(--ph-border) !important;
+    box-shadow: var(--ph-shadow-sm);
+    padding-top: 0.75rem;
+}
+
+/* each nav row — works for both expanded and collapsed (icon-only) modes */
+.sapTntNLI {
+    display: flex !important;
+    align-items: center;
+    margin: 4px 8px !important;
     border-radius: var(--ph-radius-sm) !important;
     transition: var(--ph-transition);
+    min-height: 44px;
 }
 
-.sapTntNavLI:hover {
+.sapTntNLI:hover {
     background: var(--ph-bg) !important;
+    cursor: pointer;
 }
 
-.sapTntNavLI.sapTntNLISelected,
-.sapTntNavLI.sapTntNLISelected:hover {
-    background: linear-gradient(135deg, var(--ph-primary), var(--ph-primary-dark)) !important;
-    box-shadow: var(--ph-shadow-md);
+.sapTntNLI.sapTntNLISelected,
+.sapTntNLI.sapTntNLISelected:hover {
+    background: #eaf2ff !important;
+    border: 1.5px solid var(--ph-primary) !important;
+    box-shadow: none !important;
 }
 
-.sapTntNavLI.sapTntNLISelected .sapTntNLIText,
-.sapTntNavLI.sapTntNLISelected .sapTntNLIIcon {
-    color: #ffffff !important;
+.sapTntNLI.sapTntNLISelected .sapTntNLIText,
+.sapTntNLI.sapTntNLISelected .sapTntNLIIcon {
+    color: var(--ph-primary-dark) !important;
+    font-weight: 700;
 }
 
-.sapTntNavLIText {
+.sapTntNLIText {
     font-weight: 500;
     font-size: 0.9rem;
+}
+
+.sapTntNLIIcon {
+    font-size: 1.15rem !important;
+    color: var(--ph-text-muted) !important;
+}
+.sapTntNLI.sapTntNLISelected .sapTntNLIIcon {
+    color: #ffffff !important;
 }
 
 /* ===================== PAGE / CONTENT PADDING ===================== */
@@ -385,9 +409,66 @@ html {
    PREMIUM TILE LAYOUT (Image 2 style)
    ========================================================= */
 
+
+
+   /* PROCESS FLOW */
+   /* ===== Process Flow — wide card treatment ===== */
+.phTileWide {
+    width: 100%;
+    flex: 1 1 100%;
+    padding: 1.5rem 2rem;
+}
+
+.phPFTextBox {
+    margin-left: 1rem;
+}
+
+.phPFValueRow {
+    margin-top: 0.5rem;
+    gap: 8px;
+}
+
+.phPFValueLbl {
+    font-size: 0.82rem !important;
+    color: var(--ph-text-muted) !important;
+    margin-bottom: 2px;
+}
+
+.phIconBadgeLg {
+    font-size: 1.7rem !important;
+    padding: 0.85rem;
+    border-radius: 14px;
+}
+
+.phIconPurple {
+    background: rgba(111, 66, 245, 0.12);
+    color: var(--ph-accent) !important;
+}
+
+.phSparkPurple {
+    color: var(--ph-accent) !important;
+}
+
+.phSparkLg {
+    font-size: 2.6rem !important;
+    opacity: 0.18;
+}
+
+/* purple top accent bar, matching your other tile colors */
+.phTilePurple::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    border-radius: var(--ph-radius) var(--ph-radius) 0 0;
+    background: linear-gradient(90deg, #6f42f5, #a78bfa);
+}
+
 .phTileRow {
     gap: 1rem;
-    margin-bottom: 1.5rem !important;
+    margin-bottom: 3.5rem !important;
 }
 
 .phTile {
@@ -396,11 +477,12 @@ html {
     border-radius: var(--ph-radius);
     box-shadow: var(--ph-shadow-sm);
     padding: 1.1rem 1.25rem 1rem 1.25rem;
-    min-width: 230px;
-    flex: 1 1 230px;
+    min-width: 200px;
+    flex: 1 1 200px;
     position: relative;
     transition: var(--ph-transition);
     cursor: pointer;
+    margin-bottom: 1.5rem !important;
 }
 
 .phTile:hover {
@@ -570,6 +652,151 @@ html {
     min-height: 240px;
     display: block;
 }
+
+
+
+
+/* =========================================================
+   WELCOME BANNER (hero header, SAP Build lobby style)
+   ========================================================= */
+/* ===== WELCOME BANNER — exact match to reference ===== */
+/* ===== WELCOME BANNER — upper circle gradient ===== */
+/* ===== WELCOME BANNER — upper circle gradient ===== */
+.phWelcomeBanner {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--ph-radius);
+    background: linear-gradient(135deg, #e3f2ff 0%, #a9d6ff 100%);
+    padding: 1.75rem 2rem;
+    margin-bottom: 1.5rem !important;
+}
+
+/* the upper circle — #0070f2 at top-right, light color unchanged */
+.phWelcomeBanner::after {
+    content: "";
+    position: absolute;
+    top: -180px;
+    right: -60px;
+    width: 420px;
+    height: 420px;
+    border-radius: 50%;
+    background: linear-gradient(315deg, #e3f2ff 0%, #0070f2 100%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+
+
+.phWelcomeTopRow,
+.phWelcomeTitle,
+.phWelcomeSubtitle {
+    position: relative;
+    z-index: 1;
+}
+
+.phWelcomeTitle {
+    font-size: 1.9rem !important;
+    font-weight: 800 !important;
+    color: #14203a !important;
+    letter-spacing: -0.5px;
+}
+
+.phWelcomeSubtitle {
+    font-size: 0.95rem !important;
+    color: #14203a !important;
+    opacity: 0.72;
+    margin-top: 0.35rem !important;
+}
+/* .phWelcomeBanner {
+    position: relative;
+    border-radius: var(--ph-radius);
+    /* background: linear-gradient(135deg, #dbe9ff 0%, #c9e0ff 45%, #eaf2ff 100%); */
+    /* background: #d3eeff;
+    padding: 1.75rem 2rem;
+    margin-bottom: 1.5rem !important;
+    overflow: hidden;
+} */
+
+.phWelcomeBanner::after {
+    content: "";
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.6), rgba(255,255,255,0) 70%);
+} */
+
+.phWelcomeTitle {
+    font-size: 1.9rem !important;
+    font-weight: 800 !important;
+    color: var(--ph-text) !important;
+    letter-spacing: -0.5px;
+}
+
+.phWelcomeSubtitle {
+    font-size: 0.95rem !important;
+    color: var(--ph-text-muted) !important;
+    margin-top: 0.35rem !important;
+}
+
+.phWelcomeTopRow {
+    position: relative;
+    z-index: 1;
+}
+
+.phWelcomeHideBtn {
+    background: rgba(255,255,255,0.7) !important;
+    border-radius: 999px !important;
+    border: 1px solid var(--ph-border) !important;
+}
+
+
+
+
+
+
+.sapTntSideNavigation {
+    width: 240px !important;   /* NEW — was implicitly ~60px in collapsed mode */
+    background: var(--ph-surface) !important;
+    border-right: 1px solid var(--ph-border) !important;
+    box-shadow: var(--ph-shadow-sm);
+    padding-top: 0.75rem;
+}
+
+.sapTntNLI {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;                 /* NEW — spacing between icon and text */
+    padding: 0 12px;           /* NEW */
+    margin: 4px 8px !important;
+    border-radius: var(--ph-radius-sm) !important;
+    transition: var(--ph-transition);
+    min-height: 44px;
+}
+
+/* Tiles floating on the banner gradient, like SAP Build's Quick Start cards */
+.phTileRowInBanner {
+    position: relative;
+    z-index: 1;
+    margin-top: 1.5rem !important;
+    margin-bottom: 0 !important;
+}
+
+.phWelcomeBanner {
+    padding-bottom: 2rem !important;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

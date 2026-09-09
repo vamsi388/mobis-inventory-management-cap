@@ -83,6 +83,45 @@ sap.ui.define([], () => {
 
         prCanResubmit(sStatus) {
             return sStatus === "REJECTED";
+        },
+        prStatusIcon(sStatus) {
+            switch (sStatus) {
+                case "APPROVED": return "sap-icon://accept";
+                case "REJECTED": return "sap-icon://decline";
+                case "PENDING_APPROVAL":
+                case "SUBMITTED": return "sap-icon://pending";
+                case "CLOSED": return "sap-icon://complete";
+                default: return "sap-icon://edit"; // DRAFT
+            }
+        },
+        daysSinceCreated(sCreatedAt) {
+            if (!sCreatedAt) return 0;
+            const iDiffMs = Date.now() - new Date(sCreatedAt).getTime();
+            return Math.floor(iDiffMs / (1000 * 60 * 60 * 24));
+        },
+
+        ageState(sCreatedAt) {
+            const iDays = this.daysSinceCreated(sCreatedAt);
+            if (iDays > 14) return "Error";
+            if (iDays > 7) return "Warning";
+            return "Success";
+        },
+
+        prWorkflowPct(sStatus) {
+            const mPct = { DRAFT: 10, SUBMITTED: 35, PENDING_APPROVAL: 50, APPROVED: 80, CLOSED: 100, REJECTED: 100 };
+            return mPct[sStatus] ?? 0;
+        },
+
+        prWorkflowLabel(sStatus) {
+            const mLabel = {
+                DRAFT: "Draft — not yet submitted",
+                SUBMITTED: "Submitted, awaiting review",
+                PENDING_APPROVAL: "Pending approval",
+                APPROVED: "Approved",
+                REJECTED: "Rejected",
+                CLOSED: "Closed"
+            };
+            return mLabel[sStatus] || sStatus;
         }
 
     };

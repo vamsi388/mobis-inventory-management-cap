@@ -25,6 +25,7 @@ sap.ui.define([], () => {
 
         onProcessFlowTilePress() {
             this._showSection("processflow");
+            this.onShowProcessFlowSection();
         },
 
         async _loadCounts() {
@@ -88,6 +89,12 @@ sap.ui.define([], () => {
             const sText = await oResponse.text();
 
             return parseInt(sText, 10) || 0;
-        }
+        },
+        onHideWelcomeBanner() {
+            const oBanner = this.byId("welcomeBanner");
+            if (oBanner) {
+                oBanner.setVisible(false);
+            }
+        },
     };
 });

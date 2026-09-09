@@ -5,7 +5,7 @@
     xmlns:tnt="sap.tnt"
     xmlns="sap.m"
 >
-    <tnt:ToolPage id="toolPage">
+    <tnt:ToolPage id="toolPage" sideExpanded="true">
 
         <tnt:sideContent>
             <core:Fragment fragmentName="procurement.fragments.SideNav" type="XML"/>

@@ -12,6 +12,15 @@
                 text="Purchase Requisitions"
             />
             <ToolbarSpacer id="_IDGenPRSpacer" />
+            <SearchField
+                id="_IDGenPRSearchField"
+                placeholder="Search PR Number, Location, Requested By..."
+                width="280px"
+                liveChange=".onPRSearch"
+                search=".onPRSearch"
+                class="sapUiTinyMarginEnd"
+            />
+
             <Button
                 id="_IDGenCreatePRBtn"
                 text="Create PR"
@@ -161,7 +170,7 @@
                                         enabled="{path:'status', formatter:'.formatter.prCanCreatePO'}"
                                         press=".onCreatePOFromPR"
                                     />
-                                        <MenuItem
+                                    <MenuItem
                                         id="_IDGenClosePRMenuItem"
                                         text="Close PR"
                                         icon="sap-icon://complete"
