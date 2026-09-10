@@ -7,7 +7,7 @@
     <Dialog
         id="prObjectPageDialog"
         contentWidth="70rem"
-        contentHeight="85vh"
+        contentHeight="auto"
         showHeader="false"
         resizable="true"
     >

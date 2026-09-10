@@ -22,7 +22,7 @@
                         <Text id="_IDGenSupName" text="{name}"/>
                         <Text id="_IDGenSupEmail" text="{email}"/>
                         <Text id="_IDGenSupPhone" text="{phone}"/>
-                        <RatingIndicator id="_IDGenSupRating" value="{rating}" maxValue="5" iconSize="1rem" editable="false" tooltip="{rating}"/>                        <Text id="_IDGenSupLead" text="{leadTimeDays}"/>
+                        <RatingIndicator id="_IDGenSupRating" value="{rating}" maxValue="5" iconSize="1rem" editable="false" tooltip="{=${rating} + ' / 5'}"/>                        <Text id="_IDGenSupLead" text="{leadTimeDays}"/>
                         <core:Icon id="_IDGenSupEligible" src="{= ${isEligible} ? 'sap-icon://accept' : 'sap-icon://decline' }" color="{= ${isEligible} ? '#2b7d2b' : '#b00' }"/>
                     </cells>
                 </ColumnListItem>

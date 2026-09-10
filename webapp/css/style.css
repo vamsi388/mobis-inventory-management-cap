@@ -57,6 +57,8 @@ html {
 
 .sapTntToolHeader .sapMAvatar {
     box-shadow: 0 0 0 2px var(--ph-surface), 0 0 0 3px var(--ph-border);
+    border-radius: 10px !important;
+    background: linear-gradient(135deg, var(--ph-primary), var(--ph-accent)) !important;
 }
 
 /* Search field in header */
@@ -70,17 +72,10 @@ html {
     border-color: var(--ph-primary) !important;
 }
 
-/* ===================== SIDE NAVIGATION ===================== */
+/* ===================== SIDE NAVIGATION (single, consolidated) ===================== */
 
 .sapTntSideNavigation {
-    background: var(--ph-surface) !important;
-    border-right: 1px solid var(--ph-border) !important;
-    box-shadow: var(--ph-shadow-sm);
-}
-
-/* ===================== SIDE NAVIGATION ===================== */
-
-.sapTntSideNavigation {
+    width: 240px !important;
     background: var(--ph-surface) !important;
     border-right: 1px solid var(--ph-border) !important;
     box-shadow: var(--ph-shadow-sm);
@@ -91,6 +86,8 @@ html {
 .sapTntNLI {
     display: flex !important;
     align-items: center;
+    gap: 10px;
+    padding: 0 12px;
     margin: 4px 8px !important;
     border-radius: var(--ph-radius-sm) !important;
     transition: var(--ph-transition);
@@ -123,9 +120,6 @@ html {
 .sapTntNLIIcon {
     font-size: 1.15rem !important;
     color: var(--ph-text-muted) !important;
-}
-.sapTntNLI.sapTntNLISelected .sapTntNLIIcon {
-    color: #ffffff !important;
 }
 
 /* ===================== PAGE / CONTENT PADDING ===================== */
@@ -201,6 +195,10 @@ html {
     background: var(--ph-surface) !important;
     border-bottom: 1px solid var(--ph-border) !important;
     padding: 0.9rem 1.25rem !important;
+    overflow: visible;
+    min-height: 2.75rem;
+    line-height: 2.75rem;
+    box-sizing: border-box;
 }
 
 .sapMPanel .sapMPanelHdr .sapMTitle {
@@ -406,65 +404,8 @@ html {
 }
 
 /* =========================================================
-   PREMIUM TILE LAYOUT (Image 2 style)
+   PREMIUM TILE LAYOUT
    ========================================================= */
-
-
-
-   /* PROCESS FLOW */
-   /* ===== Process Flow — wide card treatment ===== */
-.phTileWide {
-    width: 100%;
-    flex: 1 1 100%;
-    padding: 1.5rem 2rem;
-}
-
-.phPFTextBox {
-    margin-left: 1rem;
-}
-
-.phPFValueRow {
-    margin-top: 0.5rem;
-    gap: 8px;
-}
-
-.phPFValueLbl {
-    font-size: 0.82rem !important;
-    color: var(--ph-text-muted) !important;
-    margin-bottom: 2px;
-}
-
-.phIconBadgeLg {
-    font-size: 1.7rem !important;
-    padding: 0.85rem;
-    border-radius: 14px;
-}
-
-.phIconPurple {
-    background: rgba(111, 66, 245, 0.12);
-    color: var(--ph-accent) !important;
-}
-
-.phSparkPurple {
-    color: var(--ph-accent) !important;
-}
-
-.phSparkLg {
-    font-size: 2.6rem !important;
-    opacity: 0.18;
-}
-
-/* purple top accent bar, matching your other tile colors */
-.phTilePurple::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    border-radius: var(--ph-radius) var(--ph-radius) 0 0;
-    background: linear-gradient(90deg, #6f42f5, #a78bfa);
-}
 
 .phTileRow {
     gap: 1rem;
@@ -505,6 +446,7 @@ html {
 .phTileOrange::before { background: linear-gradient(90deg, #f0a63a, #e0742a); }
 .phTileGreen::before  { background: linear-gradient(90deg, #22b573, #1f9254); }
 .phTileRed::before    { background: linear-gradient(90deg, #ef4f56, #d9363e); }
+.phTilePurple::before { background: linear-gradient(90deg, #6f42f5, #a78bfa); }
 
 .phTileTitle {
     font-weight: 700 !important;
@@ -531,6 +473,7 @@ html {
 .phIconOrange { background: rgba(224, 116, 42, 0.12); color: #e0742a !important; }
 .phIconGreen  { background: rgba(31, 146, 84, 0.12);  color: #1f9254 !important; }
 .phIconRed    { background: rgba(217, 54, 62, 0.12);  color: #d9363e !important; }
+.phIconPurple { background: rgba(111, 66, 245, 0.12); color: var(--ph-accent) !important; }
 
 /* Big value + sparkline row */
 .phTileBottom {
@@ -549,9 +492,15 @@ html {
     opacity: 0.85;
 }
 
-.phSparkBlue  { color: #2b5fd9 !important; }
-.phSparkGreen { color: #1f9254 !important; }
-.phSparkRed   { color: #d9363e !important; }
+.phSparkBlue   { color: #2b5fd9 !important; }
+.phSparkGreen  { color: #1f9254 !important; }
+.phSparkRed    { color: #d9363e !important; }
+.phSparkPurple { color: var(--ph-accent) !important; }
+
+.phSparkLg {
+    font-size: 2.6rem !important;
+    opacity: 0.18;
+}
 
 /* Trend row (12% vs last 7 days) */
 .phTrendBox {
@@ -580,6 +529,33 @@ html {
     color: var(--ph-text-muted) !important;
 }
 
+/* ===== Process Flow — wide card treatment ===== */
+.phTileWide {
+    width: 100%;
+    flex: 1 1 100%;
+    padding: 1.5rem 2rem;
+}
+
+.phPFTextBox {
+    margin-left: 1rem;
+}
+
+.phPFValueRow {
+    margin-top: 0.5rem;
+    gap: 8px;
+}
+
+.phPFValueLbl {
+    font-size: 0.82rem !important;
+    color: var(--ph-text-muted) !important;
+    margin-bottom: 2px;
+}
+
+.phIconBadgeLg {
+    font-size: 1.7rem !important;
+    padding: 0.85rem;
+    border-radius: 14px;
+}
 
 /* =========================================================
    SIDEBAR GROUP LABELS (REPORTS / CONFIGURATION)
@@ -595,15 +571,9 @@ html {
     padding: 1rem 1.25rem 0.4rem 1.25rem !important;
 }
 
-
 /* =========================================================
-   LOGO BADGE IN HEADER (hexagon-style icon like ProcureHub logo)
+   ALERTS OVERVIEW
    ========================================================= */
-
-.sapTntToolHeader .sapMAvatar {
-    border-radius: 10px !important;
-    background: linear-gradient(135deg, var(--ph-primary), var(--ph-accent)) !important;
-}
 
 .phAlertsRow {
     gap: 1.5rem;
@@ -630,12 +600,6 @@ html {
     background: rgba(43, 95, 217, 0.08) !important;
 }
 
-.sapMPanel .sapMPanelHdr {
-    overflow: visible;
-    min-height: 2.75rem;
-    line-height: 2.75rem;
-    box-sizing: border-box;
-}
 .phChartPanel {
     min-width: 300px;
     flex: 1 1 300px;
@@ -653,25 +617,21 @@ html {
     display: block;
 }
 
-
-
-
 /* =========================================================
    WELCOME BANNER (hero header, SAP Build lobby style)
+   — single consolidated definition, #0070f2 circle
    ========================================================= */
-/* ===== WELCOME BANNER — exact match to reference ===== */
-/* ===== WELCOME BANNER — upper circle gradient ===== */
-/* ===== WELCOME BANNER — upper circle gradient ===== */
+
 .phWelcomeBanner {
     position: relative;
     overflow: hidden;
     border-radius: var(--ph-radius);
     background: linear-gradient(135deg, #e3f2ff 0%, #a9d6ff 100%);
-    padding: 1.75rem 2rem;
+    padding: 1.75rem 2rem 2rem 2rem;
     margin-bottom: 1.5rem !important;
 }
 
-/* the upper circle — #0070f2 at top-right, light color unchanged */
+/* the upper circle — #0070f2 at top-right */
 .phWelcomeBanner::after {
     content: "";
     position: absolute;
@@ -684,8 +644,6 @@ html {
     pointer-events: none;
     z-index: 0;
 }
-
-
 
 .phWelcomeTopRow,
 .phWelcomeTitle,
@@ -707,73 +665,11 @@ html {
     opacity: 0.72;
     margin-top: 0.35rem !important;
 }
-/* .phWelcomeBanner {
-    position: relative;
-    border-radius: var(--ph-radius);
-    /* background: linear-gradient(135deg, #dbe9ff 0%, #c9e0ff 45%, #eaf2ff 100%); */
-    /* background: #d3eeff;
-    padding: 1.75rem 2rem;
-    margin-bottom: 1.5rem !important;
-    overflow: hidden;
-} */
-
-.phWelcomeBanner::after {
-    content: "";
-    position: absolute;
-    top: -60px;
-    right: -60px;
-    width: 220px;
-    height: 220px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,255,255,0.6), rgba(255,255,255,0) 70%);
-} */
-
-.phWelcomeTitle {
-    font-size: 1.9rem !important;
-    font-weight: 800 !important;
-    color: var(--ph-text) !important;
-    letter-spacing: -0.5px;
-}
-
-.phWelcomeSubtitle {
-    font-size: 0.95rem !important;
-    color: var(--ph-text-muted) !important;
-    margin-top: 0.35rem !important;
-}
-
-.phWelcomeTopRow {
-    position: relative;
-    z-index: 1;
-}
 
 .phWelcomeHideBtn {
     background: rgba(255,255,255,0.7) !important;
     border-radius: 999px !important;
     border: 1px solid var(--ph-border) !important;
-}
-
-
-
-
-
-
-.sapTntSideNavigation {
-    width: 240px !important;   /* NEW — was implicitly ~60px in collapsed mode */
-    background: var(--ph-surface) !important;
-    border-right: 1px solid var(--ph-border) !important;
-    box-shadow: var(--ph-shadow-sm);
-    padding-top: 0.75rem;
-}
-
-.sapTntNLI {
-    display: flex !important;
-    align-items: center;
-    gap: 10px;                 /* NEW — spacing between icon and text */
-    padding: 0 12px;           /* NEW */
-    margin: 4px 8px !important;
-    border-radius: var(--ph-radius-sm) !important;
-    transition: var(--ph-transition);
-    min-height: 44px;
 }
 
 /* Tiles floating on the banner gradient, like SAP Build's Quick Start cards */
@@ -783,20 +679,3 @@ html {
     margin-top: 1.5rem !important;
     margin-bottom: 0 !important;
 }
-
-.phWelcomeBanner {
-    padding-bottom: 2rem !important;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
